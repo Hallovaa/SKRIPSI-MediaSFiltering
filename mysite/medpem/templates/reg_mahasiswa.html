@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Akun Mahasiswa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-5.0.0-beta1.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/lindy-uikit.css' %}"/>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #ffffff;
+        }
+
+        .register-container {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .register-title {
+            font-size: 34px;
+            font-weight: 800;
+            color: #2563eb;
+            margin-bottom: 6px;
+        }
+
+        .register-subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            padding: 0 14px;
+            font-size: 14px;
+        }
+
+        .password-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 42px;
+        }
+
+        .password-wrapper i {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+        .btn-submit {
+            width: 100%;
+            height: 48px;
+            border-radius: 14px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f7df9, #2563eb);
+            border: none;
+            margin-top: 6px;
+            color: #fff;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .links a {
+            font-size: 14px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .register-image img {
+            max-width: 520px;
+        }
+
+        @media (max-width: 991px) {
+            .register-image {
+                display: none;
+            }
+            .navbar-collapse {
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                margin-top: 15px;
+            }
+            .navbar-toggler {
+                border: none;
+                padding: 0;
+            }
+            .navbar-toggler:focus {
+                box-shadow: none;
+            }
+            .toggler-icon {
+                width: 30px;
+                height: 2px;
+                background-color: #2563eb;
+                display: block;
+                margin: 5px 0;
+                position: relative;
+                transition: all 0.3s ease-out 0s;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .password-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<br><br><br>
+<section id="home" class="hero-section-wrapper-5">
+<header class="header header-6 sticky">
+    <div class="navbar-area">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-12">
+                    <nav class="navbar navbar-expand-lg">
+                        <a class="navbar-brand" href="{% url 'landing' %}">
+                            <img src="{% static 'assets/img/icon/image.png' %}" alt="Logo" style="max-width: 180px;">
+                        </a>
+                        
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent6" aria-controls="navbarSupportedContent6" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="toggler-icon"></span>
+                            <span class="toggler-icon"></span>
+                            <span class="toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent6">
+                            <ul id="nav6" class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a class="page-scroll" href="{% url 'landing' %}">Beranda</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="page-scroll" href="{% url 'materi' %}">Materi</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="page-scroll" href="{% url 'petunjuk' %}">Petunjuk Penggunaan</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="page-scroll" href="{% url 'tentang' %}">Tentang</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn-daftar active" href="{% url 'reg_mahasiswa' %}">Daftar</a>
+                                </li>
+                                <li class="nav-item ms-lg-2">
+                                    <a class="btn-masuk" href="{% url 'login' %}">Masuk</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="register-container">
+    <div class="row align-items-center">
+        <div class="col-md-6 register-image text-center">
+            <img src="{% static 'assets/img/icon/sign.svg' %}" alt="Register Mahasiswa">
+        </div>
+
+        <div class="col-md-6">
+            <h2 class="register-title">Daftar Akun Mahasiswa</h2>
+            <p class="register-subtitle">Isi semua data di bawah ini dengan benar.</p>
+
+            <form method="POST" action="{% url 'reg_mahasiswa' %}">
+                {% csrf_token %}
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" name="nama" placeholder="Masukkan nama lengkap" required>
+                </div>
+
+                <div class="form-group">
+                    <label>NIM</label>
+                    <input type="text" name="nim" placeholder="Masukkan NIM" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Masukkan email" required>
+                </div>
+
+                <div class="password-row">
+                    <div class="form-group">
+                        <label>Kata Sandi</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="password" id="password" placeholder="Masukkan kata sandi" required>
+                            <i class="bi bi-eye" onclick="togglePassword('password', this)"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ulangi Kata Sandi</label>
+                        <div class="password-wrapper">
+                            <input type="password" name="confirm_password" id="confirm_password" placeholder="Ulangi kata sandi" required>
+                            <i class="bi bi-eye" onclick="togglePassword('confirm_password', this)"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Token Kelas</label>
+                    <input type="text" name="token" placeholder="Masukkan token kelas" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-submit">Daftar</button>
+
+                <div class="links">
+                    <a href="{% url 'reg_dosen' %}">Daftar sebagai Dosen?</a><br>
+                    <a href="{% url 'login' %}">Sudah punya akun? Masuk</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function togglePassword(id, el) {
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+    el.classList.toggle("bi-eye");
+    el.classList.toggle("bi-eye-slash");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,467 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 2 - Spatial & Frequency Domain{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<style>
+.card-section {
+  border: 2px solid #bcccdc;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  margin-bottom: 22px;
+  box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+}
+.card-section-header {
+  padding: 14px 18px;
+  font-size: 20px;
+  font-weight: 800;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background: #edf4fe;
+  border-bottom: 2px solid #bcccdc;
+}
+
+.card-section-header i {
+  font-size: 18px;
+  color: var(--primary-500);
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: rgba(59,123,227,0.12);
+}
+
+.card-section-body {
+  padding: 35px;
+  font-size: 19px;
+  color: #222f3a;
+  background: #fff;
+}
+
+#quiz-card {
+  border: 2.5px solid #4d7bdc !important;
+  box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .card-section-header {
+  background: #4d7bdc !important;
+  border-bottom: 2px solid #4d7bdc; 
+  color: white !important;
+}
+
+#quiz-card .card-section-header i {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.dnd-container {
+  display: flex;
+  gap: 20px;
+  margin-top: 16px;
+}
+
+.dnd-target {
+  flex: 1;
+  padding: 12px;
+  background: #fafbff;
+  border: 1px dashed rgba(16,32,58,.25);
+  border-radius: 12px;
+}
+
+.dnd-target h4 {
+  text-align: center;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.dnd-slot {
+  min-height: 54px;
+  border: 1px dashed rgba(16,32,58,.25);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 4px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.dnd-slot.empty {
+  background: #f8fafc;
+  color: #94a3b8;
+}
+
+.dnd-item {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(16,32,58,.15);
+  background: #ffffff;
+  cursor: grab;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.dnd-item:active { cursor: grabbing; }
+
+.dnd-pool {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(16,32,58,.25);
+  background: #fafbff;
+}
+
+.dnd-pool h4 {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.correct {
+  outline: 3px solid #2563eb;
+  background: #eff6ff !important;
+}
+
+.wrong {
+  outline: 3px solid #dc2626;
+  background: #fff1f2 !important;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  align-items: center;
+}
+
+.btn-check-custom {
+  background: #edf4fe;
+  color: #000000;
+  padding: 12px 26px;
+  border-radius: 10px;
+  border: 2px solid #cfdaec;
+  font-weight: 800;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.btn-reset-custom {
+  background: 94a3b8;
+  color: #000000;
+  padding: 11px 25px;
+  border-radius: 10px;
+  border: 2px solid #d5d8dd;
+  font-weight: 800;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.material-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+  .dnd-container { flex-direction: column; }
+  .dnd-pool { grid-template-columns: 1fr; }
+}
+</style>
+
+<h1 class="title-main mb-3">
+  SUBBAB 2 - <span style="color:var(--primary-500)"><em>SPATIAL DOMAIN VS FREQUENCY DOMAIN</em></span>
+</h1>
+
+<section class="card-section" aria-labelledby="materi-heading">
+  <div class="card-section-header">
+    <i class="bi bi-bounding-box"></i>
+    <div id="materi-heading"><em>Spatial Domain vs Frequency Domain</em></div>
+  </div>
+
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Secara umum terdapat dua domain utama yang digunakan dalam pemrosesan citra yaitu 
+      <em>Spatial Domain</em> dan <em>Frequency Domain</em>. 
+      <strong>Pada <em>Spatial Domain</em> (<em>Spatial Filtering</em>) pemrosesan citra dilakukan langsung 
+      pada piksel-piksel citra asli dengan cara mengubah nilai intensitas setiap piksel</strong>. 
+      Salah satu teknik yang digunakan pada domain ini adalah <strong>konvolusi</strong>, yaitu proses 
+      menghitung nilai baru suatu piksel berdasarkan nilai piksel tersebut dan piksel tetangganya 
+      menggunakan sebuah <em>kernel</em>. Melalui proses ini citra dapat diolah untuk tujuan tertentu 
+      seperti penghalusan (<em>smoothing</em>), penajaman (<em>sharpening</em>), dan deteksi tepi 
+      (<em>edge detection</em>). Teknik ini bekerja dengan memperhatikan piksel di sekitar suatu piksel.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
+      Berbeda dengan <em>Spatial Domain</em>, pada <strong><em>Frequency Domain</em></strong> citra tidak 
+      diolah langsung berdasarkan pikselnya. Citra terlebih dahulu 
+      <strong>diubah ke dalam bentuk frekuensi</strong> menggunakan transformasi matematis seperti 
+      <em>Fast Fourier Transform</em> (<em>FFT</em>). Setelah berada di domain frekuensi, proses penyaringan 
+      dilakukan dengan menggunakan <em>frequency filter</em>, misalnya <em>low-pass filter</em> untuk 
+      perataan dan <em>high-pass filter</em> untuk penajaman. 
+      <strong>Hasil dari proses ini kemudian dikembalikan lagi ke domain spasial</strong> melalui 
+      transformasi balik agar dapat ditampilkan sebagai citra akhir. Perbedaan proses keduanya bisa 
+      dilihat pada Gambar B.5 berikut:
+    </P>
+
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/5B.png' %}" style="display:block; margin:auto; width:87%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar B.5 Ilustrasi proses <em>Spatial Domain vs Frequency Domain</em>
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px; margin-top: 30px">
+      Seperti yang ditunjukkan pada Gambar B.5, pada <em>Spatial Domain</em> citra input diproses secara 
+      langsung menggunakan <em>spatial filter</em> untuk menghasilkan citra <em>output</em>. Proses ini 
+      dilakukan tanpa mengubah citra ke bentuk lain sehingga perubahan dapat langsung diterapkan pada nilai 
+      piksel citra. Sebaliknya, pada <em>Frequency Domain</em> citra harus melalui beberapa tahap, yaitu 
+      diubah terlebih dahulu ke domain frekuensi (<em>direct transformation</em>), kemudian dilakukan 
+      proses penyaringan menggunakan <em>frequency filter</em>, dan hasilnya dikembalikan lagi ke domain 
+      spasial melalui transformasi balik (<em>inverse transformation</em>) agar dapat ditampilkan sebagai 
+      citra <em>output</em>.
+    </p>
+  </div>
+</section>
+
+<section class="card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 2</div>
+  </div>
+
+  <div class="card-section-body">
+    <p class="muted">
+      Susun langkah-langkah proses pada <em><b>Spatial Domain</b></em> dan <em><b>Frequency Domain</b></em> sesuai urutan yang benar.
+    </p>
+
+    <div class="dnd-container">
+      <div class="dnd-target" id="spatial">
+        <h4>Spatial Domain</h4>
+      </div>
+
+      <div class="dnd-target" id="frequency">
+        <h4>Frequency Domain</h4>
+      </div>
+    </div>
+
+    <div class="dnd-pool" id="pool">
+      <h4>Pilihan Jawaban</h4>
+    </div>
+
+    <div class="controls" id="quiz-controls">
+      <button id="check" class="btn-check-custom">Cek Jawaban</button>
+      <button id="reset" class="btn-reset-custom">Reset Jawaban</button>
+    </div>
+    <div id="quiz-feedback" style="margin-top: 15px;"></div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'pengertian_spatial' %}" class="btn btn-outline-secondary">
+    <i class="bi bi-chevron-left"></i> Sebelumnya
+  </a>
+  <a id="nav-next" href="{% url 'ringkasan2' %}" 
+     class="btn btn-primary {% if 'spatial-frequency' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'spatial-frequency' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+(function() {
+  const currentSlug = 'spatial-frequency';
+  const spatialSteps = [
+    "Input citra",
+    "Tentukan piksel pusat",
+    "Proses nilai piksel menggunakan filter",
+    "Output citra hasil filtering"
+  ];
+
+  const frequencySteps = [
+    "Input citra",
+    "Transformasi ke domain frekuensi (FFT)",
+    "Terapkan filter low-pass / high-pass",
+    "Inverse transformasi ke domain spasial"
+  ];
+
+  const pool = document.getElementById("pool");
+  const spatialBox = document.getElementById("spatial");
+  const frequencyBox = document.getElementById("frequency");
+  const navNext = document.getElementById("nav-next");
+  const feedback = document.getElementById("quiz-feedback");
+  const controls = document.getElementById("quiz-controls");
+  let draggedItem = null;
+
+  let isCompleted = "{{ selesai_slugs|safe }}".includes(currentSlug);
+
+  function updateProgressDatabase() {
+    if (isCompleted) {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#4f71be'
+        });
+        return;
+    }
+
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: currentSlug })
+    })
+    .then(async response => {
+        const contentType = response.headers.get("content-type");
+        if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Sesi berakhir atau URL tidak ditemukan.');
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        isCompleted = true;
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Urutan benar. Progres Anda telah disimpan.',
+          icon: 'success',
+          confirmButtonText: 'Lanjutkan',
+          confirmButtonColor: '#4f71be'
+        }).then(() => {
+          unlockNext();
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Gagal Simpan', err.message, 'error');
+    });
+  }
+
+  function unlockNext() {
+    navNext.classList.remove('disabled');
+    navNext.style.opacity = '1';
+    navNext.style.pointerEvents = 'auto';
+    {% comment %} feedback.innerHTML = '<b style="color:#4f71be"><i class="bi bi-check-circle-fill"></i> Progres tersimpan. Anda tetap bisa mencoba aktivitas ini kembali.</b>'; {% endcomment %}
+  }
+
+  function createSlot(correctText) {
+    const slot = document.createElement("div");
+    slot.className = "dnd-slot empty";
+    slot.dataset.correct = correctText;
+
+    slot.addEventListener("dragover", e => e.preventDefault());
+    slot.addEventListener("drop", () => {
+      if (!draggedItem) return;
+      if (slot.firstChild) pool.appendChild(slot.firstChild);
+      slot.innerHTML = "";
+      slot.appendChild(draggedItem);
+      slot.classList.remove("empty");
+      draggedItem = null;
+    });
+    return slot;
+  }
+
+  function createItem(text) {
+    const item = document.createElement("div");
+    item.className = "dnd-item";
+    item.textContent = text;
+    item.draggable = true;
+    item.addEventListener("dragstart", () => draggedItem = item);
+    return item;
+  }
+
+  function init() {
+    pool.innerHTML = "<h4>Pilihan Jawaban</h4>";
+    spatialBox.querySelectorAll('.dnd-slot').forEach(s => s.remove());
+    frequencyBox.querySelectorAll('.dnd-slot').forEach(s => s.remove());
+
+    spatialSteps.forEach(s => spatialBox.appendChild(createSlot(s)));
+    frequencySteps.forEach(f => frequencyBox.appendChild(createSlot(f)));
+
+    const allSteps = [...spatialSteps, ...frequencySteps];
+    allSteps.sort(() => Math.random() - 0.5).forEach(t => pool.appendChild(createItem(t)));
+    
+    document.querySelectorAll(".dnd-slot").forEach(s => s.classList.remove("correct", "wrong"));
+  }
+
+  document.getElementById("check").onclick = () => {
+    let allCorrect = true;
+    let anyEmpty = false;
+    const slots = document.querySelectorAll(".dnd-slot");
+
+    slots.forEach(slot => {
+      slot.classList.remove("correct", "wrong");
+      const item = slot.firstChild;
+      if (!item) {
+        anyEmpty = true;
+        allCorrect = false;
+        return;
+      }
+      if (item.textContent === slot.dataset.correct) {
+        slot.classList.add("correct");
+      } else {
+        slot.classList.add("wrong");
+        allCorrect = false;
+      }
+    });
+
+    if (anyEmpty) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Belum Lengkap!',
+        text: 'Silakan isi semua kolom jawaban.',
+        confirmButtonColor: '#4f71be'
+      });
+    } else if (allCorrect) {
+      updateProgressDatabase();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Coba Lagi!',
+        text: 'Masih ada jawaban yang salah, periksa kembali.',
+        confirmButtonColor: '#4f71be'
+      });
+    }
+  };
+
+  document.getElementById("reset").onclick = init;
+
+  if (isCompleted) {
+    unlockNext();
+  }
+  
+  init(); 
+})();
+</script>
+{% endblock %}

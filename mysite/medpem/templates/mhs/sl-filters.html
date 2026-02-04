@@ -1,0 +1,918 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 4 - Smoothing Linear Filters{% endblock %}
+
+{% block content %}
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; margin-bottom:34px; }
+
+  .card-section-body ol { margin-top:8px; padding-left:35px; }
+  .card-section-body li { margin-bottom:12px; font-size:19px; }
+
+  .card-section-body li { 
+    margin-bottom:12px; 
+    font-size:19px; 
+  }
+
+  .conv-container { display:flex; flex-direction:column; gap:18px; align-items:center; }
+  .sim-section {
+    background:#faf9f7;
+    border-radius:12px;
+    padding:14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    text-align:center;
+    min-width:220px;
+  }
+  .conv-table { border-collapse:collapse; margin:8px auto; }
+  .conv-table td {
+    width:44px; height:44px; border:1px solid #999; text-align:center;
+    vertical-align:middle; font-weight:700; padding:0; transition:background-color .18s;
+  }
+  .input-cell, .output-cell { background:#fff9ee; }
+  .active-highlight { background:#d9eafd !important; color:#0b2540; font-weight:800; }
+  .output-highlight { background:#003049 !important; color:#fff !important; font-weight:800; }
+  .kernel-cell { background:#d9eafd !important; padding:0; font-weight:800; text-align:center; }
+
+  .calc-wrapper { width: 100%; max-width: 950px; margin: 15px auto; text-align: center; }
+  .calc-title { font-weight: 800; font-size: 14px; color: #0b2540; margin-bottom: 8px; text-transform: uppercase; }
+  .calculation {
+    background-color: #faf9f7; border-radius: 10px; border: 1px solid #edf4fe;
+    padding: 16px 20px; text-align:center; font-family: 'Courier New', monospace; color:#333; 
+    min-height:60px; line-height: 1.8; word-break: normal; overflow-wrap: anywhere;
+    font-size: 17px; font-weight: 800;
+  }
+
+  .select-row {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; width: 100%; align-items: flex-end;
+  }
+  .select-group { flex: 0 1 auto; }
+  .control-label {
+    display: block; text-align: center; font-weight: 800; font-size: 10px; margin-bottom: 2px; color: #666; text-transform: uppercase;
+  }
+  .custom-select-box {
+    display: inline-block !important; width: auto !important; padding: 6px 8px !important; font-size: 13px !important; font-weight: 700 !important;
+    color: #444 !important; background-color: #fff !important; border: 2px solid #3b7dd8 !important; border-radius: 8px !important;
+  }
+  #constInputGroup { width: 55px; display: none; }
+  .const-input { 
+    width: 100%; padding: 6px 2px; border: 2px solid #3b7dd8; border-radius: 8px; text-align: center; font-weight: 700; font-size: 13px;
+  }
+
+  .conv-controls {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .conv-controls button {
+    padding:8px 14px;
+    border-radius:8px;
+    border:none; 
+    cursor:pointer;
+    background:#3b7dd8; 
+    color:#fff;
+    font-weight:700;
+    font-family: inherit;
+    transition: opacity 0.2s;
+  }
+  .conv-controls button.btn-outline {
+    background:#fff;
+    color:#3b7dd8;
+    border:1px solid rgba(16,32,58,0.15);
+  }
+
+  .quiz-input {
+    width: 60px; height: 50px; text-align:center; background:#fff9ee; color:#0b2540;
+    font-weight:700; font-size:16px; border:1px solid #ddd; border-radius:0; transition:background .12s;
+  }
+  .quiz-input:focus { outline:none; border:2px solid #000 !important; border-radius:0 !important; }
+  #quiz-conv4 {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+  }
+
+  #quiz-conv4 .card-section-header {
+    background: #4d7bdc !important;
+    color: white !important;
+  }
+
+  #quiz-conv4 .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+
+  .kernel-display-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .fraction-box-sim {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #eef6ff;
+    border: 1px solid #cfe2ff;
+    font-weight: 800;
+    color: #0b2540;
+    min-width: 45px;
+  }
+
+  .calc-kernel-val {
+    color: #3b7dd8;
+  }
+
+  .kernel-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+  }
+
+  .kernel-card {
+    border: 1px solid #dcdde1;
+    border-radius: 10px;
+    background-color: #fff;
+    min-width: 300px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kernel-card:hover {
+    border-color: #bcccdc;
+  }
+
+  .kernel-header {
+    background-color: #fcfcfc;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    border-radius: 10px 10px 0 0;
+    font-size: 1.1em;
+    color: #2c3e50;
+  }
+
+  .kernel-math {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 260px; 
+  }
+
+  .kernel-footer {
+    margin-top: auto; 
+    padding: 15px;
+    text-align: center;
+    border-top: 1px dashed #eee;
+    background-color: #fafafa;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .kernel-footer strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+  }
+
+  .kernel-footer span {
+    font-size: 0.9em;
+    color: #666;
+    line-height: 1.4;
+    display: block;
+  }
+
+  .math-container {
+    font-size: 1.2em;
+  }
+  
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">SUBBAB 4 - <span style="color:var(--primary-500)">SMOOTHING LINEAR FILTERS</span></h1>
+</div>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-journal-bookmark"></i>
+    <div>Tujuan Pembelajaran</div>
+  </div>
+  <div class="card-section-body">
+    <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
+    <ol>
+      <li>Memahami konsep <em>Smoothing</em> pada citra digital.</li>
+      <li>Memahami perbedaan antara <em>Linear Smoothing Filter</em> dan <em>Nonlinear Smoothing Filter</em>.</li>
+      <li>Menerapkan teknik <em>Smoothing Linear</em> dan <em>Nonlinear</em> pada matriks citra sederhana.</li>
+    </ol>
+  </div>
+</section>
+
+
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-lightbulb"></i>
+    <div><em>Smoothing Linear Filters</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong><em>Smoothing</em> merupakan salah satu bentuk <em>filtering</em> pada <em>spatial domain</em> yang bertujuan untuk mengurangi <em>noise</em> dan membuat citra tampak lebih halus.</strong>
+      Proses ini dilakukan menggunakan konvolusi.
+      Pada <em>smoothing</em>, nilai piksel di sekitar pusat diratakan sehingga gangguan kecil dapat dikurangi.
+      Namun proses ini juga menyebabkan tepi dan detail halus menjadi kurang tajam.
+      <strong>Semakin besar ukuran <em>kernel</em> yang digunakan, semakin kuat efek pelembutan, tetapi detail citra semakin berkurang.</strong>
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong><em>Smoothing linear filters</em></strong> adalah teknik pelembutan citra yang menggunakan operasi konvolusi dengan kernel berbobot linear. 
+      Istilah <em>linear</em> berarti bahwa perhitungan nilai piksel hanya melibatkan operasi perkalian dan penjumlahan. 
+      Nilai piksel baru diperoleh dari hasil perkalian nilai piksel tetangga dengan bobot <em>kernel</em> yang kemudian dijumlahkan. 
+      Persamaan <em>smoothing linear filter</em> sama dengan persamaan konvolusi, tetapi 
+      <strong>hasil perhitungannya dibagi dengan jumlah bobot <em>kernel</em> sehingga diperoleh nilai rata-rata piksel</strong> 
+      dan citra tampak lebih halus.
+    </p>
+
+    <p style="text-align: center; font-size: 27px;">
+      $$
+      g(x,y)=
+      \frac{
+      \sum\limits_{k=-1}^{1}
+      \sum\limits_{j=-1}^{1}
+      h(j+1,k+1)\,f(x-j,y-k)
+      }{
+      \sum\limits_{k=-1}^{1}
+      \sum\limits_{j=-1}^{1}
+      h(j+1,k+1)
+      }
+      $$
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Dengan keterangan:
+    </p>
+
+    <ul style="text-align: justify; margin-left: 30px; margin-bottom:20px">
+      <li>\( f(x,y) \) = citra input</li>
+      <li>\( h(j,k) \) = <em>kernel</em></li>
+      <li>\( g(x,y) \) = citra hasil konvolusi</li>
+    </ul>
+
+  </div>
+</section>
+
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-layers-half"></i>
+    <div><em>Jenis Smoothing Linear Filters</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Dua jenis <em>smoothing linear filter</em> yang umum digunakan adalah <em>mean filter</em> dan <em>weighted averaging filter</em>.</strong>
+      <strong><em>Mean filter</em></strong> merupakan <em>smoothing linear filter</em> paling sederhana.
+      Filter ini mengganti nilai piksel pusat dengan nilai rata-rata dari seluruh piksel di dalam area <em>kernel</em>.
+      <strong>Semua elemen <em>kernel</em> memiliki bobot yang sama sehingga setiap piksel tetangga memberikan pengaruh yang setara.</strong>
+      Pada <em>kernel</em> berukuran 3×3 terdapat 9 piksel sehingga setiap elemen <em>kernel</em> bernilai \( \frac{1}{9} \),
+      dan untuk <em>kernel</em> 5×5 terdapat 25 piksel sehingga setiap elemen <em>kernel</em> bernilai \( \frac{1}{25} \).
+    </p>
+
+    <div class="kernel-wrapper">
+      <div class="kernel-card">
+        <div class="kernel-header">Mean Filter</div>
+        <div class="kernel-math">
+          <div class="math-container">
+            $$
+            \frac{1}{9}
+            \times
+            \begin{bmatrix}
+            1 & 1 & 1 \\
+            1 & 1 & 1 \\
+            1 & 1 & 1
+            \end{bmatrix}
+            $$
+          </div>
+        </div>
+        <div class="kernel-footer">
+          <strong>Kernel 3x3</strong>
+          <span>Setiap piksel memiliki bobot yang sama.</span>
+        </div>
+      </div>
+
+      <div class="kernel-card">
+        <div class="kernel-header">Mean Filter</div>
+        <div class="kernel-math">
+          <div class="math-container">
+            $$
+            \frac{1}{25}
+            \times
+            \begin{bmatrix}
+            1 & 1 & 1 & 1 & 1 \\
+            1 & 1 & 1 & 1 & 1 \\
+            1 & 1 & 1 & 1 & 1 \\
+            1 & 1 & 1 & 1 & 1 \\
+            1 & 1 & 1 & 1 & 1
+            \end{bmatrix}
+            $$
+          </div>
+        </div>
+        <div class="kernel-footer">
+          <strong>Kernel 5x5</strong>
+          <span>Efek smoothing lebih kuat dibanding kernel 3×3.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/1D.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar D.1 Contoh hasil penerapan <em>kernel mean</em> 3x3 dan 5x5
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada Gambar D.1 ditunjukkan perubahan citra setelah diterapkan <em>mean filter</em> dengan ukuran <em>kernel</em> yang berbeda. 
+      Pada citra asli, detail objek terlihat tajam dan jelas, namun masih terdapat <em>noise</em> acak berupa bintik-bintik halus pada beberapa bagian. 
+      Setelah dilakukan <em>filtering</em> menggunakan <em>kernel</em> 3×3, <em>noise</em> mulai berkurang karena setiap piksel digantikan oleh nilai rata-rata dari sembilan piksel tetangganya, sehingga citra tampak lebih halus meskipun tingkat ketajamannya sedikit menurun.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;"> 
+      Pada <em>kernel</em> 5×5, efek perataan menjadi lebih kuat karena setiap piksel merupakan rata-rata dari 25 piksel tetangganya. 
+      Akibatnya <em>noise</em> hampir tidak terlihat, tetapi detail halus seperti garis tipis dan batas huruf mulai tampak kabur. 
+      Hal ini menunjukkan bahwa semakin besar ukuran <em>kernel</em> pada <em>mean filter</em>, semakin kuat efek <em>smoothing</em> yang dihasilkan, namun semakin besar pula potensi hilangnya detail citra.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;"> 
+      <strong><em>Weighted averaging filter</em></strong> merupakan pengembangan dari <em>mean filter</em> dengan 
+      <strong>bobot <em>kernel</em> yang tidak seragam. Piksel yang berada lebih dekat dengan pusat <em>kernel</em> diberi bobot lebih besar, sedangkan bobot menurun ke arah tepi.</strong>
+      Akibatnya <strong>piksel pusat memiliki pengaruh dominan dalam perhitungan</strong>, sehingga proses <em>smoothing</em> tetap berlangsung tanpa terlalu menghilangkan detail tepi. 
+      Dengan pemberian bobot yang berbeda, struktur penting citra dapat dipertahankan dengan lebih baik dibandingkan <em>mean filter</em>. 
+      Pada contoh kernel di bawah ini ditunjukkan pola bobot <em>kernel</em> tersebut, di mana bobot terbesar berada di pusat dan semakin mengecil ke arah tepi.
+    </p>
+
+    <div class="kernel-wrapper">
+      <div class="kernel-card">
+        <div class="kernel-header">Weighted Averaging Filter</div>
+        <div class="kernel-math">
+          <div class="math-container">
+            $$
+            \frac{1}{16}
+            \times
+            \begin{bmatrix}
+            1 & 2 & 1 \\
+            2 & 4 & 2 \\
+            1 & 2 & 1
+            \end{bmatrix}
+            $$
+          </div>
+        </div>
+        <div class="kernel-footer">
+          <strong>Kernel 3x3</strong>
+          <span>Bobot terbesar berada di pusat kernel.</span>
+        </div>
+      </div>
+
+      <div class="kernel-card">
+        <div class="kernel-header">Weighted Averaging Filter</div>
+        <div class="kernel-math">
+          <div class="math-container">
+            $$
+            \frac{1}{25}
+            \times
+            \begin{bmatrix}
+            0 & 0 & 1 & 0 & 0 \\
+            0 & 2 & 2 & 2 & 0 \\
+            1 & 2 & 5 & 2 & 1 \\
+            0 & 2 & 2 & 2 & 0 \\
+            0 & 0 & 1 & 0 & 0
+            \end{bmatrix}
+            $$
+          </div>
+        </div>
+        <div class="kernel-footer">
+          <strong>Kernel 5x5</strong>
+          <span>Efek smoothing lebih kuat dengan bobot terpusat.</span>
+        </div>
+      </div>
+    </div>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/2D.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar D.2 Contoh hasil penerapan <em>kernel weighted averaging Filter</em> 3x3 dan 5x5
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;"> 
+      Pada Gambar D.2 ditunjukkan hasil penerapan <em>weighted averaging filter</em> dengan ukuran <em>kernel</em> 3×3 dan 5×5. 
+      Pada <em>kernel</em> 3×3, <em>noise</em> mulai berkurang sementara ketajaman tepi masih cukup terjaga karena piksel pusat diberi bobot lebih besar. 
+      Ketika ukuran <em>kernel</em> diperbesar menjadi 5×5, citra tampak lebih halus, namun detail penting masih lebih terjaga dibandingkan hasil <em>mean filter</em> dengan ukuran <em>kernel</em> yang sama. 
+      Hal ini menunjukkan bahwa <em>weighted averaging filter</em> mampu mengurangi <em>noise</em> sekaligus mempertahankan struktur penting pada citra.
+    </p>
+  </div>
+</section>
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-images"></i>
+    <div>Konvolusi dengan <em>Kernel Smoothing Filters</em></div>
+  </div>
+  <div class="card-section-body">
+
+    <p>
+      Contoh <em>smoothing linear filter</em> menggunakan citra 4×4 dan <em>kernel</em> 3×3.
+    </p>
+
+    <figure style="margin:20px 0; margin-bottom: 70px">
+      <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:60%;">
+    </figure>
+
+    <div class="conv-container">
+      <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+        <div class="sim-section">
+          <h4><b>Input Citra (Matriks)</b></h4>
+          <table id="inputMatrix" class="conv-table"></table>
+        </div>
+        
+        <div class="sim-section" style="min-width:320px;">
+          <h4><b>Kernel</b></h4>
+          
+          <div class="select-row">
+            <div class="select-group">
+              <label class="control-label">Pilih Kernel:</label>
+              <select id="kernelSelect" class="custom-select-box">
+                <option value="mean">Mean 3×3</option>
+                <option value="gaussian">Gaussian 3×3</option>
+              </select>
+            </div>
+            <div class="select-group">
+              <label class="control-label">Pilih Padding:</label>
+              <select id="paddingSelect" class="custom-select-box">
+                <option value="zero">Zero</option>
+                <option value="replicate">Replicate</option>
+                <option value="reflect">Reflect</option>
+                <option value="wrap">Wrap</option>
+                <option value="constant">Constant</option>
+              </select>
+            </div>
+            <div class="select-group" id="constInputGroup">
+              <label class="control-label">Val</label>
+              <input type="number" id="customPaddingInput" class="const-input" value="1" min="1" max="255">
+            </div>
+          </div>
+
+          <div class="kernel-display-container">
+            <div id="kernelFractionSim" class="fraction-box-sim">
+              <span style="font-size:20px; line-height:1;">\(\frac{1}{9}\)</span>
+            </div>
+            <table id="kernelMatrix" class="conv-table" style="margin: 0;"></table>
+          </div>
+
+          <div class="conv-controls">
+            <button id="startBtn">Mulai</button>
+            <button id="autoplayBtn" class="btn-outline">Auto Play</button>
+            <button id="pauseBtn" style="display:none;">Pause</button>
+            <button id="nextBtn" style="display:none;">Lanjut</button>
+            <button id="resetBtn" class="btn-outline" style="display:none;">Ulangi</button>
+          </div>
+        </div>
+
+        <div class="sim-section">
+          <h4><b>Hasil Konvolusi</b></h4>
+          <table id="outputMatrix" class="conv-table"></table>
+        </div>
+      </div>
+
+      <div class="calc-wrapper">
+        <div class="calc-title">PERHITUNGAN</div>
+        <div class="calculation" id="calculationText">
+          Belum ada perhitungan
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section quiz-card-section" id="quiz-conv4" aria-labelledby="quiz-conv4-heading" style="margin-top:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div id="quiz-conv4-heading">Aktivitas</div>
+  </div>
+  <div class="card-section-body">
+
+    <p>Diberikan citra <em>grayscale</em> berukuran 4x4 berikut:</p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/soal.png' %}" style="display:block; margin:auto; width:50%;">
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px;"> 
+      Terapkan padding <strong>replicate</strong> sehingga konvolusi dapat dilakukan pada semua piksel.
+      Isi semua elemen pada matriks hasil konvolusi (4×4).
+    </p>
+    <div style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:14px;align-items:flex-start;">
+      <div style="text-align:center;">
+        <h5 style="font-weight:800;margin-bottom:8px;">Matriks Citra</h5>
+        <table class="conv-table" style="margin:auto;">
+          <tr><td class="input-cell">79</td><td class="input-cell">77</td><td class="input-cell">102</td><td class="input-cell">208</td></tr>
+          <tr><td class="input-cell">84</td><td class="input-cell">79</td><td class="input-cell">106</td><td class="input-cell">118</td></tr>
+          <tr><td class="input-cell">89</td><td class="input-cell">112</td><td class="input-cell">114</td><td class="input-cell">114</td></tr>
+          <tr><td class="input-cell">83</td><td class="input-cell">99</td><td class="input-cell">90</td><td class="input-cell">109</td></tr>
+        </table>
+      </div>
+      <div style="text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;">
+        <h5 style="font-weight:800;margin-bottom:8px;">Kernel</h5>
+        <div style="display:flex; align-items:center; gap:10px; justify-content:center;">
+          <div style="display:inline-flex; align-items:center; justify-content:center; padding:6px 10px; border-radius:8px; background:#eef6ff; border:1px solid #cfe2ff; font-weight:800; color:#0b2540;">
+            <span style="font-size:20px; line-height:1;">\(\frac{1}{16}\)</span>
+          </div>
+          <table class="conv-table kernel-cell" style="margin:auto;">
+            <tr><td class="kernel-cell">1</td><td class="kernel-cell">2</td><td class="kernel-cell">1</td></tr>
+            <tr><td class="kernel-cell">2</td><td class="kernel-cell">4</td><td class="kernel-cell">2</td></tr>
+            <tr><td class="kernel-cell">1</td><td class="kernel-cell">2</td><td class="kernel-cell">1</td></tr>
+          </table>
+        </div>
+      </div>
+      <div style="text-align:center;">
+        <h5 style="font-weight:800;margin-bottom:8px;">Hasil Konvolusi</h5>
+        <table id="quizConvOutput" class="conv-table" style="margin:auto;">
+          <tr>
+            <td><input class="quiz-input conv4" data-pos="0" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="1" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="2" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="3" inputmode="numeric" /></td>
+          </tr>
+          <tr>
+            <td><input class="quiz-input conv4" data-pos="4" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="5" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="6" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="7" inputmode="numeric" /></td>
+          </tr>
+          <tr>
+            <td><input class="quiz-input conv4" data-pos="8" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="9" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="10" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="11" inputmode="numeric" /></td>
+          </tr>
+          <tr>
+            <td><input class="quiz-input conv4" data-pos="12" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="13" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="14" inputmode="numeric" /></td>
+            <td><input class="quiz-input conv4" data-pos="15" inputmode="numeric" /></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:18px;">
+      <button id="checkConv4" style="background:#fff5e6;color:#4b3520;padding:10px 22px;border-radius:10px;border:1px solid #ddd;font-weight:800; cursor:pointer;">Cek Jawaban</button>
+      <button id="resetConv4" style="background:#d9eafd;color:#0b2540;padding:10px 22px;border-radius:10px;border:1px solid #c3d9f8;font-weight:700; cursor:pointer;">Reset Jawaban</button>
+    </div>
+    <div id="quizConv4Feedback" style="text-align:center;font-weight:700;margin-top:12px;min-height:28px;"></div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'k_konvolusi' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nav-next-materi" href="{% url 'sn_filters' %}" 
+     class="btn btn-primary {% if 'sl-filters' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'sl-filters' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+     Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(function(){
+  const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
+  
+  const kernelConfigs = {
+    mean: {
+      plainScale: "1/9",
+      matrix: [[1,1,1],[1,1,1],[1,1,1]],
+      divider: 9
+    },
+    gaussian: {
+      plainScale: "1/16",
+      matrix: [[1,2,1],[2,4,2],[1,2,1]],
+      divider: 16
+    },
+  };
+
+  let currentConfig = JSON.parse(JSON.stringify(kernelConfigs.mean));
+  let paddingType = 'zero';
+  let outputData = Array.from({length:4}, ()=>Array(4).fill(''));
+  let step = 0, intervalId = null, paused = false;
+
+  const inputTable = document.getElementById('inputMatrix');
+  const kernelTable = document.getElementById('kernelMatrix');
+  const kernelFractionSim = document.getElementById('kernelFractionSim');
+  const outputTable = document.getElementById('outputMatrix');
+  const calcText = document.getElementById('calculationText');
+  const constGroup = document.getElementById('constInputGroup');
+  const constValInp = document.getElementById('customPaddingInput');
+  
+  const startBtn = document.getElementById('startBtn');
+  const autoPlayBtn = document.getElementById('autoplayBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  function createTable(matrix, table, cellClass='input-cell', editable=false){
+    table.innerHTML = '';
+    matrix.forEach((row,i)=>{
+      const tr = document.createElement('tr');
+      row.forEach((val,j)=>{
+        const td = document.createElement('td');
+        td.className = cellClass;
+        if(table.id === 'kernelMatrix'){
+          td.textContent = val;
+          if(editable) {
+            td.contentEditable = true;
+            td.oninput = () => {
+              currentConfig.matrix[i][j] = parseFloat(td.textContent) || 0;
+            };
+          }
+        } else {
+          td.textContent = val === '' ? '' : Math.round(val);
+        }
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+  }
+
+  function getPaddedValue(x,y){
+    const r = 4, c = 4;
+    if(x >= 0 && x < r && y >= 0 && y < c) return inputData[x][y];
+    if(paddingType === 'zero') return 0;
+    if(paddingType === 'constant') {
+      let v = parseInt(constValInp.value);
+      if(isNaN(v) || v < 1) return 1;
+      if(v > 255) return 255;
+      return v;
+    }
+    if(paddingType === 'replicate') return inputData[Math.min(Math.max(x,0), r-1)][Math.min(Math.max(y,0), c-1)];
+    if(paddingType === 'reflect') return inputData[x < 0 ? -x : x >= r ? 2*r-x-2 : x][y < 0 ? -y : y >= c ? 2*c-y-2 : y];
+    if(paddingType === 'wrap') return inputData[((x%r)+r)%r][((y%c)+c)%c];
+    return 0;
+  }
+
+  function customRound(val) {
+    return Math.floor(val + 0.5);
+  }
+
+  function processStep(){
+    const ox = Math.floor(step/4), oy = step%4;
+    Array.from(inputTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
+    for(let i=ox; i<ox+3; i++) for(let j=oy; j<oy+3; j++) inputTable.rows[i].cells[j].classList.add('active-highlight');
+    
+    let rawSum = 0;
+    let multiplicationDetails = [];
+    for(let i=-1; i<=1; i++) {
+      for(let j=-1; j<=1; j++) {
+        const val = getPaddedValue(ox+i, oy+j);
+        const k = currentConfig.matrix[i+1][j+1];
+        const prod = val * k;
+        rawSum += prod;
+        multiplicationDetails.push(`(<span class="calc-kernel-val">${k}</span>×${val})`);
+      }
+    }
+    
+    let finalVal = rawSum / currentConfig.divider;
+    outputData[ox][oy] = finalVal;
+    createTable(outputData, outputTable, 'output-cell');
+    outputTable.rows[ox].cells[oy].classList.add('output-highlight');
+
+    const innerDetails = multiplicationDetails.join(' + ');
+    calcText.innerHTML = `
+      <div style="margin-bottom: 8px;">${currentConfig.plainScale} × (${innerDetails})</div>
+      <div>= ${currentConfig.plainScale} × ${rawSum} = <span style="color:#000000;"><b>${customRound(finalVal)}</b></span></div>
+    `;
+    
+    step++;
+
+    if(step >= 16){
+      clearInterval(intervalId);
+      nextBtn.style.display = pauseBtn.style.display = 'none';
+      return;
+    }
+  }
+
+  startBtn.onclick = () => {
+    step = 0; 
+    startBtn.style.display = autoPlayBtn.style.display = 'none';
+    nextBtn.style.display = resetBtn.style.display = 'inline-block';
+    processStep();
+  };
+
+  autoPlayBtn.onclick = () => {
+    step = 0; paused = false;
+    startBtn.style.display = autoPlayBtn.style.display = 'none';
+    pauseBtn.style.display = resetBtn.style.display = 'inline-block';
+    pauseBtn.textContent = 'Pause';
+    intervalId = setInterval(() => { if(!paused) processStep(); }, 1000);
+  };
+
+  nextBtn.onclick = processStep;
+  pauseBtn.onclick = () => { paused = !paused; pauseBtn.textContent = paused ? 'Resume' : 'Pause'; };
+
+  resetBtn.onclick = () => {
+    clearInterval(intervalId); step = 0; paused = false;
+    startBtn.style.display = 'inline-block';
+    autoPlayBtn.style.display = 'inline-block';
+    nextBtn.style.display = 'none';
+    pauseBtn.style.display = 'none';
+    resetBtn.style.display = 'none';
+    outputData = Array.from({length:4}, ()=>Array(4).fill(''));
+    createTable(outputData, outputTable, 'output-cell');
+    updateInputTable();
+    calcText.textContent = 'Belum ada perhitungan';
+  };
+
+  document.getElementById('kernelSelect').onchange = (e) => {
+    currentConfig = JSON.parse(JSON.stringify(kernelConfigs[e.target.value]));
+    let tex = e.target.value === 'mean' ? "\\frac{1}{9}" : (e.target.value === 'gaussian' ? "\\frac{1}{16}" : "\\frac{1}{1}");
+    kernelFractionSim.innerHTML = `<span style="font-size:20px; line-height:1;">\\(${tex}\\)</span>`;
+    if (window.MathJax) MathJax.typesetPromise([kernelFractionSim]);
+    createTable(currentConfig.matrix, kernelTable, 'kernel-cell', e.target.value === 'custom');
+  };
+  
+  document.getElementById('paddingSelect').onchange = (e) => {
+    paddingType = e.target.value;
+    constGroup.style.display = paddingType === 'constant' ? 'block' : 'none';
+    updateInputTable();
+  };
+
+  constValInp.oninput = (e) => {
+    let v = parseInt(e.target.value);
+    if (v < 1) e.target.value = 1;
+    if (v > 255) e.target.value = 255;
+    updateInputTable();
+  };
+
+  function updateInputTable(){
+    let padded = [];
+    for(let i=-1; i<5; i++){
+      let row = [];
+      for(let j=-1; j<5; j++) row.push(getPaddedValue(i,j));
+      padded.push(row);
+    }
+    createTable(padded, inputTable);
+    for(let i=0; i<6; i++) {
+      for(let j=0; j<6; j++){
+        if(i===0 || j===0 || i===5 || j===5) inputTable.rows[i].cells[j].style.background = '#bcccdc';
+      }
+    }
+  }
+
+  updateInputTable();
+  createTable(currentConfig.matrix, kernelTable, 'kernel-cell');
+  createTable(outputData, outputTable, 'output-cell');
+})();
+
+(function(){
+  const input = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+  const kernel = [[1,2,1],[2,4,2],[1,2,1]];
+  const kernelScale = 1/16;
+
+  function getReplicateValue(x,y){
+    const r = input.length, c = input[0].length;
+    return input[Math.min(Math.max(x,0), r-1)][Math.min(Math.max(y,0), c-1)];
+  }
+
+  function customRound(val) {
+    return Math.floor(val + 0.5);
+  }
+
+  function convolveAt(x,y){
+    let sum = 0;
+    for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) sum += getReplicateValue(x+i, y+j) * kernel[i+1][j+1];
+    return customRound(sum * kernelScale);
+  }
+
+  const correct = [];
+  for(let i=0;i<4;i++) for(let j=0;j<4;j++) correct.push(convolveAt(i,j));
+
+  const inputs = Array.from(document.querySelectorAll('.quiz-input.conv4'));
+  const checkBtn = document.getElementById('checkConv4');
+  const feedback = document.getElementById('quizConv4Feedback');
+  const nextNavBtn = document.getElementById('nav-next-materi');
+
+  function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: 'sl-filters' })
+    })
+    .then(async response => {
+      const isJson = response.headers.get('content-type')?.includes('application/json');
+      const data = isJson ? await response.json() : null;
+      if (!response.ok) throw new Error((data && data.message) || 'Terjadi kesalahan.');
+      return data;
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3b7dd8'
+        });
+        
+        if(nextNavBtn) {
+          nextNavBtn.classList.remove('disabled');
+          nextNavBtn.style.opacity = "1";
+          nextNavBtn.style.pointerEvents = "auto";
+        }
+      }
+    })
+    .catch(err => {
+      Swal.fire('Gagal Simpan', err.message, 'error');
+    });
+  }
+
+  checkBtn.onclick = () => {
+    let allCorrect = true;
+    let anyEmpty = false;
+
+    inputs.forEach((inp, idx) => {
+      if(inp.value.trim() === "") anyEmpty = true;
+      if(parseInt(inp.value) === correct[idx]){
+        inp.style.background = '#4f71be'; inp.style.color = '#fff';
+      } else {
+        inp.style.background = '#c0392b'; inp.style.color = '#fff';
+        allCorrect = false;
+      }
+    });
+
+    if(anyEmpty) {
+      Swal.fire('Belum Lengkap!', 'Silakan isi semua kolom jawaban.', 'warning');
+      return;
+    }
+
+    if(allCorrect){
+      updateProgressDatabase();
+    } else {
+      Swal.fire({ icon: 'error', title: 'Coba Lagi!', text: 'Masih ada jawaban yang salah, periksa kembali.', confirmButtonColor: '#c0392b' });
+    }
+  };
+
+  document.getElementById('resetConv4').onclick = () => {
+    inputs.forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
+    feedback.textContent = '';
+  };
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{% endblock %}

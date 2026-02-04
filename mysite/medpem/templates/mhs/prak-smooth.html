@@ -1,0 +1,779 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 6 - Praktikum Smoothing{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+
+<style>
+.card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16, 32, 58, 0.03);
+}
+
+.card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-section-header i {
+    font-size: 20px;
+    color: var(--primary-500);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(59, 123, 227, 0.12);
+}
+
+.card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.step-title {
+    font-size: 17pt;
+    font-weight: 700;
+    margin: 24px 0 10px;
+}
+
+.code-box-import {
+    background: #eaf3ff;
+    border: 2px dashed #b7cff5;
+    border-radius: 20px;
+    padding: 18px 26px;
+    max-width: 520px;
+    margin: 26px auto;
+    font-family: "Courier New", monospace;
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.code-box-code {
+    max-width: 800px;
+    margin: 14px auto 26px;
+    padding: 14px 22px;
+    background: #ffffff;
+    border: 2px solid #3b82f6;
+    border-radius: 14px;
+    font-family: "Courier New", monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.keyword { color: #af32bf; }
+.module { color: #2b93a3; }
+.string { color: #b12121; }
+.function { color: #926a39; }
+.number { color: #1a8a5f; }
+
+.editor-layout {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.notebook-container {
+    flex: 3;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-container {
+    flex: 1;
+    min-width: 280px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: fit-content;
+}
+
+.cell-container {
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.cell-input-area {
+    display: flex;
+    background: #f8fafc;
+    padding: 10px;
+    gap: 10px;
+}
+
+.cell-info {
+    font-family: monospace;
+    font-size: 13px;
+    color: #1d4ed8;
+    min-width: 45px;
+    padding-top: 8px;
+    text-align: justify;
+}
+
+.editor-wrapper {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.CodeMirror {
+    height: auto;
+    min-height: 40px;
+    font-size: 14px;
+    background: #282a36 !important;
+}
+
+.cell-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+}
+
+.btn-run {
+    background: #22c55e;
+}
+
+.btn-delete {
+    background: #ef4444;
+}
+
+.cell-output {
+    padding: 10px 10px 10px 65px;
+    border-top: 1px solid #f1f5f9;
+    background: #fff;
+}
+
+.output-log {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.output-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    margin-top: 5px;
+}
+
+.btn-download-manual {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.widget-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    background: #f8fafc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.widget-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.file-list {
+    max-height: 150px;
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+.file-item {
+    background: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 4px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.file-item.active {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.input-preview {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.btn-add-cell-mid {
+    height: 12px;
+    background: transparent;
+    margin: 2px 0;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-add-cell-mid:hover {
+    background: #3b82f6;
+    border-radius: 2px;
+}
+
+.btn-add-cell-mid i {
+    opacity: 0;
+    color: white;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-add-cell-mid:hover i {
+    opacity: 1;
+}
+
+#engine-status {
+    font-size: 11px;
+    color: #64748b;
+    font-family: monospace;
+    padding: 5px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.editor-instruction {
+    background: #fdfdfd;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+.editor-instruction ul { margin: 0; padding-left: 20px; }
+.editor-instruction li { margin-bottom: 5px; }
+
+.quiz-container { background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-top: 10px; position: relative; }
+.quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+.quiz-question { display: none; animation: fadeIn 0.4s ease; }
+.quiz-question.active { display: block; }
+.code-snippet { background: #ffffff; padding: 15px; border-radius: 14px; font-family: 'Courier New', monospace; margin: 15px 0; line-height: 1.6; border: 2px solid #3b82f6; font-weight: 600; font-size: 18px; }
+.quiz-input { border: 2px solid #cbd5e1; border-radius: 4px; padding: 2px 8px; font-family: 'Courier New', monospace; color: #0f172a; font-weight: bold; outline: none; transition: 0.2s; }
+.quiz-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 123, 227, 0.1); }
+.quiz-input.correct { border-color: #3b82f6 !important; background-color: #eff6ff !important; color: #1d4ed8 !important; }
+.quiz-input.wrong { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #dc2626 !important; }
+.feedback-msg { margin-top: 10px; font-weight: bold; font-size: 14px; display: none; }
+.feedback-success { color: #16a34a; }
+.feedback-error { color: #dc2626; }
+
+.btn-check-answer {
+    padding: 10px 24px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-check-answer:hover {
+    background-color: #2563eb;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-check-answer:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.nav-container { display: flex; justify-content: flex-end; gap: 10px; margin: 20px 0; }
+#quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    color: white !important;
+}
+
+#quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+</style>
+
+<h1 class="title-main mb-3">
+    SUBBAB 6 – <span style="color:var(--primary-500)">PRAKTIKUM SMOOTHING</span>
+</h1>
+
+<section class="card-section">
+    <div class="card-section-header">
+        <i class="bi bi-water"></i> 1. Smoothing Linear Filters
+    </div>
+    <div class="card-section-body">
+        <p style="text-align:justify;text-indent:30px;">
+            <em>Pillow</em> menyediakan filter bawaan melalui <strong><em>ImageFilter</em></strong> yang dapat digunakan untuk melakukan 
+            <em>smoothing</em> (penghalusan citra) dengan cara yang langsung dan mudah digunakan. Filter seperti 
+            <strong><em>ImageFilter.SMOOTH</em></strong> dan <strong><em>ImageFilter.SMOOTH_MORE</em></strong> dapat diterapkan tanpa perlu mengatur nilai 
+            <em>kernel</em>, <em>padding</em>, atau perhitungan <em>convolution</em> secara manual seperti pada konvolusi manual.
+        </p>
+        
+        <div class="code-box-code">
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.SMOOTH)
+        </div>
+        <div class="code-box-code">
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.SMOOTH_MORE)
+        </div>
+
+        <p style="text-align:justify;text-indent:30px;">
+            Filter <strong><em>ImageFilter.SMOOTH</em></strong> menghasilkan penghalusan ringan, sedangkan <strong><em>ImageFilter.SMOOTH_MORE</em></strong> memberikan efek penghalusan yang lebih kuat sehingga citra tampak lebih <em>blur</em>. 
+            Dengan menggunakan filter bawaan ini, proses <em>smoothing</em> dapat dilakukan dengan cepat dan praktis, terutama untuk kebutuhan pemrosesan citra dasar.
+        </p>
+        <p style="text-align:justify;text-indent:30px;">
+            Selain filter bawaan, <em>Pillow</em> juga menyediakan <strong><em>ImageFilter.Kernel</em></strong> bagi pengguna yang ingin menerapkan <em>smoothing</em> menggunakan <em>kernel</em> tertentu. 
+            Pada metode ini, pengguna cukup menentukan ukuran <em>kernel</em> dan nilai <em>kernel</em> yang digunakan tanpa perlu mengatur proses <em>padding</em> secara terpisah seperti pada <em>convolution</em> manual.
+        </p>
+
+        <div class="code-box-code">
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            <br>
+            <span class="variable">kernel</span> = [<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>,<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span><br>
+            ]<br>
+            <br>
+            <span class="variable">kernel_filter</span> = <span class="module">ImageFilter</span>.<span class="function">Kernel</span>((<span class="number">3</span>, <span class="number">3</span>), <span class="variable">kernel</span>, <span class="variable">scale</span>=<span class="number">16</span>, <span class="variable">offset</span>=<span class="number">0</span>)<br>
+            <span class="variable">smoothened_image</span> = <span class="variable">image</span>.<span class="function">filter</span>(<span class="variable">kernel_filter</span>)
+        </div>
+    </div>
+</section>
+
+<section class="card-section">
+    <div class="card-section-header">
+        <i class="bi bi-layers-half"></i> 2. Order-Statistic (Nonlinear) Filters
+    </div>
+    <div class="card-section-body">
+        <p style="text-align:justify;text-indent:30px;">
+            <em>Pillow</em> juga menyediakan beberapa filter <em>nonlinear</em> melalui modul <strong><em>ImageFilter</em></strong> yang bekerja dengan memanfaatkan nilai piksel di sekitar piksel pusat. 
+            Contoh <strong>filter nonlinear</strong> yang tersedia antara lain <strong><em>MedianFilter</em></strong>, 
+            <strong><em>MinFilter</em></strong>, dan <strong><em>MaxFilter</em></strong> yang masing-masing memiliki cara kerja berbeda dalam memproses citra. 
+            Filter-filter ini tidak menggunakan perhitungan rata-rata seperti pada <em>smoothing</em> <em>linear</em>, 
+            melainkan memilih nilai tertentu dari lingkungan piksel di sekitarnya. Parameter <strong><em>size=3</em></strong> menunjukkan ukuran jendela filter yang digunakan, yaitu 3×3 piksel.
+        </p>
+
+        <div class="code-box-code">
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.<span class="function">MedianFilter</span>(size=<span class="number">3</span>))
+        </div>
+    
+        <div class="code-box-code">
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.<span class="function">MinFilter</span>(size=<span class="number">3</span>))<br>
+        </div>
+    
+        <div class="code-box-code">
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.<span class="function">MaxFilter</span>(size=<span class="number">3</span>))
+        </div>
+    </div>
+</section>
+
+<section class="card-section">
+    <div class="card-section-header">
+        <i class="bi bi-journal-code"></i> SFiltering CitraLab
+    </div>
+    <div class="card-section-body">
+        <div class="editor-instruction">
+            <strong><i class="bi bi-info-circle text-primary"></i> Langkah-langkah Penggunaan Editor:</strong>
+            <ul>
+                <li>Pastikan status editor pada sidebar kanan bawah menunjukkan <span class="text-success fw-bold">“Editor Siap”</span> sebelum mulai menggunakan editor.</li>
+                <li>Unggah gambar melalui tombol <strong>Unggah</strong> <i class="bi bi-upload ms-1"></i> pada sidebar.</li>
+                <li>Gambar yang diunggah atau dipilih dari Galeri Citra SFiltering akan otomatis ditampilkan pada <strong>pratinjau gambar</strong> <i class="bi bi-image ms-1"></i>.</li>
+                <li>Klik nama file pada Galeri Citra <i class="bi bi-files"></i>, dan nama file akan otomatis digunakan pada <strong>sel pertama</strong>.</li>
+                <li>Klik ikon <strong>Jalankan</strong> <i class="bi bi-play-fill text-success ms-1"></i> di sebelah kanan sel untuk memproses gambar.</li>
+                <li>Arahkan kursor ke bagian bawah sel, lalu klik ikon <i class="bi bi-plus-circle text-primary ms-1"></i> untuk menambahkan sel baru.</li>
+                <li>Klik ikon <i class="bi bi-trash text-danger ms-1"></i> pada sel yang tidak diperlukan.</li>
+                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel</i>.</li>
+                <li>Klik tombol <strong>Unduh Gambar</strong> <i class="bi bi-download ms-1"></i> untuk menyimpan hasil pemrosesan.</li>
+            </ul>
+        </div>
+
+        <div class="editor-layout">
+            <div class="notebook-container" id="notebook"></div>
+            <div class="sidebar-container">
+                <div class="widget-box">
+                    <div class="widget-title"><i class="bi bi-image"></i> Pratinjau Gambar</div>
+                    <img id="input-display" class="input-preview" src="https://via.placeholder.com/300x200?text=Pilih+Gambar">
+                </div>
+                <div class="widget-box">
+                    <div class="widget-title"><i class="bi bi-files"></i> Galeri Citra SFiltering</div>
+                    <label for="image-upload" class="btn btn-primary btn-sm w-100 mb-2">
+                        <i class="bi bi-upload"></i> Upload
+                    </label>
+                    <input type="file" id="image-upload" style="display: none;" accept="image/*" multiple>
+                    <div id="file-list-names" class="file-list"></div>
+                    <button class="btn btn-sm btn-link text-danger p-0" onclick="clearFiles()">Hapus Semua</button>
+                </div>
+                <div id="engine-status">Memuat Editor...</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="card-section" id="quiz-card">
+    <div class="card-section-header">
+        <i class="bi bi-pencil-square"></i> Aktivitas 3
+    </div>
+    <div class="card-section-body">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <span id="quiz-badge" class="badge bg-primary">Soal 1 / 1</span>
+                <span class="text-muted small">Selesaikan soal untuk melanjutkan materi</span>
+            </div>
+
+            <div id="q1" class="quiz-question active">
+                <p>1. Perhatikan potongan kode Python berikut:</p>
+                
+                <div class="code-snippet">
+                    img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+                    filtered_img = img.<input type="text" id="ans-method" class="quiz-input" style="width: 100px;" placeholder=". . ." oninput="handleInput(this)"> ( 
+                    <input type="text" id="ans-param" class="quiz-input" style="width: 280px;" placeholder=". . ." oninput="handleInput(this)"> )
+                </div>
+                <p style="text-align:justify;">
+                    Lengkapilah bagian kode berikut agar citra grayscale mengalami proses penghalusan yang lebih kuat menggunakan library PIL (Pillow)!
+                </p>
+                <div id="feedback-quiz" class="feedback-msg"></div>
+                <div class="mt-4">
+                    <button id="btn-check-quiz" class="btn-check-answer" onclick="validateQuiz()">Cek Jawaban</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="nav-container">
+    <a href="{% url 'prak_konvolusi' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+    <a id="nextBtnMaterial" href="{% url 'prak_sharp' %}" 
+       class="btn btn-primary {% if 'prak-smooth' not in selesai_slugs %}disabled{% endif %}" 
+       style="{% if 'prak-smooth' not in selesai_slugs %}opacity:0.5; pointer-events:none;{% endif %}">
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+    </a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+let pyodideInstance;
+let fileStore = {};
+
+let notebookCells = [
+    { 
+        id: 'c1', 
+        content: `from PIL import Image, ImageFilter\n\nimg = Image.open("pilih_gambar.jpg").convert("L")\nfiltered_img = img.filter(ImageFilter.SMOOTH_MORE)\nfiltered_img.save("hasil_smooth.png")\nfiltered_img`, 
+        output: null, log: null, fileName: "hasil_smooth.png" 
+    },
+    { 
+        id: 'c2', 
+        content: `image = Image.open("pilih_gambar.jpg").convert("L")\n\nkernel = [\n    1, 2, 1,\n    2, 4, 2,\n    1, 2, 1\n]\n\nkernel_filter = ImageFilter.Kernel((3, 3), kernel, scale=16, offset=0)\nsmoothened_image = image.filter(kernel_filter)\n\nsmoothened_image.save("hasil_custom_kernel.png")\nsmoothened_image`, 
+        output: null, log: null, fileName: "hasil_custom_kernel.png" 
+    },
+    { 
+        id: 'c3', 
+        content: `img = Image.open("pilih_gambar.jpg").convert("L")\nmedian_img = img.filter(ImageFilter.MedianFilter(size=3))\nmedian_img.save("hasil_median.png")\nmedian_img`, 
+        output: null, log: null, fileName: "hasil_median.png" 
+    },
+    { 
+        id: 'c4', 
+        content: `img = Image.open("pilih_gambar.jpg").convert("L")\nmin_img = img.filter(ImageFilter.MinFilter(size=3))\nmin_img.save("hasil_min.png")\nmin_img`, 
+        output: null, log: null, fileName: "hasil_min.png" 
+    },
+    { 
+        id: 'c5', 
+        content: `img = Image.open("pilih_gambar.jpg").convert("L")\nmax_img = img.filter(ImageFilter.MaxFilter(size=3))\nmax_img.save("hasil_max.png")\nmax_img`, 
+        output: null, log: null, fileName: "hasil_max.png" 
+    }
+];
+let editors = {};
+
+function handleInput(el) {
+    const feedback = document.getElementById('feedback-quiz');
+    el.className = "quiz-input";
+    feedback.style.display = "none";
+}
+
+function validateQuiz() {
+    const ans1 = document.getElementById('ans-method').value.trim();
+    const ans2 = document.getElementById('ans-param').value.trim();
+    const feedback = document.getElementById('feedback-quiz');
+
+    const isCorrect1 = ans1 === "filter";
+    const isCorrect2 = ans2 === "ImageFilter.SMOOTH_MORE";
+
+    document.getElementById('ans-method').className = isCorrect1 ? "quiz-input correct" : "quiz-input wrong";
+    document.getElementById('ans-param').className = isCorrect2 ? "quiz-input correct" : "quiz-input wrong";
+
+    if (isCorrect1 && isCorrect2) {
+        feedback.innerHTML = "✓ Jawaban Benar!";
+        feedback.className = "feedback-msg feedback-success";
+        feedback.style.display = "block";
+
+        Swal.fire({
+            title: 'Luar Biasa!',
+            text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3b82f6'
+        }).then(() => {
+            updateProgressDatabase();
+        });
+    } else {
+        feedback.innerHTML = "Masih ada jawaban yang belum tepat. Periksa kembali.";
+        feedback.className = "feedback-msg feedback-error";
+        feedback.style.display = "block";
+    }
+}
+
+function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: 'prak-smooth' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const navBtn = document.getElementById('nextBtnMaterial');
+            navBtn.classList.remove('disabled');
+            navBtn.style.opacity = '1';
+            navBtn.style.pointerEvents = 'auto';
+            const badge = document.getElementById('quiz-badge');
+            badge.innerText = 'Selesai';
+            badge.className = 'badge bg-success';
+        }
+    });
+}
+
+async function initPyodide() {
+    try {
+        pyodideInstance = await loadPyodide();
+        await pyodideInstance.loadPackage(["micropip"]);
+        const micropip = pyodideInstance.pyimport("micropip");
+        await micropip.install(["pillow"]);
+        await pyodideInstance.runPythonAsync(`
+import io, base64
+from PIL import Image
+import __main__
+def get_image_as_base64(var_name):
+    try:
+        obj = getattr(__main__, var_name, None)
+        if obj and isinstance(obj, Image.Image):
+            buf = io.BytesIO()
+            obj.save(buf, format='PNG')
+            return base64.b64encode(buf.getvalue()).decode('utf-8')
+    except: pass
+    return None
+        `);
+        document.getElementById("engine-status").innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Editor Siap';
+        renderNotebook();
+    } catch (e) {
+        document.getElementById("engine-status").innerText = "Editor Error";
+    }
+}
+
+function renderNotebook() {
+    const container = document.getElementById("notebook");
+    container.innerHTML = "";
+    notebookCells.forEach((cell, index) => {
+        const cellDiv = document.createElement("div");
+        const hasOutput = cell.output || cell.log;
+        cellDiv.innerHTML = `
+            <div class="cell-container" id="cell-${cell.id}">
+                <div class="cell-input-area">
+                    <div class="cell-info">In [${index + 1}]</div>
+                    <div class="editor-wrapper"><textarea id="edit-ctrl-${cell.id}">${cell.content}</textarea></div>
+                    <div class="cell-actions">
+                        <button class="btn-action btn-run" onclick="runCell('${cell.id}')"><i class="bi bi-play-fill"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteCell('${cell.id}')"><i class="bi bi-trash"></i></button>
+                    </div>
+                </div>
+                <div class="cell-output" id="out-${cell.id}" style="${hasOutput ? 'display: block;' : 'display: none;'}">
+                    <div class="output-log" id="log-${cell.id}" style="${cell.log && !cell.log.includes('Error') ? 'color: #22c55e;' : 'color: #ef4444;'}">${cell.log || ''}</div>
+                    <img class="output-image" id="img-${cell.id}" src="${cell.output || ''}" style="${cell.output ? 'display: block;' : 'display: none;'}">
+                    <a id="dl-${cell.id}" class="btn-download-manual" href="${cell.output || ''}" download="${cell.fileName || 'hasil.png'}" style="${cell.output ? 'display: inline-flex;' : 'display: none;'}"><i class="bi bi-download"></i> Unduh Hasil</a>
+                </div>
+            </div>
+            <div class="btn-add-cell-mid" onclick="addNewCellAt(${index + 1})"><i class="bi bi-plus-circle"></i></div>
+        `;
+        container.appendChild(cellDiv);
+        const editor = CodeMirror.fromTextArea(document.getElementById(`edit-ctrl-${cell.id}`), {
+            mode: "python", theme: "dracula", lineNumbers: true, indentUnit: 4, viewportMargin: Infinity
+        });
+        editor.on("change", (cm) => {
+            const cellObj = notebookCells.find(c => c.id === cell.id);
+            if(cellObj) cellObj.content = cm.getValue();
+        });
+        editors[cell.id] = editor;
+    });
+}
+
+async function runCell(id) {
+    const code = editors[id].getValue();
+    const cellObj = notebookCells.find(c => c.id === id);
+    const logLabel = document.getElementById(`log-${id}`);
+    const imgElement = document.getElementById(`img-${id}`);
+    const dlBtn = document.getElementById(`dl-${id}`);
+    const outArea = document.getElementById(`out-${id}`);
+
+    outArea.style.display = "block";
+    logLabel.innerText = "Memproses...";
+    try {
+        await pyodideInstance.runPythonAsync(code);
+        const lines = code.trim().split('\n');
+        const lastLine = lines[lines.length - 1].trim();
+        const base64Data = await pyodideInstance.runPythonAsync(`get_image_as_base64("${lastLine}")`);
+        if (base64Data) {
+            const url = `data:image/png;base64,${base64Data}`;
+            cellObj.output = url;
+            cellObj.log = "Berhasil diproses";
+            imgElement.src = url; imgElement.style.display = "block";
+            dlBtn.href = url; dlBtn.style.display = "inline-flex";
+        } else {
+            cellObj.log = "Selesai dijalankan."; imgElement.style.display = "none";
+        }
+        logLabel.innerText = cellObj.log; logLabel.style.color = "#22c55e";
+    } catch (err) {
+        logLabel.innerText = "Error: " + err; logLabel.style.color = "#ef4444";
+    }
+}
+
+function addNewCellAt(index) {
+    const newId = 'c' + Date.now();
+    notebookCells.splice(index, 0, { id: newId, content: "", output: null, log: null });
+    renderNotebook();
+}
+
+function deleteCell(id) {
+    if (notebookCells.length === 1) return;
+    notebookCells = notebookCells.filter(c => c.id !== id);
+    delete editors[id];
+    renderNotebook();
+}
+
+document.getElementById("image-upload").addEventListener("change", (e) => {
+    const files = e.target.files;
+    const list = document.getElementById("file-list-names");
+    for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const data = new Uint8Array(ev.target.result);
+            pyodideInstance.FS.writeFile(file.name, data);
+            const url = URL.createObjectURL(new Blob([data], {type: file.type}));
+            fileStore[file.name] = url;
+            const item = document.createElement("div");
+            item.className = "file-item";
+            item.innerHTML = `<span>${file.name}</span><i class="bi bi-check2 text-success"></i>`;
+            item.onclick = () => {
+                document.querySelectorAll(".file-item").forEach(el => el.classList.remove("active"));
+                item.classList.add("active");
+                document.getElementById("input-display").src = url;
+                notebookCells.forEach(cell => {
+                    let current = editors[cell.id].getValue();
+                    const updated = current.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
+                    editors[cell.id].setValue(updated);
+                });
+            };
+            list.appendChild(item);
+            item.click();
+        };
+        reader.readAsArrayBuffer(file);
+    }
+});
+
+function clearFiles() {
+    fileStore = {};
+    document.getElementById("file-list-names").innerHTML = "";
+    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+}
+
+initPyodide();
+</script>
+
+{% endblock %}

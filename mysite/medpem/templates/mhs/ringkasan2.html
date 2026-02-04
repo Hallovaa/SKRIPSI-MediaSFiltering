@@ -1,0 +1,155 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 2 - Ringkasan{% endblock %}
+
+{% block content %}
+
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+
+  .summary-box {
+    background: #fbfdff;
+    border: 1px solid #bcccdc;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.02);
+    margin-bottom: 18px;
+  }
+
+  .summary-box h4 { margin-top: 0; margin-bottom: 8px; }
+  .summary-box p, .summary-box ul { margin: 0 0 8px 0; line-height: 1.6; }
+  .muted { color: #6b7684; font-size: 0.95rem; }
+
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; }
+  .material-nav .btn { min-width:120px; }
+
+  .def-list dt { font-weight:700; margin-top:10px; }
+  .def-list dd { margin: 0 0 8px 0; }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main" style="margin:0;">
+    SUBBAB 2 - <span style="color:var(--primary-500)">RINGKASAN</span>
+  </h1>
+</div>
+
+<section class="card-section" aria-labelledby="ringkasan-heading">
+  <div class="card-section-header">
+    <i class="bi bi-journal-text"></i>
+    <div id="ringkasan-heading">Ringkasan</div>
+  </div>
+
+  <div class="card-section-body">
+
+    <div class="summary-box">
+      <h4><b>1. Pengertian <em>Spatial Filtering</em></b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-top: 20px; margin-left: 30px; margin-bottom: 50px;">
+        <em>Spatial filtering</em> adalah teknik pemrosesan citra digital yang bekerja langsung pada nilai 
+        piksel di <em>spatial domain</em> dengan memanfaatkan piksel tetangga. Teknik ini digunakan untuk 
+        memperbaiki kualitas citra, seperti mengurangi <em>noise</em> (<em>smoothing</em>) dan menajamkan 
+        detail (<em>sharpening</em>). Prosesnya dilakukan melalui operasi ketetanggaan 
+        (<em>neighbourhood operation</em>), di mana nilai piksel pusat dipengaruhi oleh piksel di sekitarnya.
+      </p>    
+
+      <h4><b>2. <em>Spatial Domain vs Frequency Domain</em></b></h4>
+
+      <dt style="margin-left: 30px; margin-top: 20px;">a. <em>Spatial Domain</em></dt>
+        <dd style="text-align: justify; text-indent: 30px; margin-top: 5px; margin-left: 50px;">
+          Pemrosesan citra dilakukan langsung pada nilai intensitas piksel dengan memperhatikan piksel-piksel 
+          di sekitarnya. Metode ini digunakan untuk penghalusan citra, pengurangan <em>noise</em>, dan 
+          penajaman detail.
+        </dd>
+
+      <dt style="margin-left: 30px;">b. <em>Frequency Domain</em></dt>
+        <dd style="text-align: justify; text-indent: 30px; margin-top: 5px; margin-left: 50px;">
+          Pemrosesan citra dilakukan dengan mengubah citra ke domain frekuensi menggunakan transformasi 
+          tertentu. Setelah dilakukan penyaringan frekuensi, hasilnya dikembalikan ke domain spasial 
+          untuk memperoleh citra akhir.
+        </dd>
+    </div>
+
+    <div class="material-nav">
+      <a href="{% url 'spatial_frequency' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+      
+      <a id="nav-next" href="{% url 'kuis_2' %}" class="btn btn-primary">
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  const currentSlug = 'ringkasan2';
+  const btnNavNext = document.getElementById('nav-next');
+
+  btnNavNext.addEventListener('click', function(e) {
+    const isAlreadyDone = "{{ selesai_slugs|safe }}".includes(currentSlug);
+    
+    if (!isAlreadyDone) {
+      e.preventDefault();
+      const targetUrl = this.href;
+
+      fetch("/api/update-progres/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ slug: currentSlug })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        window.location.href = targetUrl;
+      })
+      .catch(error => {
+        window.location.href = targetUrl;
+      });
+    }
+  });
+})();
+</script>
+
+{% endblock %}

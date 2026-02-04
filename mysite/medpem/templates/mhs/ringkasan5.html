@@ -1,0 +1,140 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Ringkasan Sharpening Spatial Filters{% endblock %}
+
+{% block content %}
+
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+
+  .summary-box {
+    background: #fbfdff;
+    border: 1px solid #bcccdc;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.02);
+    margin-bottom: 18px;
+  }
+
+  .summary-box h4 { margin-top: 0; margin-bottom: 8px; }
+  .summary-box p, .summary-box ul { margin: 0 0 8px 0; line-height: 1.6; }
+
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; }
+  .material-nav .btn { min-width:120px; }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main" style="margin:0;">
+    RINGKASAN SUBBAB 5 - <span style="color:var(--primary-500)"><em>SHARPENING SPATIAL FILTERS</em></span>
+  </h1>
+</div>
+
+<section class="card-section" aria-labelledby="ringkasan-heading">
+  <div class="card-section-header">
+    <i class="bi bi-journal-text"></i>
+    <div id="ringkasan-heading">Ringkasan</div>
+  </div>
+
+  <div class="card-section-body">
+
+    <div class="summary-box">
+      <h4><b>1. <em>Sharpening</em> pada Citra Digital</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-bottom: 50px; margin-top: 20px;">
+        <em>Sharpening</em> adalah proses untuk menegaskan tepi dan detail citra dengan memperkuat perbedaan intensitas piksel. 
+        Teknik ini sering menggunakan <em>kernel Laplacian</em> yang menonjolkan perubahan terang–gelap, sementara area citra yang seragam tetap tidak berubah.
+      </p>
+
+      <h4><b>2. <em>Unsharp-masking</em> dan <em>Highboost Filter</em></b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 20px;">
+        <em>Unsharp masking</em> menajamkan citra dengan memanfaatkan citra hasil <em>smoothing</em>, sedangkan <em>high-boost filtering</em> merupakan pengembangannya dengan penguatan lebih besar sehingga efek penajaman dan kontras menjadi lebih kuat.
+      </p>
+    </div>
+
+
+
+    <div class="material-nav">
+      <a href="{% url 'sl_filters' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-chevron-left"></i> Sebelumnya
+      </a>
+      <a id="btn-selanjutnya" href="{% url 'kuis_5' %}" class="btn btn-primary">
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  const currentSlug = 'ringkasan5';
+  const nextBtn = document.getElementById('btn-selanjutnya');
+
+  function saveAndNavigate(e) {
+    e.preventDefault(); 
+    const targetUrl = nextBtn.getAttribute('href');
+    const sudahSelesai = "{{ selesai_slugs|safe }}".includes(currentSlug);
+
+    if (sudahSelesai) {
+      window.location.href = targetUrl;
+      return;
+    }
+
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: currentSlug })
+    })
+    .then(response => {
+      window.location.href = targetUrl;
+    })
+    .catch(error => {
+      window.location.href = targetUrl;
+    });
+  }
+
+  nextBtn.addEventListener('click', saveAndNavigate);
+})();
+</script>
+
+{% endblock %}

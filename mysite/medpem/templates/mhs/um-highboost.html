@@ -1,0 +1,1044 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 5 - Unsharp Masking dan Highboost Filtering{% endblock %}
+
+{% block content %}
+<style>
+.card-section {
+  border: 2px solid #bcccdc;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  margin-bottom: 22px;
+  box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+}
+  .card-section-header {
+  padding: 14px 18px;
+  font-size: 20px;
+  font-weight: 800;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background: #edf4fe;
+  border-bottom: 2px solid #bcccdc;
+}
+.card-section-header i {
+  font-size:20px;
+  color:var(--primary-500);
+  display:inline-flex;
+  width:36px;
+  height:36px;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background: rgba(59,123,227,0.12);
+}
+.card-section-body {
+  padding: 35px;
+  font-size: 19px;
+  color: #222f3a;
+  background: #fff;
+}
+
+.section-sim { 
+  display: none; 
+  padding-top: 20px;
+  border-top: 2px dashed #edf4fe;
+  margin-top: 20px;
+}
+.section-sim.active { 
+  display: block; 
+  animation: fadeIn 0.6s ease-in-out; 
+}
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+.sim-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  gap: 20px;
+}
+
+.sim-item-wrapper {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 2px rgba(0,0,0,0.05);
+  text-align: center;
+  min-width: 220px;
+  border: 1px solid #f0f0f0;
+}
+
+.sim-item-wrapper h6 {
+  font-weight: 800;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 20px;
+}
+
+.sim-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+.sim-table td {
+  width: 42px; height: 42px;
+  border: 1px solid #999;
+  text-align: center;
+  font-weight: bold;
+  transition: 0.3s;
+  font-size: 14px;
+}
+
+.input-cell { background-color: #fff9ee; }
+.padding-cell { background-color: #bcccdc; }
+.base-cell { background-color: #fdf9f0; }
+.blue-focus-cell { background-color: #d9eafd; }
+.kernel-cell { background-color: #d9eafd; }
+
+.highlight { background-color: #d9eafd !important; }
+.output-highlight { background-color: #003049 !important; color: white !important; }
+
+.calc-wrapper {
+  margin: 25px auto;
+  width: 100%;
+  text-align: center;
+}
+.calc-header-title {
+  font-weight: 800;
+  font-size: 18px;
+  color: #003049;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.calc-box {
+  background-color: #faf9f7;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 20px;
+  display: inline-block;
+  width: 95%;
+  max-width: 900px;
+  box-sizing: border-box;
+}
+.calc-content { 
+  font-family: 'Courier New', Courier, monospace; 
+  color: #333; 
+  font-size: 18px; 
+  font-weight: 700;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.btn-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sim-btn {
+  background: #3b7dd8;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.sim-btn-outline {
+    background: #fff;
+    color: #3b7dd8;
+    border:1px solid rgba(16,32,58,0.15) !important;
+}
+.btn-auto { background:#fff; color:#3b7dd8 !important; border:1px solid rgba(16,32,58,0.15) !important; }
+.btn-pause { background:#3b7dd8; color:#fff !important; border:1px solid rgba(16,32,58,0.15) !important; }
+
+.highboost-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+.highboost-box { text-align: center; }
+.highboost-box h4 { font-weight: 800; margin-bottom: 8px; }
+.highboost-table { border-collapse: collapse; }
+.highboost-table td {
+  width: 46px;
+  height: 38px;
+  border: 1px solid #7d8ca3;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+.highboost-blur td { background: #e6f0fb; }
+
+#maskTableQuiz td { background: #fff5e6; cursor: text; }
+#highboostTableQuiz td { background: #dfeeff; cursor: text; }
+
+.val-increase { background-color: #bcccdc !important; }
+.val-decrease { background-color: #d9eafd !important; }
+.val-same { background-color: #fdf9f0 !important; }
+
+.legend-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-box { width: 20px; height: 20px; border: 1px solid #999; border-radius: 4px; }
+
+.btn-cek-jawaban {
+  background: #fff5e6;
+  color: #4b3520;
+  padding: 12px 32px;
+  border-radius: 12px;
+  border: 1px solid #e0d5c5;
+  font-weight: 800;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cek-jawaban:hover { background: #fcecd7; }
+
+.btn-reset-jawaban {
+  background: #d9eafd;
+  color: #0b2540;
+  padding: 12px 32px;
+  border-radius: 12px;
+  border: 1px solid #c3d9f8;
+  font-weight: 800;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-reset-jawaban:hover { background: #c5defa; }
+
+.material-nav {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 18px;
+  margin-bottom: 34px;
+}
+#quiz-card {
+  border: 2.5px solid #4d7bdc !important;
+  box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .card-section-header {
+  background: #4d7bdc !important;
+  border-bottom: 2px solid #4d7bdc; 
+  color: white !important;
+}
+
+#quiz-card .card-section-header i {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+.instruction {
+    background: #fdfcfe;
+    border: 1px solid #e1e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.instruction ul {
+      margin-bottom: 0;
+      padding-left: 20px;
+}
+
+.instruction li {
+      text-align: justify;     
+      text-justify: inter-word;
+      margin-left: 15px;
+      margin-bottom: 5px;
+      font-size: 14px;
+}
+
+
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">
+    SUBBAB 5 - <span style="color:var(--primary-500)"><em>UNSHARP MASKING</em> & <em>HIGHBOOST FILTERING</em></span>
+  </h1>
+</div>
+
+<section class="card-section">
+    <div class="card-section-header">
+      <i class="bi bi-lightbulb"></i>
+      <div><em>Unsharp Masking</em></em></div>
+    </div>
+    <div class="card-section-body">
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong><em>Unsharp masking</em></strong> merupakan teknik penajaman citra yang digunakan untuk memperjelas tepi dan detail objek dengan memperkuat perbedaan intensitas di sekitarnya. 
+      Meskipun mengandung kata <em>unsharp</em>, teknik ini justru bertujuan untuk meningkatkan ketajaman citra. 
+      Istilah tersebut berasal dari praktik percetakan di mana salinan gambar yang dibuat sedikit buram dimanfaatkan untuk menonjolkan detail pada hasil akhir. 
+      Berbeda dengan penajaman sebelumnya yang bekerja langsung menggunakan <em>kernel</em>, 
+      <strong><em>unsharp masking</em> melakukan penajaman secara bertahap dengan memanfaatkan citra hasil <em>smoothing</em></strong>.
+    </p>
+
+    <p style="text-align: justify;">
+      Langkah-langkah utama <em>unsharp masking</em>:
+    </p>
+    <ol style="text-align: justify; margin-left: 20px">
+       <li><strong>Haluskan citra</strong> asli menggunakan metode <em>smoothing</em> (misalnya <em>Gaussian blur</em>) untuk mengurangi detail halus.</li>
+        <li><strong>Hitung <em>mask</em></strong> dengan mengurangkan citra asli dengan citra hasil penghalusan sehingga diperoleh citra yang menonjolkan tepi dan detail.</li>
+        <li><strong>Tambahkan <em>mask</em></strong> ke citra asli sehingga diperoleh citra dengan ketajaman yang lebih baik.</li>
+    </ol>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Secara matematis <em>unsharp masking</em> dilakukan dengan menambahkan citra selisih antara citra asli dan citra hasil <em>smoothing</em> ke citra asli.
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+    \[
+    g(x,y) = f(x,y) + k \big( f(x,y) - f_s(x,y) \big), \ k = 1
+    \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Dengan keterangan:
+    </p>
+
+    <ul style="text-align: justify; margin-left: 30px; margin-bottom:20px">
+      <li>\( g(x,y) \) = citra hasil penajaman</li>
+      <li>\( f(x,y) \) = citra asli</li>
+      <li>\( f_s(x,y) \) = citra hasil <em>smoothing</em> (misalnya <em>Gaussian blur</em>)</li>
+      <li>\( k \) = faktor penguatan penajaman</li>
+    </ul>
+
+    <figure style="margin-top:50px;">
+      <img src="{% static 'assets/img/konten/4E.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar E.4 Contoh hasil penerapan <em>unsharp masking</em> pada citra <em>grayscale</em> 
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Hasil penerapan <em>unsharp masking</em> pada Gambar E.4 memperlihatkan perubahan intensitas piksel setelah proses penajaman dilakukan. 
+      Dibandingkan dengan citra asli (<em>grayscale</em>), bagian-bagian tertentu terutama pada tepi tulisan dan garis terlihat lebih tegas karena nilai intensitasnya meningkat. 
+      Secara visual, detail yang sebelumnya kurang menonjol menjadi lebih jelas, sementara area yang relatif rata tidak mengalami perubahan berarti. 
+      Perbandingan ini menunjukkan bahwa <em>unsharp masking</em> meningkatkan ketajaman citra dengan menambahkan kembali detail penting yang diperoleh dari proses penghalusan.
+    </p>
+    </div>
+</section>
+
+<section class="card-section">
+    <div class="card-section-header">
+      <i class="bi bi-lightbulb"></i>
+      <div><em>Highboost Filtering</em></div>
+    </div>
+    <div class="card-section-body">
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong><em>Highboost filtering</em></strong> merupakan pengembangan dari <em>unsharp masking</em> dengan efek penajaman yang lebih kuat. 
+      Pada <strong><em>unsharp masking</em> faktor penguatan ketajaman biasanya bernilai \( \mathbf{k} = \mathbf{1} \)</strong>, 
+      sedangkan pada <strong><em>highboost filtering</em> nilai \( \mathbf{k} > \mathbf{1} \)</strong>. 
+      Dengan nilai <em>k</em> yang lebih besar, tidak hanya tepi objek yang diperjelas, tetapi kontras dan detail citra secara keseluruhan juga menjadi lebih menonjol.
+    </p>
+
+    <p style="text-align: justify;">
+      Langkah-langkah utama <em>highboost filtering</em>:
+    </p>
+    <ol style="text-align: justify; margin-left: 20px">
+      <li><strong>Haluskan citra asli</strong> menggunakan metode <em>smoothing</em> (misalnya <em>Gaussian blur</em>) untuk mengurangi detail halus.</li>
+      <li><strong>Hitung <em>mask</em></strong> dengan mengurangkan citra asli dengan citra hasil penghalusan sehingga diperoleh citra yang menonjolkan tepi dan detail.</li>
+      <li><strong>Perkuat <em>mask</em></strong> dengan mengalikan <em>mask</em> menggunakan faktor penguatan <em>k</em>, dengan nilai <em>k</em> &gt; 1.</li>
+      <li><strong>Tambahkan <em>mask</em></strong> yang telah diperkuat ke citra asli sehingga diperoleh citra dengan ketajaman dan kontras yang lebih tinggi.</li>
+    </ol>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada <em>highboost filtering</em>, citra selisih antara citra asli dan citra hasil <em>smoothing</em> diperkuat terlebih dahulu, kemudian ditambahkan kembali ke citra asli untuk menghasilkan penajaman yang lebih kuat.
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+    \[
+    g(x,y) = f(x,y) + k \big( f(x,y) - f_s(x,y) \big),\ k > 1
+    \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Dengan keterangan:
+    </p>
+
+    <ul style="text-align: justify; margin-left: 30px; margin-bottom:20px">
+      <li>\( g(x,y) \) = citra hasil penajaman</li>
+      <li>\( f(x,y) \) = citra asli</li>
+      <li>\( f_s(x,y) \) = citra hasil <em>smoothing</em> (misalnya <em>Gaussian blur</em>)</li>
+      <li>\( k \) = faktor penguatan penajaman</li>
+    </ul>
+
+    <figure style="margin-top:50px;">
+      <img src="{% static 'assets/img/konten/5E.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar E.5 Contoh penerapan <em>highboost filter</em> pada citra <em>grayscale</em> 
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Hasil <em>highboost filtering</em> menunjukkan perubahan nilai intensitas piksel yang lebih kuat dibandingkan <em>unsharp masking</em> biasa. 
+      Hal ini terjadi karena <em>mask</em> diperkuat dengan faktor \( k > 1 \) sebelum ditambahkan kembali ke citra asli, sehingga efek penajaman menjadi lebih jelas. 
+      Akibatnya, tepi objek dan detail halus tampak lebih tajam, sementara bagian citra yang relatif seragam tetap terlihat normal.
+    </p>
+
+    <p>
+      Pada Gambar E.5 ditunjukkan contoh penerapan <em>highboost filtering</em> pada citra asli. 
+      Secara visual, tepi objek serta detail kecil seperti garis tipis, tekstur, dan batas antar objek terlihat lebih menonjol, yang menunjukkan bahwa proses penajaman bekerja lebih kuat dibandingkan <em>unsharp masking</em> biasa.
+    </p>
+
+
+    </div>
+</section>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-images"></i>
+    <div>Proses Perhitungan <em>unsharp masking</em> dan <em>highboost filtering</em> </div>
+  </div>
+
+  <div class="card-section-body">
+
+    <p>
+      Contoh <em>unsharp masking</em> dan <em>highboost filtering</em> menggunakan citra 4×4 dengan <em>kernel</em> 3×3.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/C6.png' %}" style="display:block; margin:auto; width:65%;">
+    </figure>
+
+    <p style="margin-bottom: 30px">
+      Didapatkan matriks hasil <em>blur</em> yang diperoleh menggunakan <em>padding replicate</em> dan <em>Gaussian kernel</em>. 
+      Hitung dan isilah matriks <em>mask</em> serta <em>hasil highboost filtering</em> dengan faktor penguatan \( k = 3 \).
+    </p>
+
+    <div class="instruction">
+      <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
+      <ul>
+        <li>Perhatikan <strong>Input Citra (Matriks)</strong> yang digunakan sebagai <strong>citra asli</strong>.</li>
+
+        <li>Pada <strong>Langkah 1 (Gaussian Blur)</strong>, amati <strong>kernel Gaussian 3×3</strong> 
+            dan jenis <strong>padding replicate</strong> yang digunakan untuk menghasilkan citra blur.</li>
+
+        <li>Klik tombol <strong>Mulai</strong> untuk memulai proses perhitungan secara bertahap pada setiap piksel.
+            Gunakan <strong>Lanjut</strong> untuk melanju perhitungan, <strong>Autoplay</strong> untuk menjalankan
+            proses secara otomatis, dan <strong>Pause</strong> untuk menghentikan sementara.</li>
+
+        <li>Area yang disorot pada tabel citra menunjukkan area piksel (3×3)
+            yang sedang diproses pada setiap langkah.</li>
+
+        <li>Hasil perhitungan pada setiap langkah akan ditampilkan pada tabel hasil,
+            sedangkan detail proses perkalian dan penjumlahan nilai piksel
+            dapat diamati pada bagian <strong>Perhitungan</strong>.</li>
+
+        <li>Pada <strong>Langkah 2 (Mask)</strong>, perhatikan proses pembentukan <strong>mask</strong>
+            yang diperoleh dari selisih antara <strong>citra asli</strong> dan <strong>hasil blur</strong>.</li>
+
+        <li>Pada <strong>Langkah 3 (Penajaman)</strong>, masukkan nilai faktor penguatan <strong>k</strong>
+            sesuai kebutuhan.</li>
+
+        <li><strong>Jika nilai <em>k = 1</em>, maka proses yang dilakukan adalah
+            <em>unsharp masking</em>.</strong></li>
+
+        <li><strong>Jika nilai <em>k &gt; 1</em>, maka proses yang dilakukan adalah
+            <em>highboost filtering</em>,</strong> dengan efek penajaman yang lebih kuat.</li>
+
+        <li>Pada <strong>Hasil Akhir Perbandingan</strong>, bandingkan <strong>citra asli</strong>
+            dan <strong>hasil penajaman</strong> untuk mengamati perubahan nilai piksel.</li>
+
+        <li>Klik <strong>Ulangi</strong> atau <strong>Ulangi Semua Simulasi</strong> untuk
+            mengembalikan kondisi awal dan mengulangi seluruh proses.</li>
+      </ul>
+    </div>
+
+
+
+    <div id="step1" class="section-sim active" style="display: block; border-top: none; margin-top: 0;">
+      <h5 class="fw-bold mb-3">Langkah 1: Gaussian Blur</h5>
+      <div class="sim-container">
+        <div class="sim-item-wrapper">
+          <h6>Input Citra (Matriks)</h6>
+          <table id="inputTable" class="sim-table"></table>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Kernel Gaussian</h6>
+          <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <div style="background-color: #ebf3ff; border: 1.5px solid #ccdfff; border-radius: 8px; padding: 6px 4px; min-width: 40px; height: fit-content; display: flex; align-items: center; justify-content: center;">
+              <span style="font-size:16px; color: #333;">\(\frac{1}{16}\)</span>
+            </div>
+            <table id="kernelTable" class="sim-table" style="margin: 0;"></table>
+          </div>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Hasil Blur</h6>
+          <table id="blurTable" class="sim-table"></table>
+        </div>
+      </div>
+      
+      <div class="calc-wrapper">
+        <div class="calc-header-title">PERHITUNGAN GAUSSIAN BLUR</div>
+        <div class="calc-box">
+          <div class="calc-content" id="calcBox1">Belum ada perhitungan</div>
+        </div>
+      </div>
+
+      <div class="btn-row" id="ctrl1">
+        <button id="startBtn1" class="sim-btn">Mulai</button>
+        <button id="autoBtn1" class="sim-btn btn-auto">Autoplay</button>
+        <button id="nextBtn1" class="sim-btn" style="display:none;">Lanjut</button>
+        <button id="pauseBtn1" class="sim-btn btn-pause" style="display:none;">Pause</button>
+        <button id="ulang1" class="sim-btn sim-btn-outline" style="display:none;">Ulangi</button>
+        <button id="nextStep1" class="sim-btn" style="display:none;">Ke Langkah 2</button>
+      </div>
+    </div>
+
+    <div id="step2" class="section-sim">
+      <h5 class="fw-bold mb-3">Langkah 2: Membuat Mask (Asli - Blur)</h5>
+      <div class="sim-container">
+        <div class="sim-item-wrapper">
+          <h6>Citra Asli</h6>
+          <table id="origMask" class="sim-table"></table>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Hasil Blur</h6>
+          <table id="blurMask" class="sim-table"></table>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Mask</h6>
+          <table id="maskTableSim" class="sim-table"></table>
+        </div>
+      </div>
+
+      <div class="calc-wrapper">
+        <div class="calc-header-title">PERHITUNGAN MASK</div>
+        <div class="calc-box">
+          <div class="calc-content" id="calcBox2">Belum ada perhitungan</div>
+        </div>
+      </div>
+
+      <div class="btn-row" id="ctrl2">
+        <button id="startBtn2" class="sim-btn">Mulai</button>
+        <button id="autoBtn2" class="sim-btn btn-auto">Autoplay</button>
+        <button id="nextBtn2" class="sim-btn" style="display:none;">Lanjut</button>
+        <button id="pauseBtn2" class="sim-btn btn-pause" style="display:none;">Pause</button>
+        <button id="ulang2" class="sim-btn sim-btn-outline" style="display:none;">Ulangi</button>
+        <button id="nextStep2" class="sim-btn" style="display:none;">Ke Langkah 3</button>
+      </div>
+    </div>
+
+    <div id="step3" class="section-sim">
+      <h5 class="fw-bold mb-3">Langkah 3: Highboost (Asli + k × Mask)</h5>
+      <div class="mb-3 text-center">
+        <label><b>Nilai k: </b></label>
+        <input type="number" id="kValue" value="3" min="1" max="5" style="width:60px; padding:4px;">
+      </div>
+      <div class="sim-container">
+        <div class="sim-item-wrapper">
+          <h6>Citra Asli</h6>
+          <table id="compareOriginal" class="sim-table"></table>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Mask</h6>
+          <table id="compareMask" class="sim-table"></table>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Hasil Highboost</h6>
+          <table id="compareResult" class="sim-table"></table>
+        </div>
+      </div>
+
+      <div class="calc-wrapper">
+        <div class="calc-header-title">PERHITUNGAN HIGHBOOST</div>
+        <div class="calc-box">
+          <div class="calc-content" id="calcBox3">Belum ada perhitungan</div>
+        </div>
+      </div>
+
+      <div class="btn-row" id="ctrl3">
+        <button id="startBtn3" class="sim-btn">Mulai</button>
+        <button id="autoBtn3" class="sim-btn btn-auto">Autoplay</button>
+        <button id="nextBtn3" class="sim-btn" style="display:none;">Lanjut</button>
+        <button id="pauseBtn3" class="sim-btn btn-pause" style="display:none;">Pause</button>
+        <button id="ulang3" class="sim-btn sim-btn-outline" style="display:none;">Ulangi</button>
+        <button id="nextStep3" class="sim-btn" style="display:none;">Lihat Perbandingan</button>
+      </div>
+    </div>
+
+    <div id="step4" class="section-sim">
+      <h5 class="fw-bold mb-3">Hasil Akhir Perbandingan</h5>
+      
+      <div class="legend-container">
+        <div class="legend-item">
+          <div class="legend-box val-increase"></div> <span>Meningkat</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box val-same"></div> <span>Tetap</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-box val-decrease"></div> <span>Menurun</span>
+        </div>
+      </div>
+
+      <div class="sim-container">
+        <div class="sim-item-wrapper">
+          <h6>Citra Asli</h6>
+          <table id="finalOriginal" class="sim-table"></table>
+        </div>
+        <div class="sim-item-wrapper">
+          <h6>Hasil Highboost</h6>
+          <table id="finalResult" class="sim-table"></table>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button onclick="resetSimulasi()" class="sim-btn sim-btn-outline">Ulangi Semua Simulasi</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-pencil-square"></i>
+    <div>Aktivitas 2</div>
+  </div>
+  <div class="card-section-body">
+    <p>
+      Diberikan citra <em>grayscale</em> berukuran 4x4 berikut: 
+    </p>
+
+    <figure style="margin:20px 0; margin-bottom: 70px">
+      <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:60%;">
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Didapatkan matriks hasil <em>blur</em> berikut yang diperoleh menggunakan <em>replicate padding</em> dan <em>Gaussian kernel</em>. 
+      Hitung dan isilah <em>mask</em> serta hasil <em>high-boost filtering</em> dengan faktor penguatan <em>k</em> = 3.
+    </p>
+
+    <div class="highboost-wrapper">
+      <div class="highboost-box">
+        <h4>Hasil Blur</h4>
+        <table class="highboost-table highboost-blur">
+          <tr><td>80</td><td>85</td><td>117</td><td>165</td></tr>
+          <tr><td>85</td><td>91</td><td>110</td><td>131</td></tr>
+          <tr><td>90</td><td>98</td><td>107</td><td>112</td></tr>
+          <tr><td>89</td><td>96</td><td>101</td><td>107</td></tr>
+        </table>
+      </div>
+      <div class="highboost-box">
+        <h4><em>Mask</em></h4>
+        <table class="highboost-table" id="maskTableQuiz">
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+        </table>
+      </div>
+      <div class="highboost-box">
+        <h4>Hasil <em>Highboost</em></h4>
+        <table class="highboost-table" id="highboostTableQuiz">
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+          <tr><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td><td contenteditable="true"></td></tr>
+        </table>
+      </div>
+    </div>
+    <div class="btn-row mt-4">
+      <button class="btn-cek-jawaban" id="checkHighboostBtn">Cek Jawaban</button>
+      <button class="btn-reset-jawaban" id="resetHighboostBtn">Reset Jawaban</button>
+    </div>
+    <div id="highboostFeedback" style="text-align:center;margin-top:14px;font-weight:700;min-height:24px;"></div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'sharp_citra' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nav-next-materi" href="{% url 'ringkasan5' %}" 
+     class="btn btn-primary {% if 'um-highboost' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'um-highboost' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+const original = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,55]];
+const kernel = [[1,2,1],[2,4,2],[1,2,1]];
+const kernelSum = 16;
+let blurResult = Array.from({length:4},()=>Array(4).fill(''));
+let maskResult = Array.from({length:4},()=>Array(4).fill(''));
+let boostResult = Array.from({length:4},()=>Array(4).fill(''));
+let autoTimer;
+let isPaused = false;
+
+function makePadded(m){
+  const h=m.length, w=m[0].length, p=[];
+  for(let i=-1; i<=h; i++){
+    const r=[];
+    for(let j=-1; j<=w; j++){
+      const y=Math.min(Math.max(i,0),h-1);
+      const x=Math.min(Math.max(j,0),w-1);
+      r.push(m[y][x]);
+    }
+    p.push(r);
+  }
+  return p;
+}
+const padded = makePadded(original);
+
+function createTable(matrix, id, cls='input-cell', pad=false){
+  const t=document.getElementById(id); if(!t) return;
+  t.innerHTML='';
+  matrix.forEach((r,i)=>{
+    const tr=document.createElement('tr');
+    r.forEach((v,j)=>{
+      const td=document.createElement('td'); td.textContent=v;
+      if(pad&&(i===0||j===0||i===matrix.length-1||j===matrix[0].length-1)) td.classList.add('padding-cell');
+      else td.classList.add(cls);
+      tr.appendChild(td);
+    });
+    t.appendChild(tr);
+  });
+}
+
+function createKernelTable() {
+  const t = document.getElementById('kernelTable');
+  t.innerHTML = '';
+  kernel.forEach(r => {
+    const tr = document.createElement('tr');
+    r.forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v;
+      td.classList.add('kernel-cell');
+      tr.appendChild(td);
+    });
+    t.appendChild(tr);
+  });
+}
+
+function clearAllHighlights() {
+  document.querySelectorAll('td').forEach(td => td.classList.remove('highlight', 'output-highlight'));
+}
+
+function highlightKernelArea(i, j) {
+  document.querySelectorAll('#inputTable td').forEach(c => c.classList.remove('highlight'));
+  const t = document.getElementById('inputTable');
+  for (let ki = i; ki < i + 3; ki++) {
+    for (let kj = j; kj < j + 3; kj++) {
+      if (t.rows[ki] && t.rows[ki].cells[kj]) {
+        t.rows[ki].cells[kj].classList.add('highlight');
+      }
+    }
+  }
+}
+
+function showNextStepSim(id) {
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function handleStart(stepIdx) {
+  if(stepIdx === '1') highlightKernelArea(0, 0); 
+  document.getElementById('startBtn'+stepIdx).style.display='none';
+  document.getElementById('autoBtn'+stepIdx).style.display='none';
+  document.getElementById('nextBtn'+stepIdx).style.display='inline-block';
+  document.getElementById('ulang'+stepIdx).style.display='inline-block';
+}
+
+function handleAuto(stepIdx, func) {
+  if(stepIdx === '1') highlightKernelArea(0, 0);
+  document.getElementById('startBtn'+stepIdx).style.display='none';
+  document.getElementById('autoBtn'+stepIdx).style.display='none';
+  document.getElementById('pauseBtn'+stepIdx).style.display='inline-block';
+  document.getElementById('ulang'+stepIdx).style.display='inline-block';
+  isPaused = false;
+  autoTimer = setInterval(() => { if(!isPaused) func(); }, 600);
+}
+
+function handlePause(stepIdx) {
+  isPaused = !isPaused;
+  document.getElementById('pauseBtn'+stepIdx).textContent = isPaused ? 'Resume' : 'Pause';
+}
+
+function handleUlang(stepIdx, matrixVar, tableId, msg, cellCls) {
+  clearInterval(autoTimer);
+  clearAllHighlights();
+  if(stepIdx === '1') { step1 = 0; createTable(padded,'inputTable','input-cell',true); }
+  else if(stepIdx === '2') step2 = 0;
+  else step3 = 0;
+  for(let i=0; i<4; i++) for(let j=0; j<4; j++) matrixVar[i][j] = '';
+  createTable(matrixVar, tableId, cellCls);
+  document.getElementById('startBtn'+stepIdx).style.display='inline-block';
+  document.getElementById('autoBtn'+stepIdx).style.display='inline-block';
+  document.getElementById('nextBtn'+stepIdx).style.display='none';
+  document.getElementById('pauseBtn'+stepIdx).style.display='none';
+  document.getElementById('pauseBtn'+stepIdx).textContent = 'Pause';
+  document.getElementById('ulang'+stepIdx).style.display='none';
+  document.getElementById('nextStep'+stepIdx).style.display='none';
+  document.getElementById('calcBox'+stepIdx).textContent = msg;
+}
+
+let step1 = 0;
+document.getElementById('startBtn1').onclick=()=>{ handleStart('1'); nextConv(); };
+document.getElementById('autoBtn1').onclick=()=>{ handleAuto('1', nextConv); };
+document.getElementById('pauseBtn1').onclick=()=>{ handlePause('1'); };
+document.getElementById('nextBtn1').onclick=()=>nextConv();
+document.getElementById('ulang1').onclick=()=>{ handleUlang('1', blurResult, 'blurTable', 'Belum ada perhitungan', 'base-cell'); };
+
+function nextConv(){
+  const coords=[]; for(let i=0;i<4;i++)for(let j=0;j<4;j++)coords.push([i,j]);
+  if(step1<coords.length){
+    const [i,j]=coords[step1];
+    highlightKernelArea(i, j);
+    let s=0, txt='';
+    for(let ki=0;ki<3;ki++)for(let kj=0;kj<3;kj++){
+      const v=padded[i+ki][j+kj], kVal=kernel[ki][kj];
+      s+=v*kVal; txt+=`(${v}×${kVal}) + `;
+    }
+    const res=Math.round(s/kernelSum);
+    document.getElementById('calcBox1').innerHTML=`1/16 × (${txt.slice(0,-3)}) = ${s}/16 = <b>${res}</b>`;
+    blurResult[i][j]=res;
+    createTable(blurResult,'blurTable','base-cell');
+    document.getElementById('blurTable').rows[i].cells[j].classList.add('output-highlight');
+    step1++;
+  } else {
+    clearInterval(autoTimer);
+    document.getElementById('calcBox1').innerHTML="<b>Gaussian blur selesai!</b>";
+    document.getElementById('nextBtn1').style.display='none';
+    document.getElementById('pauseBtn1').style.display='none';
+    document.getElementById('nextStep1').style.display='inline-block';
+    document.querySelectorAll('#inputTable td').forEach(c=>c.classList.remove('highlight')); 
+  }
+}
+
+document.getElementById('nextStep1').onclick=()=>{
+  document.getElementById('nextStep1').style.display='none';
+  showNextStepSim('step2');
+  createTable(original,'origMask', 'input-cell');
+  createTable(blurResult,'blurMask', 'blue-focus-cell');
+  createTable(maskResult,'maskTableSim','base-cell');
+};
+
+let step2=0;
+document.getElementById('startBtn2').onclick=()=>{ handleStart('2'); nextMask(); };
+document.getElementById('autoBtn2').onclick=()=>{ handleAuto('2', nextMask); };
+document.getElementById('pauseBtn2').onclick=()=>{ handlePause('2'); };
+document.getElementById('nextBtn2').onclick=()=>nextMask();
+document.getElementById('ulang2').onclick=()=>{ handleUlang('2', maskResult, 'maskTableSim', 'Belum ada perhitungan', 'base-cell'); };
+
+function nextMask(){
+  const coords=[]; for(let i=0;i<4;i++)for(let j=0;j<4;j++)coords.push([i,j]);
+  if(step2<coords.length){
+    const [i,j]=coords[step2];
+    document.querySelectorAll('#origMask td, #blurMask td').forEach(c=>c.classList.remove('highlight'));
+    document.getElementById('origMask').rows[i].cells[j].classList.add('highlight');
+    document.getElementById('blurMask').rows[i].cells[j].classList.add('highlight');
+    const val=original[i][j]-blurResult[i][j];
+    maskResult[i][j]=val;
+    createTable(maskResult,'maskTableSim','base-cell');
+    document.getElementById('maskTableSim').rows[i].cells[j].classList.add('output-highlight');
+    document.getElementById('calcBox2').innerHTML=`${original[i][j]} - ${blurResult[i][j]} = <b>${val}</b>`;
+    step2++;
+  } else {
+    clearInterval(autoTimer);
+    document.getElementById('calcBox2').innerHTML="<b>Mask selesai!</b>";
+    document.getElementById('nextBtn2').style.display='none';
+    document.getElementById('pauseBtn2').style.display='none';
+    document.getElementById('nextStep2').style.display='inline-block';
+    document.querySelectorAll('#origMask td, #blurMask td').forEach(c=>c.classList.remove('highlight'));
+  }
+}
+
+document.getElementById('nextStep2').onclick=()=>{
+  document.getElementById('nextStep2').style.display='none';
+  showNextStepSim('step3');
+  createTable(original,'compareOriginal', 'input-cell');
+  createTable(maskResult,'compareMask', 'blue-focus-cell');
+  createTable(boostResult,'compareResult','base-cell');
+};
+
+let step3=0;
+document.getElementById('startBtn3').onclick=()=>{ handleStart('3'); nextHighboost(); };
+document.getElementById('autoBtn3').onclick=()=>{ handleAuto('3', nextHighboost); };
+document.getElementById('pauseBtn3').onclick=()=>{ handlePause('3'); };
+document.getElementById('nextBtn3').onclick=()=>nextHighboost();
+document.getElementById('ulang3').onclick=()=>{ handleUlang('3', boostResult, 'compareResult', 'Belum ada perhitungan', 'base-cell'); };
+
+function nextHighboost(){
+  const coords=[]; for(let i=0;i<4;i++)for(let j=0;j<4;j++)coords.push([i,j]);
+  const k=parseFloat(document.getElementById('kValue').value)||1;
+  if(step3<coords.length){
+    const [i,j]=coords[step3];
+    document.querySelectorAll('#compareOriginal td, #compareMask td').forEach(c=>c.classList.remove('highlight'));
+    document.getElementById('compareOriginal').rows[i].cells[j].classList.add('highlight');
+    document.getElementById('compareMask').rows[i].cells[j].classList.add('highlight');
+    const a=original[i][j], m=maskResult[i][j];
+    const val=a+(k*m);
+    boostResult[i][j]=Math.round(Math.min(255, Math.max(0, val)));
+    createTable(boostResult,'compareResult','base-cell');
+    document.getElementById('compareResult').rows[i].cells[j].classList.add('output-highlight');
+    document.getElementById('calcBox3').innerHTML=`${a} + (${k} × ${m<0?'('+m+')':m}) = <b>${boostResult[i][j]}</b>`;
+    step3++;
+  } else {
+    clearInterval(autoTimer);
+    document.getElementById('calcBox3').innerHTML="<b>Highboost selesai!</b>";
+    document.getElementById('nextBtn3').style.display='none';
+    document.getElementById('pauseBtn3').style.display='none';
+    document.getElementById('nextStep3').style.display='inline-block';
+    document.querySelectorAll('#compareOriginal td, #compareMask td').forEach(c=>c.classList.remove('highlight'));
+  }
+}
+
+document.getElementById('nextStep3').onclick=()=>{
+  document.getElementById('nextStep3').style.display='none';
+  showNextStepSim('step4');
+  createTable(original,'finalOriginal', 'input-cell');
+  createTable(boostResult,'finalResult', 'base-cell');
+  const o=document.getElementById('finalOriginal'), r=document.getElementById('finalResult');
+  for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+    const vO=parseInt(o.rows[i].cells[j].textContent), vR=parseInt(r.rows[i].cells[j].textContent);
+    if(vR>vO) r.rows[i].cells[j].classList.add('val-increase');
+    else if(vR<vO) r.rows[i].cells[j].classList.add('val-decrease');
+    else r.rows[i].cells[j].classList.add('val-same');
+  }
+};
+
+function resetSimulasi(){
+  clearInterval(autoTimer);
+  clearAllHighlights();
+  step1=0; step2=0; step3=0;
+  blurResult=Array.from({length:4},()=>Array(4).fill(''));
+  maskResult=Array.from({length:4},()=>Array(4).fill(''));
+  boostResult=Array.from({length:4},()=>Array(4).fill(''));
+  document.querySelectorAll('.section-sim').forEach((s, idx) => { if(idx > 0) s.classList.remove('active'); });
+  createTable(padded,'inputTable','input-cell',true);
+  createTable(blurResult,'blurTable','base-cell');
+  createKernelTable(); 
+  ['1','2','3'].forEach(n=>{
+    document.getElementById('startBtn'+n).style.display='inline-block';
+    document.getElementById('autoBtn'+n).style.display='inline-block';
+    document.getElementById('nextBtn'+n).style.display='none';
+    document.getElementById('pauseBtn'+n).style.display='none';
+    document.getElementById('pauseBtn'+n).textContent='Pause';
+    document.getElementById('ulang'+n).style.display='none';
+    document.getElementById('nextStep'+n).style.display='none';
+  });
+  document.getElementById('calcBox1').textContent='Belum ada perhitungan';
+  document.getElementById('calcBox2').textContent='Belum ada perhitungan';
+  document.getElementById('calcBox3').textContent='Belum ada perhitungan';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function unlockNextButton() {
+  const btnNext = document.getElementById('nav-next-materi');
+  btnNext.classList.remove('disabled');
+  btnNext.style.opacity = '1';
+  btnNext.style.pointerEvents = 'auto';
+}
+
+function updateProgressDatabase() {
+  fetch("/api/update-progres/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": "{{ csrf_token }}",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({ slug: 'um-highboost' })
+  })
+  .then(async response => {
+      const contentType = response.headers.get("content-type");
+      if (!response.ok || !contentType || !contentType.includes("application/json")) {
+          throw new Error('Gagal menyimpan progres.');
+      }
+      return response.json();
+  })
+  .then(data => {
+    if (data.status === 'success') {
+      Swal.fire({
+        title: 'Luar Biasa!',
+        text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+        icon: 'success',
+        confirmButtonText: 'Lanjutkan',
+        confirmButtonColor: '#3b7be3'
+      }).then(() => {
+        unlockNextButton();
+      });
+    }
+  })
+  .catch(err => {
+    Swal.fire('Error', err.message, 'error');
+  });
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  createTable(padded,'inputTable','input-cell',true);
+  createTable(blurResult,'blurTable','base-cell');
+  createKernelTable(); 
+
+  const quizOrig = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+  const quizBlur = [[80,85,117,165],[85,91,110,131],[90,98,107,112],[89,96,101,107]];
+  const mAns = quizOrig.map((r,i)=>r.map((v,j)=>v - quizBlur[i][j]));
+  const hAns = quizOrig.map((r,i)=>r.map((v,j)=>Math.min(255, Math.max(0, v + 3 * (v - quizBlur[i][j])))));
+
+  const slugs = JSON.parse('{{ selesai_slugs_json|safe|default:"[]" }}');
+  if (slugs.includes('um-highboost')) {
+    unlockNextButton();
+  }
+
+  document.getElementById("checkHighboostBtn").onclick = () => {
+    let ok1 = checkTable("maskTableQuiz", mAns);
+    let ok2 = checkTable("highboostTableQuiz", hAns);
+    
+    if(ok1 && ok2) {
+      updateProgressDatabase();
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Coba Lagi!',
+        text: 'Masih ada jawaban yang salah, periksa kembali.',
+        confirmButtonColor: '#c0392b'
+      });
+    }
+  };
+
+  function checkTable(id, ans){
+    let ok=true; const rows=document.getElementById(id).rows;
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+      const td=rows[i].cells[j], v=parseInt(td.innerText);
+      if(!isNaN(v)&&v===ans[i][j]){ 
+        td.style.background="#4f71be"; td.style.color="#fff"; 
+      } else { 
+        td.style.background="#c0392b"; td.style.color="#fff"; ok=false; 
+      }
+    }
+    return ok;
+  }
+
+  document.getElementById("resetHighboostBtn").onclick = () => {
+    document.querySelectorAll("#maskTableQuiz td").forEach(td => { 
+      td.innerText=""; td.style.background="#fff5e6"; td.style.color="#000"; 
+    });
+    document.querySelectorAll("#highboostTableQuiz td").forEach(td => { 
+      td.innerText=""; td.style.background="#dfeeff"; td.style.color="#000"; 
+    });
+    document.getElementById("highboostFeedback").innerHTML="";
+  };
+});
+</script>
+{% endblock %}

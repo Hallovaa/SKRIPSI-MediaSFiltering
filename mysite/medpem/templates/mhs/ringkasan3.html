@@ -1,0 +1,157 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Ringkasan Konvolusi{% endblock %}
+
+{% block content %}
+
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+
+
+  .summary-box {
+    background: #fbfdff;
+    border: 1px solid #bcccdc;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.02);
+    margin-bottom: 18px;
+  }
+
+  .summary-box h4 { margin-top: 0; margin-bottom: 8px; }
+  .summary-box p, .summary-box ul { margin: 0 0 8px 0; line-height: 1.6; }
+
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; }
+  .material-nav .btn { min-width:120px; }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main" style="margin:0;">
+    RINGKASAN SUBBAB 3 - <span style="color:var(--primary-500)">KONVOLUSI</span>
+  </h1>
+</div>
+
+<section class="card-section" aria-labelledby="ringkasan-heading">
+  <div class="card-section-header">
+    <i class="bi bi-journal-text"></i>
+    <div id="ringkasan-heading">Ringkasan</div>
+  </div>
+
+  <div class="card-section-body">
+
+    <div class="summary-box">
+      <h4><b>1. Konsep Konvolusi</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-top: 20px; margin-left: 30px; margin-bottom: 50px;">
+        Konvolusi adalah teknik pada <em>spatial domain</em> yang menghitung nilai piksel baru 
+        berdasarkan piksel pusat dan piksel-piksel tetangganya menggunakan <em>kernel</em>. 
+        Teknik ini digunakan untuk menghasilkan citra yang lebih halus, lebih tajam, atau 
+        menonjolkan tepi, tergantung pada nilai bobot <em>kernel</em> yang digunakan.
+      </p>
+
+      <h4><b>2. Teknik Padding</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-top: 20px; margin-left: 30px;">
+        Padding digunakan untuk menambahkan piksel di tepi citra agar proses konvolusi di bagian tepi tetap dapat dilakukan. Beberapa jenis padding meliputi:
+      </p>
+      <ol style="margin-left: 40px; margin-bottom: 50px;">
+        <li><em>Zero padding</em>: menambahkan piksel bernilai 0 di tepi citra.</li>
+        <li><em>Constant padding</em>: menambahkan nilai tertentu secara konsisten, misalnya 1 atau nilai lain.</li>
+        <li><em>Reflect padding</em>: mencerminkan nilai piksel dari bagian dalam citra ke arah luar.</li>
+        <li><em>Replicate padding</em>: menggandakan nilai piksel terdekat sehingga tepi mengikuti nilai piksel terluar.</li>
+        <li><em>Wrap padding</em>: menyalin piksel dari sisi berlawanan citra (kiri ↔ kanan, atas ↔ bawah).</li>
+      </ol>
+
+      <h4><b>3. Normalisasi Citra</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-top: 20px; margin-left: 30px;">
+       Normalisasi citra adalah proses menyesuaikan nilai piksel hasil konvolusi agar 
+       berada dalam rentang tampilan 0–255. Proses ini bertujuan agar citra dapat 
+       ditampilkan dengan baik, tidak terlalu gelap atau terlalu terang, serta 
+       tetap mempertahankan perbedaan intensitas antar piksel. 
+      </p>
+
+    </div>
+
+
+    <div class="material-nav">
+      <a href="{% url 'prak_konvolusi' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+      
+      <a id="nav-next" href="{% url 'kuis_3' %}" class="btn btn-primary">
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  const currentSlug = 'ringkasan3';
+  const btnNavNext = document.getElementById('nav-next');
+
+  btnNavNext.addEventListener('click', function(e) {
+    const isAlreadyDone = "{{ selesai_slugs|safe }}".includes(currentSlug);
+    
+    if (!isAlreadyDone) {
+      e.preventDefault();
+      const targetUrl = this.href;
+
+      fetch("/api/update-progres/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ slug: currentSlug })
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+      })
+      .then(data => {
+        window.location.href = targetUrl;
+      })
+      .catch(error => {
+        window.location.href = targetUrl;
+      });
+    }
+  });
+})();
+</script>
+
+{% endblock %}

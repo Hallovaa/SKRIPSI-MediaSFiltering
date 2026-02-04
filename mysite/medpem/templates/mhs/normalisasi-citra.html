@@ -1,0 +1,565 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 3 - Normalisasi Citra{% endblock %}
+
+{% block content %}
+<style>
+.card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+}
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+}
+.card-section-header i {
+  font-size:20px;
+  color:var(--primary-500);
+  display:inline-flex;
+  width:36px;
+  height:36px;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background: rgba(59,123,227,0.12);
+}
+.card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+}
+.card-section-body p { margin-bottom:12px; line-height:1.6; }
+.material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; margin-bottom:34px; }
+.conv-container { display:flex; flex-direction:column; gap:18px; align-items:center; }
+.sim-section {
+  background:#faf9f7;
+  border-radius:15px;
+  padding:20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  text-align:center;
+  min-width:280px;
+}
+.conv-table { border-collapse:collapse; margin:15px auto; }
+.conv-table td {
+  width:44px; height:44px; border:1px solid #ccc; text-align:center;
+  vertical-align:middle; font-weight:700; padding:0; transition:background-color .18s;
+  font-size: 16px;
+}
+.input-cell, .output-cell { background:#fff9ee !important; }
+
+
+.active-highlight { 
+  background: #d9eafd !important; 
+  color: #0b2540; 
+  font-weight: 800; 
+}
+.output-highlight { background:#003049 !important; color:#fff !important; font-weight:800; }
+
+.calculation-title {
+  font-weight: 900;
+  font-size: 16px;
+  color: #0b2540;
+  margin-top: 20px;
+  text-transform: uppercase;
+}
+.calculation-box {
+  background-color: #faf9f7;
+  border-radius: 12px;
+  border: 1px solid #edf4fe;
+  padding: 20px;
+  width: 100%;
+  max-width: 850px;
+  text-align:center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color:#333;
+  min-height:70px;
+  font-size: 19px;
+  box-shadow: 0 6px 18px #edf4fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.custom-select {
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid var(--primary-500);
+  border-radius: 8px;
+  padding: 6px 30px 6px 12px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 10px) center;
+}
+
+.conv-controls {
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.conv-controls button {
+  padding:8px 14px;
+  border-radius:8px;
+  border:none; 
+  cursor:pointer;
+  background:var(--primary-500); 
+  color:#fff;
+  font-weight:700;
+  font-family: inherit;
+}
+.conv-controls button.btn-outline {
+  background:#fff;
+  color:var(--primary-500);
+  border:1px solid rgba(16,32,58,0.15);
+}
+
+.quiz-input {
+  width: 70px; height: 32px; text-align:center; background:#fff9ee; color:#0b2540;
+  font-weight:700; font-size:16px; border:1px solid #ddd; border-radius:4px; transition: all 0.2s;
+}
+
+#quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+}
+
+#quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+.instruction {
+    background: #fdfcfe;
+    border: 1px solid #e1e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.instruction ul {
+      margin-bottom: 0;
+      padding-left: 20px;
+}
+
+.instruction li {
+      text-align: justify;     
+      text-justify: inter-word;
+      margin-left: 15px;
+      margin-bottom: 5px;
+      font-size: 14px;
+}
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">SUBBAB 3 - <span style="color:var(--primary-500)">NORMALISASI CITRA</span></h1>
+</div>
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-lightbulb"></i>
+    <div>Normalisasi Citra Digital</div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Setelah proses konvolusi dilakukan, nilai piksel hasil perhitungan tidak selalu 
+      berada dalam rentang tampilan normal, yaitu 0 sampai 255. Akibatnya citra dapat 
+      terlihat terlalu gelap, terlalu terang, atau tidak dapat ditampilkan dengan baik. 
+      Pada hasil konvolusi menggunakan <em>padding</em> sebelumnya terdapat beberapa nilai piksel yang bernilai negatif.
+      Kondisi ini perlu disesuaikan agar seluruh nilai piksel berada dalam rentang yang dapat ditampilkan dengan baik pada layar.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Untuk mengatasi hal tersebut dilakukan proses yang disebut 
+      <strong>normalisasi citra</strong>. Normalisasi citra (<em>image normalization</em>) 
+      merupakan langkah dalam pemrosesan citra digital yang bertujuan untuk 
+      <strong>menyesuaikan kembali nilai intensitas piksel ke dalam skala tampilan yang umum</strong>, 
+      sehingga citra dapat ditampilkan dengan jelas. Proses ini membantu 
+      <strong>menjaga keseimbangan kecerahan dan kontras</strong>, tanpa menghilangkan perbedaan 
+      intensitas antar piksel.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px; margin-bottom: 50px;">
+      Secara sederhana, normalisasi bekerja dengan 
+      <strong>mengatur ulang nilai-nilai piksel hasil konvolusi agar berada dalam batas yang wajar</strong>, 
+      sekaligus mempertahankan perbandingan nilai antar piksel. Salah satu metode yang sering digunakan 
+      adalah <strong>normalisasi linear</strong> (<em>linear normalization</em>) yang dapat dituliskan 
+      dengan persamaan berikut:
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+      \[
+      P_{\text{baru}} = 255 \times \frac{P_{\text{lama}} - P_{\text{min}}}{P_{\text{maks}} - P_{\text{min}}}
+      \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px; margin-top:50px">
+      Pada citra <em>grayscale</em>, proses normalisasi cukup diterapkan pada satu <em>channel</em> 
+      karena citra hanya memiliki satu tingkat kecerahan. Sementara itu, pada citra berwarna 
+      (<em>RGB</em>), normalisasi dilakukan pada masing-masing <em>channel</em>, yaitu <em>channel</em> 
+      merah, hijau, dan biru dengan cara yang sama agar keseimbangan warna citra tetap terjaga.
+    </p>
+
+  </div>
+</section>
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-gear"></i>
+    <div>Bagaimana Cara Kerja Normalisasi Citra?</div>
+  </div>
+  <div class="card-section-body">
+
+    <p style="text-align: justify;">
+        Proses konvolusi pada citra dapat dilakukan melalui langkah-langkah berikut:
+    </p>
+
+    <ol style="text-align: justify; margin-left: 20px">
+      <li><strong>Tentukan nilai minimum dan maksimum</strong> dari piksel hasil konvolusi.</li>
+      <li><strong>Terapkan rumus normalisasi</strong> untuk menyesuaikan nilai piksel agar berada dalam rentang 0–255.</li>
+      <li><strong>Lakukan pembulatan</strong> pada nilai hasil normalisasi sehingga diperoleh bilangan bulat.</li>
+      <li><strong>Ulangi proses tersebut</strong> untuk seluruh piksel hingga seluruh citra selesai dinormalisasi.</li>
+    </ol>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Sebagai contoh, proses normalisasi dilakukan pada hasil konvolusi menggunakan <em>zero padding</em> sebelumnya. Jika terdapat nilai piksel hasil konvolusi yang 
+      melebihi 255 atau kurang dari 0, maka nilainya dinormalisasi kembali agar berada dalam 
+      rentang 0–255. Nilai hasil normalisasi kemudian dibulatkan ke bilangan bulat dengan aturan 
+      bahwa jika angka di belakang koma bernilai lima atau lebih, maka dibulatkan ke atas.
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+      \[
+      \begin{bmatrix}
+      162 & 87 & 59 & 187 \\
+      92 & 56 & 41 & 157 \\
+      171 & -2 & -21 & -64 \\
+      -24 & -56 & -4 & 77
+      \end{bmatrix}
+      \]
+    </p>
+
+    <div class="instruction">
+      <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
+      <ul>
+        <li>Perhatikan tabel <strong>Hasil Konvolusi</strong> yang berisi nilai piksel sebelum dilakukan normalisasi.</li>
+      <li>Pilih <strong>Mode Input</strong> melalui menu yang tersedia, yaitu <strong>Default</strong> untuk menggunakan data contoh
+          atau <strong>Custom</strong> untuk memasukkan nilai piksel secara manual.</li>
+      <li>Perhatikan bahwa <strong>hanya nilai piksel yang berada di luar rentang 0–255</strong> yang akan diproses pada tahap normalisasi.</li>
+      <li>Klik tombol <strong>Mulai</strong> untuk memulai proses normalisasi secara bertahap pada setiap piksel.</li>
+      <li>Gunakan tombol <strong>Lanjut</strong> untuk melihat proses normalisasi pada piksel berikutnya secara manual.</li>
+      <li>Klik <strong>Auto Play</strong> jika ingin melihat seluruh proses normalisasi berjalan secara otomatis.</li>
+      <li>Tekan <strong>Pause</strong> untuk menghentikan sementara proses normalisasi yang sedang berlangsung.</li>
+      <li>Hasil normalisasi akan ditampilkan pada tabel <strong>Hasil Normalisasi</strong> sesuai dengan posisi piksel yang sedang diproses.</li>
+      <li>Perhatikan bagian <strong>Perhitungan</strong> untuk melihat langkah perhitungan normalisasi, termasuk nilai minimum, maksimum,
+        hasil normalisasi, dan proses pembulatan.</li>
+      <li>Klik tombol <strong>Ulangi</strong> untuk mengembalikan kondisi awal dan mencoba kembali proses normalisasi dengan data yang berbeda.</li>
+      </ul>
+    </div>
+    
+
+    <div class="conv-container">
+      <div style="display:flex;gap:30px;justify-content:center;flex-wrap:wrap;width:100%;">
+        <div class="sim-section">
+          <h4 style="font-weight:700;">Hasil Konvolusi</h4>
+          <div style="margin: 15px 0; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <label style="font-weight:700; font-size:14px; color:#666;">Mode Input:</label>
+            <select id="inputModeSim" class="custom-select">
+              <option value="default">Default</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <table id="inputMatrixSim" class="conv-table"></table>
+          <div style="font-size:12px;margin-top:8px;color:#6b7684;">Hanya nilai di luar rentang 0-255 yang akan diproses normalisasi.</div>
+        </div>
+        <div class="sim-section">
+          <h4 style="font-weight:700;">Hasil Normalisasi</h4>
+          <table id="outputMatrixSim" class="conv-table"></table>
+          
+          <div class="conv-controls">
+            <button id="startSimBtn">Mulai</button>
+            <button id="autoPlayBtn" class="btn-outline">Auto Play</button>
+            <button id="pauseSimBtn" style="display:none;">Pause</button>
+            <button id="nextSimBtn" style="display:none;">Lanjut</button>
+            <button id="resetSimBtn" class="btn-outline" style="display:none;">Ulangi</button>
+          </div>
+        </div>
+      </div>
+      <div class="calculation-title">PERHITUNGAN:</div>
+      <div class="calculation-box" id="calculationTextSim">Belum ada perhitungan</div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section quiz-card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 3</div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align:center;margin-bottom:18px;">Perhatikan hasil konvolusi berikut:</p>
+    <div style="display:flex;justify-content:center;margin-bottom:24px;">
+      <table id="givenMatrix" class="conv-table" style="background:#d9eafd;"></table>
+    </div>
+    <div style="max-width:800px;margin:20px auto; border:1px solid #c7d3e8;padding:20px;border-radius:12px;background:#fff;">
+      <p style="text-align:center;margin:0 0 14px 0;">
+        Dari hasil konvolusi di atas, nilai <input id="fillOriginal" class="quiz-input" /> merupakan nilai yang perlu dinormalisasi. <br>
+        Setelah dilakukan normalisasi, nilai tersebut menjadi <input id="fillNormalized" class="quiz-input" />.
+      </p>
+      <div class="conv-controls">
+        <button id="checkActBtn" style="background:#fff5e6; color:#4b3520; padding:12px 20px;border-radius:10px;border:1px solid #ddd ;font-weight:700;">Cek Jawaban</button>
+        <button id="resetActBtn" style="background:#d9eafd; color:#4b3520; padding:12px 20px;border-radius:10px;border:1px solid #c3d9f8;font-weight:700;">Reset Jawaban</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 't_padding' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nextBtnMaterial" href="{% url 'ringkasan3' %}" 
+     class="btn btn-primary {% if 'normalisasi-citra' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'normalisasi-citra' not in selesai_slugs %}opacity:0.5; pointer-events:none;{% endif %}">
+     Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(function(){
+  const defaultInput = [[162, 87, 59, 187], [92, 56, 41, 157], [172, -2, -21, -64], [-24, -56, -4, 77]];
+  let inputDataSim = JSON.parse(JSON.stringify(defaultInput));
+  let outputDataSim = Array.from({length:4},()=>Array(4).fill(''));
+  let stepSim = 0, isAutoplay = false, intervalId = null, isPaused = false;
+  const inTable = document.getElementById('inputMatrixSim'), outTable = document.getElementById('outputMatrixSim');
+  const calcText = document.getElementById('calculationTextSim');
+  const startBtn = document.getElementById('startSimBtn'), autoBtn = document.getElementById('autoPlayBtn');
+  const nextBtn = document.getElementById('nextSimBtn'), resetBtn = document.getElementById('resetSimBtn'), pauseBtn = document.getElementById('pauseSimBtn');
+
+  function renderTable(data, table, editable=false) {
+    table.innerHTML = '';
+    data.forEach((row, r) => {
+      let tr = document.createElement('tr');
+      row.forEach((val, c) => {
+        let td = document.createElement('td');
+        td.className = 'input-cell';
+        td.textContent = (val === '' || val === null) ? '' : val;
+        if(editable) {
+          td.contentEditable = true;
+          td.oninput = () => { 
+            let v = parseInt(td.textContent); 
+            inputDataSim[r][c] = isNaN(v) ? null : v; 
+          };
+        }
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+  }
+
+  function runStep() {
+    const pos = []; for(let i=0;i<4;i++) for(let j=0;j<4;j++) pos.push([i,j]);
+    
+    const [r,c] = pos[stepSim];
+    const flat = inputDataSim.flat().filter(v => v !== null);
+    if(flat.length === 0) {
+      clearInterval(intervalId);
+      Swal.fire('Peringatan', 'Silakan isi nilai pada tabel input terlebih dahulu!', 'warning');
+      return;
+    }
+    const pMin = Math.min(...flat), pMax = Math.max(...flat);
+    const P = inputDataSim[r][c];
+    Array.from(inTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
+    Array.from(outTable.querySelectorAll('td')).forEach(td => td.classList.remove('output-highlight'));
+    inTable.rows[r].cells[c].classList.add('active-highlight');
+    
+    if (P === null) {
+        outTable.rows[r].cells[c].textContent = '-';
+        calcText.innerHTML = `Piksel kosong, dilewati.`;
+    } else if (P < 0 || P > 255) {
+      const pembilang = P - pMin;
+      const penyebut = pMax - pMin || 1;
+      const hasilBagi = (pembilang / penyebut).toFixed(4);
+      const res = Math.round(255 * (pembilang / penyebut));
+      
+      outputDataSim[r][c] = res;
+      outTable.rows[r].cells[c].textContent = res;
+      
+      calcText.innerHTML = `
+        255 &times; ((${P} - (${pMin})) / (${pMax} - (${pMin}))) = 
+        255 &times; (${pembilang} / ${penyebut}) = 
+        255 &times; (${hasilBagi}) 
+        <b> &nbsp;= ${res} </b>
+      `;
+    } else {
+      outputDataSim[r][c] = P;
+      outTable.rows[r].cells[c].textContent = P;
+      calcText.innerHTML = `Nilai <b>&nbsp;${P}&nbsp;</b> tetap karena sudah berada dalam rentang 0-255.`;
+    }
+    outTable.rows[r].cells[c].classList.add('output-highlight');
+    
+    stepSim++;
+    if(stepSim >= pos.length) {
+      clearInterval(intervalId);
+      nextBtn.style.display = pauseBtn.style.display = 'none';
+      return;
+    }
+  }
+
+  function startProcess(auto) {
+    stepSim = 0; isAutoplay = auto; isPaused = false;
+    renderTable(Array.from({length:4},()=>Array(4).fill('')), outTable);
+    
+    startBtn.style.display = 'none';
+    autoBtn.style.display = 'none';
+    resetBtn.style.display = 'inline-block';
+
+    if(isAutoplay) {
+      nextBtn.style.display = 'none'; 
+      pauseBtn.style.display = 'inline-block'; 
+      pauseBtn.textContent = "Pause";
+      intervalId = setInterval(() => { if(!isPaused) runStep(); }, 1500);
+    } else {
+      nextBtn.style.display = 'inline-block'; 
+      pauseBtn.style.display = 'none'; 
+      runStep();
+    }
+  }
+
+  startBtn.onclick = () => startProcess(false);
+  autoBtn.onclick = () => startProcess(true);
+  nextBtn.onclick = runStep;
+  pauseBtn.onclick = () => { isPaused = !isPaused; pauseBtn.textContent = isPaused ? "Resume" : "Pause"; };
+  resetBtn.onclick = () => {
+    clearInterval(intervalId); stepSim = 0; isPaused = false;
+    startBtn.style.display = 'inline-block';
+    autoBtn.style.display = 'inline-block';
+    nextBtn.style.display = 'none';
+    pauseBtn.style.display = 'none';
+    resetBtn.style.display = 'none';
+    calcText.textContent = 'Belum ada perhitungan';
+    renderTable(Array.from({length:4},()=>Array(4).fill('')), outTable);
+    Array.from(inTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
+  };
+
+  document.getElementById('inputModeSim').onchange = (e) => {
+    if(e.target.value === 'custom') {
+      inputDataSim = Array.from({length:4},()=>Array(4).fill(null));
+      renderTable(inputDataSim, inTable, true);
+    } else {
+      inputDataSim = JSON.parse(JSON.stringify(defaultInput));
+      renderTable(inputDataSim, inTable, false);
+    }
+    resetBtn.click();
+  };
+  renderTable(inputDataSim, inTable); renderTable(outputDataSim, outTable);
+})();
+
+(function(){
+  const m = [[76, 48, 17, 404],[89, 16, 117, 44],[77, 179, 148, 115],[61, 111, 38, 123]];
+  const flat = m.flat(), pMin = Math.min(...flat), pMax = Math.max(...flat);
+  const eO = 404, eN = Math.round(255 * (eO - pMin) / (pMax - pMin));
+  const gt = document.getElementById('givenMatrix');
+  m.forEach(r => {
+    let tr = document.createElement('tr');
+    r.forEach(v => { let td = document.createElement('td'); td.textContent = v; tr.appendChild(td); });
+    gt.appendChild(tr);
+  });
+
+  function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: 'normalisasi-citra' })
+    })
+    .then(async response => {
+        const contentType = response.headers.get("content-type");
+        if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Gagal memperbarui progres. Silakan login kembali.');
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonText: 'Lanjutkan',
+          confirmButtonColor: '#3b7be3'
+        }).then(() => {
+          const navBtn = document.getElementById('nextBtnMaterial');
+          navBtn.classList.remove('disabled');
+          navBtn.style.opacity = '1';
+          navBtn.style.pointerEvents = 'auto';
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Progres Gagal', err.message, 'error');
+    });
+  }
+
+  document.getElementById('checkActBtn').onclick = () => {
+    const elO = document.getElementById('fillOriginal'), elN = document.getElementById('fillNormalized');
+    const uO = parseInt(elO.value), uN = parseInt(elN.value);
+    let isCorrect = true;
+    if(uO === eO) {
+      elO.style.backgroundColor = '#4f71be';
+      elO.style.color = 'white';
+    } else {
+      elO.style.backgroundColor = '#c0392b';
+      elO.style.color = 'white';
+      isCorrect = false;
+    }
+    if(uN === eN) {
+      elN.style.backgroundColor = '#4f71be';
+      elN.style.color = 'white';
+    } else {
+      elN.style.backgroundColor = '#c0392b';
+      elN.style.color = 'white';
+      isCorrect = false;
+    }
+    if(isCorrect) {
+      updateProgressDatabase();
+    } else {
+      Swal.fire({ icon: 'error', title: 'Coba Lagi!', text: 'Masih ada jawaban yang salah, periksa kembali.', confirmButtonColor: '#c0392b' });
+    }
+  };
+
+  document.getElementById('resetActBtn').onclick = () => {
+    const elO = document.getElementById('fillOriginal'), elN = document.getElementById('fillNormalized');
+    elO.value = ''; elN.value = '';
+    elO.removeAttribute('style');
+    elN.removeAttribute('style');
+  };
+})();
+</script>
+{% endblock %}

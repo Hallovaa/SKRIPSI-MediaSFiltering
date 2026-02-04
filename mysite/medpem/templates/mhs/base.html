@@ -1,0 +1,459 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Citra Digital{% endblock %}</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'assets/css/dash-mhs.css' %}">
+  <link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
+
+ <style>
+    :root {
+        --nav-height: 64px;
+        --primary-blue: #3b7be3;
+        --text-dark: #1f2d3d;
+        --text-muted: #adb5bd;
+    }
+
+    body {
+        font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        overflow-x: hidden;
+    }
+
+    .app-main {
+        margin-left: 260px;
+        transition: margin .22s ease;
+        padding-top: calc(var(--nav-height) + 20px);
+    }
+
+    .app-sidebar {
+        width: 260px;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 18px 14px;
+        overflow: auto;
+        background: #fff;
+        border-right: 1px solid rgba(16, 32, 58, 0.04);
+        transition: transform .22s ease, width .22s ease;
+        z-index: 102;
+    }
+
+    .sidebar-collapsed .app-sidebar {
+        transform: translateX(-260px);
+    }
+
+    .sidebar-collapsed .app-main {
+        margin-left: 0;
+    }
+
+    .top-navbar {
+        height: var(--nav-height);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 18px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: 110;
+        background: #bbd1f7;
+        border-bottom: 1px solid rgba(16, 32, 58, 0.04);
+        box-shadow: 0 4px 18px rgba(16, 32, 58, 0.03);
+    }
+
+    .nav-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .brand-mini {
+        font-weight: 800;
+        color: var(--primary-blue);
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .nav-toggle-btn {
+        width: 44px;
+        height: 40px;
+        border-radius: 8px;
+        border: 1px solid rgba(16, 32, 58, 0.06);
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .nav-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .user-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(16, 32, 58, 0.06);
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .user-pill .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e9eefc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: var(--primary-blue);
+    }
+
+    .nav-link {
+        color: var(--text-dark) !important;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 8px;
+        margin-bottom: 2px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        gap: 10px;
+    }
+
+    .nav-link .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-bottom: 3px;
+    }
+
+    .nav-link:hover {
+        background-color: #f8f9fa;
+        color: var(--primary-blue) !important;
+    }
+
+    .nav-link.locked {
+        color: var(--text-muted) !important;
+        pointer-events: none !important;
+        cursor: not-allowed !important;
+        opacity: 0.6 !important;
+        background: transparent !important;
+    }
+
+    .nav-link.active {
+        background-color: #e9eefc !important;
+        color: var(--primary-blue) !important;
+        font-weight: 700 !important;
+    }
+
+    .collapse-trigger {
+        width: 100%;
+        border: none;
+        background: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        font-weight: 600;
+        color: var(--text-dark);
+        border-radius: 8px;
+    }
+
+    @media (max-width: 991px) {
+        .app-main {
+            margin-left: 0 !important;
+        }
+        .app-sidebar {
+            transform: translateX(-100%);
+            z-index: 1200;
+        }
+        .sidebar-open .app-sidebar {
+            transform: translateX(0);
+        }
+        .sidebar-open::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 101;
+        }
+    }
+
+    .brand-logo-img {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+</style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <header class="top-navbar">
+    <div class="nav-left">
+      <button id="navbarToggle" class="nav-toggle-btn" aria-label="Toggle sidebar">
+        <i class="bi bi-list" style="font-size:18px;"></i>
+      </button>
+      <div class="brand-mini">SFiltering</div>
+      <div class="d-none d-md-block" style="font-weight:700;font-size:15px;color: #263447;">
+        {% block page_title_small %}{% endblock %}
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="dropdown">
+        <button class="user-pill dropdown-toggle border-0" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <div class="avatar"><i class="bi bi-person-circle"></i></div>
+          <div style="font-size:14px;color:#1f2d3d;">
+            Halo,&nbsp;<strong>{{ user.mahasiswa_profile.nama_lengkap }}</strong>
+          </div>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
+          <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Keluar</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <aside id="sidebar" class="app-sidebar" aria-label="Sidebar">
+    <button id="sidebarToggle" title="Tutup sidebar" style="position:absolute;right:10px;top:10px;border:none;background:none;">
+      <i class="bi bi-x-lg" style="font-size:18px;"></i>
+    </button>
+
+    <div class="brand-row" style="display:flex;gap:10px;align-items:center;margin-bottom:20px;padding-left:10px;">
+      <img src="{% static 'assets/img/icon/favvvv.png' %}" alt="Logo" class="brand-logo-img">
+      <div>
+        <div class="brand-text" style="font-weight:700; line-height: 1.2;">Citra Digital</div>
+        <div class="brand-sub" style="font-size:12px;color:#6b7684;">Spatial Filtering</div>
+      </div>
+    </div>
+
+    <nav id="sidebarMenu" class="nav flex-column accordion">
+      <a href="{% url 'dash_mhs' %}" class="nav-link {% if request.resolver_match.url_name == 'dash_mhs' %}active{% endif %} dashboard-link">
+        <span class="label">Dashboard</span>
+      </a>
+      <div class="menu-divider" style="height:1px;background:rgba(16,32,58,0.03);margin:12px 0;"></div>
+
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'pengertian_citra jenis_citra ringkasan_citra kuis_1' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#pendahuluanCollapse" aria-expanded="{% if request.resolver_match.url_name in 'pengertian_citra jenis_citra ringkasan_citra kuis_1' %}true{% else %}false{% endif %}" type="button">
+        <span>Pendahuluan</span>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'pengertian_citra jenis_citra ringkasan_citra kuis_1' %}show{% endif %}" id="pendahuluanCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'pengertian_citra' %}" class="nav-link {% if request.resolver_match.url_name == 'pengertian_citra' %}active{% endif %}">
+            <span class="label">Pengertian Citra Digital</span>
+        </a>
+        <a href="{% url 'jenis_citra' %}" class="nav-link {% if request.resolver_match.url_name == 'jenis_citra' %}active{% endif %} {% if 'pengertian-citra' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Jenis Citra Digital</span>
+          {% if 'pengertian-citra' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'ringkasan_citra' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan_citra' %}active{% endif %} {% if 'jenis-citra' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Ringkasan</span>
+          {% if 'jenis-citra' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'kuis_1' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_1' %}active{% endif %} {% if 'ringkasan-citra' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Kuis</span>
+          {% if 'ringkasan-citra' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+      </div>
+
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan2 kuis_2' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#spatialCollapse" aria-expanded="{% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan2 kuis_2' %}true{% else %}false{% endif %}" type="button">
+        <span>Pengenalan Spatial Filtering</span>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan2 kuis_2' %}show{% endif %}" id="spatialCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'pengertian_spatial' %}" class="nav-link {% if request.resolver_match.url_name == 'pengertian_spatial' %}active{% endif %} {% if 'kuis-1' not in selesai_slugs and not lulus_kuis.kuis_1 %}locked{% endif %}">
+          <span class="label">Pengertian Spatial Filtering</span>
+          {% if 'kuis-1' not in selesai_slugs and not lulus_kuis.kuis_1 %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'spatial_frequency' %}" class="nav-link {% if request.resolver_match.url_name == 'spatial_frequency' %}active{% endif %} {% if 'pengertian-spatial' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Spatial Domain vs Frequency Domain</span>
+          {% if 'pengertian-spatial' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'ringkasan2' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan2' %}active{% endif %} {% if 'spatial-frequency' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Ringkasan</span>
+          {% if 'spatial-frequency' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'kuis_2' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_2' %}active{% endif %} {% if 'ringkasan2' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Kuis</span>
+          {% if 'ringkasan2' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+      </div>
+
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan3 kuis_3' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#konvolusiCollapse" aria-expanded="{% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan3 kuis_3' %}true{% else %}false{% endif %}" type="button">
+        <span>Konvolusi</span>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan3 kuis_3' %}show{% endif %}" id="konvolusiCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'k_konvolusi' %}" class="nav-link {% if request.resolver_match.url_name == 'k_konvolusi' %}active{% endif %} {% if 'kuis-2' not in selesai_slugs and not lulus_kuis.kuis_2 %}locked{% endif %}">
+          <span class="label">Konsep Konvolusi</span>
+          {% if 'kuis-2' not in selesai_slugs and not lulus_kuis.kuis_2 %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 't_padding' %}" class="nav-link {% if request.resolver_match.url_name == 't_padding' %}active{% endif %} {% if 'k-konvolusi' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Teknik Padding</span>
+          {% if 'k-konvolusi' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'normalisasi_citra' %}" class="nav-link {% if request.resolver_match.url_name == 'normalisasi_citra' %}active{% endif %} {% if 't-padding' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Normalisasi Citra</span>
+          {% if 't-padding' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'ringkasan3' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan3' %}active{% endif %} {% if 'normalisasi-citra' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Ringkasan</span>
+          {% if 'normalisasi-citra' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'kuis_3' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_3' %}active{% endif %} {% if 'ringkasan3' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Kuis</span>
+          {% if 'ringkasan3' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+      </div>
+
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'sl_filters sn_filters ringkasan4 kuis_4' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#smoothingCollapse" aria-expanded="{% if request.resolver_match.url_name in 'sl_filters sn_filters ringkasan4 kuis_4' %}true{% else %}false{% endif %}" type="button">
+        <span>Smoothing Filters</span>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'sl_filters sn_filters ringkasan4 kuis_4' %}show{% endif %}" id="smoothingCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'sl_filters' %}" class="nav-link {% if request.resolver_match.url_name == 'sl_filters' %}active{% endif %} {% if 'kuis-3' not in selesai_slugs and not lulus_kuis.kuis_3 %}locked{% endif %}">
+          <span class="label">Smoothing Linear Filters</span>
+          {% if 'kuis-3' not in selesai_slugs and not lulus_kuis.kuis_3 %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'sn_filters' %}" class="nav-link {% if request.resolver_match.url_name == 'sn_filters' %}active{% endif %} {% if 'sl-filters' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Smoothing Nonlinear filters</span>
+          {% if 'sl-filters' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'ringkasan4' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan4' %}active{% endif %} {% if 'sn-filters' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Ringkasan</span>
+          {% if 'sn-filters' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'kuis_4' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_4' %}active{% endif %} {% if 'ringkasan4' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Kuis</span>
+          {% if 'ringkasan4' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+      </div>
+
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'sharp_citra um_highboost ringkasan5 kuis_5' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#sharpenCollapse" aria-expanded="{% if request.resolver_match.url_name in 'sharp_citra um_highboost ringkasan5 kuis_5' %}true{% else %}false{% endif %}" type="button">
+        <span>Sharpening Filters</span>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'sharp_citra um_highboost ringkasan5 kuis_5' %}show{% endif %}" id="sharpenCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'sharp_citra' %}" class="nav-link {% if request.resolver_match.url_name == 'sharp_citra' %}active{% endif %} {% if 'kuis-4' not in selesai_slugs and not lulus_kuis.kuis_4 %}locked{% endif %}">
+          <span class="label">Sharpening Citra Digital</span>
+          {% if 'kuis-4' not in selesai_slugs and not lulus_kuis.kuis_4 %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'um_highboost' %}" class="nav-link {% if request.resolver_match.url_name == 'um_highboost' %}active{% endif %} {% if 'sharp-citra' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Unsharp Masking & Highboost</span>
+          {% if 'sharp-citra' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'ringkasan5' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan5' %}active{% endif %} {% if 'um-highboost' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Ringkasan</span>
+          {% if 'um-highboost' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'kuis_5' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_5' %}active{% endif %} {% if 'ringkasan5' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Kuis</span>
+          {% if 'ringkasan5' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+      </div>
+
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'gray_biner prak_konvolusi prak_smooth prak_sharp ringkasan6' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#praktikumCollapse" aria-expanded="{% if request.resolver_match.url_name in 'gray_biner prak_konvolusi prak_smooth prak_sharp ringkasan6' %}true{% else %}false{% endif %}" type="button">
+        <span>Praktikum</span>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'gray_biner prak_konvolusi prak_smooth prak_sharp ringkasan6' %}show{% endif %}" id="praktikumCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'gray_biner' %}" class="nav-link {% if request.resolver_match.url_name == 'gray_biner' %}active{% endif %} {% if 'kuis-5' not in selesai_slugs and not lulus_kuis.kuis_5 %}locked{% endif %}">
+          <span class="label">Grayscale & Biner</span>
+          {% if 'kuis-5' not in selesai_slugs and not lulus_kuis.kuis_5 %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'prak_konvolusi' %}" class="nav-link {% if request.resolver_match.url_name == 'prak_konvolusi' %}active{% endif %} {% if 'gray-biner' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Konvolusi</span>
+          {% if 'gray-biner' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'prak_smooth' %}" class="nav-link {% if request.resolver_match.url_name == 'prak_smooth' %}active{% endif %} {% if 'prak-konvolusi' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Smoothing Filters</span>
+          {% if 'prak-konvolusi' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'prak_sharp' %}" class="nav-link {% if request.resolver_match.url_name == 'prak_sharp' %}active{% endif %} {% if 'prak-smooth' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Sharpening Filters</span>
+          {% if 'prak-smooth' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+        <a href="{% url 'ringkasan6' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan6' %}active{% endif %} {% if 'prak-sharp' not in selesai_slugs %}locked{% endif %}">
+          <span class="label">Ringkasan</span>
+          {% if 'prak-sharp' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+        </a>
+      </div>
+
+      <div class="menu-divider" style="height:1px;background:rgba(16,32,58,0.03);margin:12px 0;"></div>
+      
+      <a href="{% url 'evaluasi' %}" class="nav-link {% if request.resolver_match.url_name == 'evaluasi' %}active{% endif %} {% if 'ringkasan6' not in selesai_slugs %}locked{% endif %}">
+        <span class="label">Evaluasi Akhir</span>
+        {% if 'ringkasan6' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+      </a>
+    </nav>
+  </aside>
+
+  <main id="main" class="app-main">
+    <div class="content-card container-fluid">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const body = document.body;
+      const navbarToggle = document.getElementById("navbarToggle");
+      const sidebarToggle = document.getElementById("sidebarToggle");
+
+      function toggleSidebar() {
+        if (window.innerWidth > 991) {
+          body.classList.toggle("sidebar-collapsed");
+        } else {
+          body.classList.toggle("sidebar-open");
+        }
+      }
+
+      if (navbarToggle) {
+        navbarToggle.addEventListener("click", function(e) {
+          e.stopPropagation();
+          toggleSidebar();
+        });
+      }
+
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener("click", function() {
+          toggleSidebar();
+        });
+      }
+
+      document.addEventListener("click", function(e) {
+        if (window.innerWidth <= 991 && body.classList.contains("sidebar-open")) {
+          const sidebar = document.getElementById("sidebar");
+          if (!sidebar.contains(e.target) && !navbarToggle.contains(e.target)) {
+            body.classList.remove("sidebar-open");
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

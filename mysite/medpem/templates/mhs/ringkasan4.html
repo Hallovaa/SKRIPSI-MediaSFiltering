@@ -1,0 +1,160 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Ringkasan Smoothing Spatial Filters{% endblock %}
+
+{% block content %}
+
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+
+  .summary-box {
+    background: #fbfdff;
+    border: 1px solid #bcccdc;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.02);
+    margin-bottom: 18px;
+  }
+
+  .summary-box h4 { margin-top: 0; margin-bottom: 8px; }
+  .summary-box p, .summary-box ul { margin: 0 0 8px 0; line-height: 1.6; }
+
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; }
+  .material-nav .btn { min-width:120px; }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main" style="margin:0;">
+    RINGKASAN SUBBAB 4 - <span style="color:var(--primary-500)"><em>SMOOTHING SPATIAL FILTERS</em></span>
+  </h1>
+</div>
+
+<section class="card-section" aria-labelledby="ringkasan-heading">
+  <div class="card-section-header">
+    <i class="bi bi-journal-text"></i>
+    <div id="ringkasan-heading">Ringkasan</div>
+  </div>
+
+  <div class="card-section-body">
+
+    <div class="summary-box">
+      <h4><b>1. Smoothing <em>Linear Filters</em></b></h4>
+      <p style="text-align: justify; margin-left: 30px; text-indent: 25px; margin-top: 20px; margin-bottom: 50px;">
+        <em>Smoothing linier</em> dilakukan menggunakan konvolusi dengan <em>kernel</em> berbobot. 
+        <em>Mean filter</em> meratakan nilai piksel secara merata sehingga <em>noise</em> berkurang, tetapi detail citra dapat menjadi kabur. 
+        <em>Weighted averaging filter</em> memberi bobot lebih besar pada piksel pusat sehingga efek penghalusan tetap ada tanpa terlalu menghilangkan detail penting.
+      </p>
+
+      <h4><b>2. <em>Order-Statistic (Non-linear) Filters</em></b></h4>
+      <p style="text-align: justify; margin-left: 30px; text-indent: 25px; margin-top: 20px; ">
+        <em>Smoothing nonlinier</em> tidak menggunakan konvolusi, melainkan berdasarkan urutan nilai piksel.
+      </p>
+      <p style="text-align: justify; margin-left: 30px;">
+        <b>Jenis-jenis <em>filter nonlinear</em>:</b>
+      </p>
+      
+      <p style="margin-left: 50px; margin-bottom: 5px;"><b>1) <em>Median Filter</em></b></p>
+      <ul style="padding-left: 60px; margin-left: 30px;">
+        <li>Mengganti piksel pusat dengan nilai median dari area filter.</li>
+        <li>Sangat baik untuk menghilangkan salt and pepper noise.</li>
+        <li>Tidak terpengaruh oleh nilai ekstrem, sehingga tepi tetap terjaga.</li>
+      </ul>
+
+      <p style="margin-left: 50px; margin-bottom: 5px;"><b>2) <em>Max Filter</em> </b></p>
+      <ul style="padding-left: 60px; margin-left: 30px;">
+        <li>Mengambil nilai maksimum pada area filter untuk menghilangkan bintik gelap.</li>
+      </ul>
+
+      <p style="margin-left: 50px; margin-bottom: 5px;"><b>3) <em>Min Filter</em> </b></p>
+      <ul style="padding-left: 60px; margin-left: 30px;">
+        <li>Mengambil nilai minimum pada area filter untuk menghilangkan bintik terang.</li>
+      </ul>
+    </div>
+
+    <div class="material-nav">
+      <a href="{% url 'sn_filters' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-chevron-left"></i> Sebelumnya
+      </a>
+      
+      <a id="btn-selanjutnya" href="{% url 'kuis_4' %}" class="btn btn-primary">
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function() {
+  const currentSlug = 'ringkasan4';
+  const nextBtn = document.getElementById('btn-selanjutnya');
+
+  function saveAndNavigate(e) {
+    e.preventDefault(); 
+    const targetUrl = nextBtn.getAttribute('href');
+    const sudahSelesai = "{{ selesai_slugs|safe }}".includes(currentSlug);
+
+    if (sudahSelesai) {
+      window.location.href = targetUrl;
+      return;
+    }
+
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: currentSlug })
+    })
+    .then(response => {
+      window.location.href = targetUrl;
+    })
+    .catch(error => {
+      window.location.href = targetUrl;
+    });
+  }
+
+  nextBtn.addEventListener('click', saveAndNavigate);
+})();
+</script>
+
+{% endblock %}

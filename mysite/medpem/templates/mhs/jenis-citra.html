@@ -1,0 +1,586 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 1 - Jenis Citra Digital{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+  .sub-card {
+    background: #ffffff;
+    border: 2px solid #bcccdc;
+    border-radius: 10px;
+    padding: 0;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 6%);
+  }
+  .sub-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 10px;
+    padding: 12px 15px;
+    font-weight: 600;
+    background: #d9eafd;
+    border-bottom: 2px solid #bcccdc;
+    border-radius: 10px 10px 0 0;
+    border-left: 6px solid #bcccdc;
+  }
+
+  #quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+  }
+
+  #quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+  }
+
+  #quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+
+  .sub-card-body { padding: 12px 15px; }
+  .interactive-container { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; justify-content: center; }
+  .interactive-grid { display: grid; grid-template-columns: repeat(8, 1fr); width: 320px; height: 320px; background: #fff; }
+  .interactive-grid .cell { width: 100%; height: 100%; cursor: crosshair; }
+  .interactive-grid .cell.highlight { outline: 2px solid #ff4d4d; outline-offset: -1px; z-index: 10; }
+  .interactive-matrix-table { border-collapse: collapse; width: 320px; height: 320px; table-layout: fixed; background: #fff; }
+  .interactive-matrix-table td { border: none; width: 40px; height: 40px; text-align: center; font-size: 13px; padding: 0; }
+  .interactive-matrix-table td.highlight { background-color: #ff4d4d; color: white; font-weight: bold; border-radius: 4px; }
+  .interactive-box {
+    background: #fbfdff;
+    border: 1px solid rgba(59,123,227,0.10);
+    border-radius: 12px;
+    padding: 14px;
+    margin: 12px auto 0;
+  }
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(16,32,58,0.1);
+    background: #fff;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  .option-label { font-weight: 800; margin-right: 10px; color: #000000; }
+  .material-nav {
+    display:flex;
+    gap:12px;
+    justify-content:flex-end;
+    margin-top:18px;
+    margin-bottom:34px;
+  }
+  @media (max-width: 760px) {
+    .interactive-box .interactive-container { flex-direction:column; align-items:center; }
+    .interactive-grid, .interactive-matrix-table { width: 280px; height: 280px; }
+  }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">SUBBAB 1 - <span style="color:var(--primary-500)">JENIS CITRA DIGITAL</span></h1>
+</div>
+
+<section class="card-section" aria-labelledby="materi-heading">
+  <div class="card-section-header">
+    <i class="bi-palette"></i>
+    <div id="materi-heading">Citra Berwarna RGB</div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Citra berwarna</strong> adalah citra yang setiap pikselnya menyimpan informasi warna melalui 
+      <strong>tiga channel</strong> utama, yaitu R (<em>Red</em>/merah), G (<em>Green</em>/hijau), dan 
+      B (<em>Blue</em>/biru), yang sering disebut sebagai <em>RGB</em>. Setiap piksel pada citra <strong>RGB</strong> tidak hanya menyimpan satu nilai, tetapi menyimpan tiga 
+      nilai sekaligus yang menunjukkan seberapa kuat warna merah, hijau, dan biru pada piksel tersebut. 
+      Citra <em>RGB</em> dapat dibayangkan sebagai sebuah matriks besar, di mana setiap kotaknya 
+      merepresentasikan <strong>satu piksel yang memiliki tiga informasi warna di dalamnya</strong> seperti 
+      ditunjukkan pada Gambar A.4.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/4A.png' %}" style="display:block; margin:auto; width:50%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.4 Representasi citra berwarna dalam tiga <em><em>channel</em></em>  RGB
+      </figcaption>
+    </figure>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/5A.png' %}" style="display:block; margin:auto; width:90%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.5 Contoh citra RGB
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Masing-masing warna pada citra RGB disimpan dalam sebuah <em>channel</em> tersendiri. 
+      <strong>Setiap channel membutuhkan 8 bit data untuk disimpan</strong>, sehingga setiap warna memiliki 
+      256 tingkat intensitas yang berbeda, yaitu dari nilai 0 hingga 255. Jika ketiga <em>channel</em> tersebut 
+      digabungkan, maka <strong>satu piksel memerlukan total 24 bit data</strong> yang terdiri dari 8 bit untuk 
+      merah (R), 8 bit untuk hijau (G), dan 8 bit untuk biru (B). Dengan demikian, 
+      <strong>warna merah, hijau, dan biru bekerja bersama untuk membentuk satu warna pada setiap piksel</strong>, 
+      seperti ditunjukkan pada Gambar A.6.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/6A.png' %}" style="display:block; margin:auto; width:80%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.6 Struktur satu piksel RGB 24 bit (8 bit untuk R, G, dan B)
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Tingkat kecerahan sebuah piksel dipengaruhi oleh seberapa besar intensitas warna merah (R), hijau (G), 
+      dan biru (B) yang dimilikinya. Sebagai contoh, sebuah piksel dengan nilai (R= 255, G= 0, B= 0) akan 
+      tampak berwarna merah murni karena hanya warna merah yang memiliki intensitas tinggi. Nilai 
+      (R= 0, G= 255, B= 0) menghasilkan warna hijau murni, sedangkan (R= 0, G= 0, B= 255) menghasilkan 
+      warna biru murni.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Jika ketiga <em>channel</em> bernilai 0 maka piksel akan berwarna hitam. Sebaliknya, jika ketiga 
+      <em>channel</em> bernilai 255 maka piksel akan berwarna putih. 
+      <strong>Dengan mengombinasikan berbagai nilai RGB tersebut, sebuah citra dapat menampilkan 
+      jutaan variasi warna yang berbeda</strong> dan menghasilkan citra berwarna yang kaya serta tampak 
+      indah, seperti ditunjukkan pada Gambar A.5 dan Gambar A.7.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/7A.png' %}" style="display:block; margin:auto; width:90%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.7 Citra RGB dengan nilai piksel tiap <em><em>channel</em></em>-nya
+      </figcaption>
+    </figure>
+    
+  </div>
+</section>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi-circle-half"></i>
+    <div>Citra <em>Grayscale</em></div>
+  </div>
+
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Citra grayscale</strong> merupakan citra digital yang hanya memiliki 
+      <strong>satu <em>channel</em></strong>, berbeda dengan citra berwarna RGB yang memiliki 
+      tiga <em>channel</em>. Karena hanya <strong>menyimpan satu nilai pada setiap piksel</strong>, 
+      citra <em>grayscale</em> lebih hemat dalam penggunaan ruang penyimpanan dan lebih sederhana untuk diproses. 
+      Pada citra <em>grayscale</em> informasi yang ditampilkan hanyalah nilai intensitas atau tingkat kecerahan 
+      yang sering disebut sebagai <strong>derajat keabuan</strong>.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Nilai intensitas pada citra <em>grayscale</em> berada dalam rentang 0 hingga 255, di mana nilai 0 
+      merepresentasikan warna hitam dan nilai 255 merepresentasikan warna putih. Nilai-nilai di antara 
+      rentang tersebut menunjukkan berbagai tingkat keabuan. Semakin rendah nilai piksel maka warna yang 
+      dihasilkan akan semakin gelap dan mendekati hitam. Sebaliknya, semakin tinggi nilai piksel maka warna 
+      akan semakin terang dan mendekati putih, seperti ditunjukkan pada Gambar A.8.
+
+    </p>
+
+    <figure style="margin:20px 0; margin-bottom: 50px">
+      <img src="{% static 'assets/img/konten/8A.png' %}" style="display:block; margin:auto; width:90%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.8 Citra <em>grayscale</em> 16x16 beserta nilai pikselnya
+      </figcaption>
+    </figure>
+
+    <div class="sub-card">
+      <div class="sub-card-header"><span>Citra <em>Grayscale</em> dan Nilai Pikselnya</span></div>
+      <div class="sub-card-body">
+        <p style="text-align: justify; text-indent: 30px;">
+          Perhatikan Gambar A.9 yang menampilkan citra <em>grayscale</em> berukuran 256 × 256 piksel dan citra hasil 
+          <em>resize</em> menjadi ukuran 8 × 8 piksel. Dengan ukuran citra yang lebih kecil, nilai matriks 
+          piksel dan intensitas keabuan dapat diamati dengan lebih mudah. Hal ini membantu dalam memahami 
+          bagaimana nilai numerik pada matriks citra berhubungan langsung dengan tampilan visual citra 
+          <em>grayscale</em>.
+        </p>
+
+        <figure style="margin:20px 0;">
+          <img src="{% static 'assets/img/konten/9A.png' %}" style="display:block; margin:auto; width:80%;">
+          <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+            Gambar A.9 Citra <em>grayscale</em> 256x256 dan citra <em>grayscale</em>  hasil <em>resize</em> menjadi ukuran 8x8
+          </figcaption>
+        </figure>
+
+        <div class="interactive-box">
+          <div class="interactive-container">
+            <p style="text-align: center; text-indent: 30px;">
+              <b>Arahkan kursor ke citra 8×8 atau ke salah satu piksel untuk melihat antara posisi piksel 
+              dan nilai intensitas warnanya yang akan disorot dengan warna yang sama.</b>
+            </p>
+            <div id="interactiveGrid" class="interactive-grid"></div>
+            <table id="matrixTable" class="interactive-matrix-table"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Citra <em>grayscale</em> juga dikenal sebagai 8-bit image karena setiap pikselnya disimpan menggunakan 8 bit data</strong>. 
+      Artinya setiap piksel memiliki 256 kemungkinan nilai intensitas. Sebagai contoh piksel dengan nilai intensitas 27 
+      akan tampak sangat gelap, sedangkan piksel dengan nilai 210 akan tampak jauh lebih terang, seperti ditunjukkan pada Gambar A.8. 
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Representasi ini meniru cara mata manusia membedakan tingkat terang dan gelap, karena dalam melihat suatu objek, 
+      mata manusia lebih peka terhadap perbedaan kecerahan dibandingkan perbedaan warna. Oleh sebab itu, citra <em>grayscale</em> sering 
+      digunakan dalam berbagai aplikasi pengolahan citra digital yang memerlukan analisis bentuk dan intensitas cahaya. 
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/10A.png' %}" style="display:block; margin:auto; width:80%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.10 Contoh citra <em><em>grayscale</em></em> 
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Citra RGB dapat dikonversi ke dalam citra <em>grayscale</em> dengan cara menggabungkan informasi dari 
+      ketiga <em>channel</em> warna. Salah satu cara paling sederhana adalah dengan mengambil nilai rata-rata 
+      dari komponen merah, hijau, dan biru pada setiap piksel. Metode ini menghasilkan citra 
+      <em>grayscale</em> dengan tingkat kecerahan yang cukup baik, namun belum sepenuhnya mencerminkan 
+      persepsi visual manusia. Nilai intensitas citra <em>grayscale</em> pada metode ini dihitung 
+      menggunakan persamaan berikut:
+    </p>
+
+    <p style="text-align: center; font-size: 28px; margin-top: 30px">
+    \( \displaystyle y = \frac{1}{3}(R + G + B) \)
+    </p> 
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Selain metode rata-rata terdapat metode konversi lain yang menghasilkan citra 
+      <em>grayscale</em> yang lebih realistis, yaitu dengan 
+      <strong>memberikan bobot berbeda pada setiap <em>channel</em> warna sesuai dengan sensitivitas mata manusia</strong>. 
+      Mata manusia cenderung lebih peka terhadap warna hijau dibandingkan warna merah dan biru. Oleh karena 
+      itu dalam perhitungan luminansi, <em>channel</em> hijau diberikan bobot yang lebih besar, sehingga 
+      tingkat kecerahan yang dihasilkan lebih mendekati cara manusia melihat cahaya dan warna. 
+      Perhitungan nilai <em>grayscale</em> pada metode luminansi dilakukan menggunakan persamaan berikut:
+    </p>
+
+    <p style="text-align: center; font-size: 28px;">
+    \[
+    y = 0.299R + 0.587G + 0.114B
+    \]
+    </p><br><be>
+
+
+    <figure style="margin:0px 0;">
+      <img src="{% static 'assets/img/konten/11A.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.11 Citra RGB dan Citra <em><em>grayscale</em></em> 
+      </figcaption>
+    </figure>
+
+
+  </div>
+</section>
+
+<section class="card-section" aria-labelledby="materi-heading">
+  <div class="card-section-header">
+    <i class="bi-grid-3x3"></i>
+    <div id="materi-heading">Citra Biner</div>
+  </div>
+  <div class="card-section-body">
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Citra biner</strong> sesuai dengan namanya merupakan citra digital yang hanya 
+      <strong>menyimpan dua nilai yaitu 0 dan 1</strong>. Nilai 0 merepresentasikan warna hitam, sedangkan 
+      nilai 1 merepresentasikan warna putih. Karena hanya memiliki dua kemungkinan nilai, 
+      <strong>setiap piksel pada citra biner hanya membutuhkan 1 bit ruang memori</strong>. Hal ini 
+      menjadikan citra biner sebagai jenis citra yang paling sederhana dan paling hemat dalam penggunaan 
+      penyimpanan.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/12A.png' %}" style="display:block; margin:auto; width:80%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.12 Citra biner dengan dua nilai piksel 0 dan 1
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada Gambar A.12 terlihat bahwa setiap kotak diberi nilai biner. Piksel berwarna 
+      <strong>hitam</strong> memiliki <strong>nilai 0</strong> yang umumnya merepresentasikan 
+      <strong>latar belakang</strong>, sedangkan piksel berwarna <strong>putih</strong> memiliki 
+      <strong>nilai 1</strong> yang biasanya merepresentasikan 
+      <strong>objek atau bagian yang dianggap penting dalam citra</strong>.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/13A.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.13 Citra RGB, Citra <em><em>grayscale</em></em> , dan Citra biner
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Citra biner umumnya diperoleh dengan mengubah citra <em>grayscale</em> menjadi citra hitam-putih 
+      menggunakan suatu nilai <strong>ambang (<em>threshold</em>)</strong>. Pada proses ini setiap 
+      <strong>nilai piksel pada citra <em>grayscale</em> dibandingkan dengan nilai ambang tertentu</strong>. 
+      Jika tingkat kecerahan suatu piksel lebih besar dari nilai ambang tersebut, maka piksel 
+      diklasifikasikan sebagai putih (1). Sebaliknya, jika tingkat kecerahannya lebih kecil atau sama 
+      dengan nilai ambang, maka piksel diklasifikasikan sebagai hitam (0). 
+      <strong>Nilai ambang berfungsi sebagai batas pemisah yang menentukan piksel mana yang termasuk ke 
+      dalam objek dan mana yang termasuk ke dalam latar belakang</strong>.
+    </p>
+    
+  </div>
+</section>
+
+
+
+<section class="card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 2</div>
+  </div>
+  <div class="card-section-body">
+    <p class="muted">Pilih jawaban yang paling tepat. Jika salah — coba lagi sampai benar.</p>
+    <div id="question-counter" style="font-weight:700; margin-bottom:12px;">Soal 1 / 5</div>
+    <div id="question-area">
+      <div id="question-text" style="font-weight:800; font-size:18px; margin-bottom:15px;"></div>
+      <div id="options-container"></div>
+    </div>
+    <div id="quiz-feedback" style="min-height:40px; margin-top:10px;"></div>
+    <div style="margin-top:20px;">
+      <button id="next-quiz-btn" class="btn btn-primary" disabled>Selanjutnya</button>
+    </div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'pengertian_citra' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nav-next-materi" href="{% url 'ringkasan_citra' %}" class="btn btn-primary {% if 'jenis-citra' not in selesai_slugs %}disabled{% endif %}" {% if 'jenis-citra' not in selesai_slugs %}style="opacity: 0.5; pointer-events: none;"{% endif %}>
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<script>
+(function() {
+  const currentSlug = 'jenis-citra';
+
+  // Bagian 1: Interaktif Grid Matriks
+  const matrixData = [
+    [190,203,209,211,213,212,209,202], [204,219,223,224,226,221,225,220],
+    [216,227,229,232,214,174,199,229], [223,231,231,234,190,97,135,228],
+    [219,224,222,232,199,91,128,231], [177,157,193,232,177,92,120,164],
+    [153,130,164,237,122,55,71,92], [155,155,185,223,183,139,138,142]
+  ];
+  const grid = document.getElementById('interactiveGrid');
+  const table = document.getElementById('matrixTable');
+  
+  if (grid && table) {
+    for (let i = 0; i < 8; i++) {
+      const tr = document.createElement('tr');
+      for (let j = 0; j < 8; j++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.style.backgroundColor = `rgb(${matrixData[i][j]},${matrixData[i][j]},${matrixData[i][j]})`;
+        cell.onmouseenter = () => { cell.classList.add('highlight'); table.rows[i].cells[j].classList.add('highlight'); };
+        cell.onmouseleave = () => { cell.classList.remove('highlight'); table.rows[i].cells[j].classList.remove('highlight'); };
+        grid.appendChild(cell);
+        const td = document.createElement('td');
+        td.textContent = matrixData[i][j];
+        td.onmouseenter = () => { td.classList.add('highlight'); grid.children[i * 8 + j].classList.add('highlight'); };
+        td.onmouseleave = () => { td.classList.remove('highlight'); grid.children[i * 8 + j].classList.remove('highlight'); };
+        tr.appendChild(td);
+      }
+      table.appendChild(tr);
+    }
+  }
+
+  // Bagian 2: Kuis dengan Penjelasan
+  const quizData = [
+    { 
+      q: 'Setiap channel pada citra RGB memiliki rentang nilai intensitas dari ….', 
+      opts: ['0 – 1', '0 – 255', '0 – 100', '1 – 256', '0 – 1024'], 
+      ans: '0 – 255',
+      explain: 'rentang nilai intensitas untuk tiap channel (R, G, B) pada citra 8-bit adalah 0 hingga 255.'
+    },
+    { 
+      q: 'Total bit yang dibutuhkan untuk menyimpan satu piksel pada citra RGB adalah ….', 
+      opts: ['3 bit', '8 bit', '16 bit', '24 bit', '32 bit'], 
+      ans: '24 bit',
+      explain: 'setiap piksel RGB terdiri dari 3 channel (8 bit per-channel), sehingga 8×3 = 24 bit.'
+    },
+    { 
+      q: 'Nilai piksel grayscale 200 akan tampak sebagai warna ….', 
+      opts: ['gelap', 'abu-abu sedang', 'terang', 'hitam', 'transparan'], 
+      ans: 'terang',
+      explain: 'nilai 200 mendekati 255 (putih), sehingga akan tampak terang.'
+    },
+    { 
+      q: 'Bit yang dibutuhkan untuk menyimpan satu piksel pada citra biner adalah ….', 
+      opts: ['1 bit', '2 bit', '8 bit', '16 bit', '24 bit'], 
+      ans: '1 bit',
+      explain: 'citra biner hanya memiliki dua nilai (0/1), sehingga cukup disimpan dalam 1 bit.'
+    },
+    { 
+      q: 'Nilai piksel 1 pada citra biner menunjukkan warna ….', 
+      opts: ['hitam', 'biru', 'merah', 'hijau', 'putih'], 
+      ans: 'putih',
+      explain: 'pada representasi standar citra biner, nilai 1 menunjukkan warna putih.'
+    }
+  ];
+
+  let currentIdx = 0;
+  const qText = document.getElementById('question-text');
+  const optsCont = document.getElementById('options-container');
+  const feedback = document.getElementById('quiz-feedback');
+  const btnNextQuiz = document.getElementById('next-quiz-btn');
+  const btnNavNext = document.getElementById('nav-next-materi');
+
+  function renderQuestion(idx) {
+    const item = quizData[idx];
+    document.getElementById('question-counter').textContent = `Soal ${idx + 1} / ${quizData.length}`;
+    qText.textContent = item.q;
+    optsCont.innerHTML = '';
+    feedback.innerHTML = '';
+    btnNextQuiz.disabled = true;
+
+    const labels = ['a', 'b', 'c', 'd', 'e'];
+    item.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="option-label">${labels[i]}.</span> ${opt}`;
+      
+      btn.onclick = () => {
+        Array.from(optsCont.children).forEach(child => {
+          child.style.background = '#fff';
+          child.style.borderColor = 'rgba(16,32,58,0.1)';
+        });
+        feedback.innerHTML = '';
+
+        if (opt === item.ans) {
+          btn.style.background = '#e9f2ff';
+          btn.style.borderColor = '#3b7be3';
+          // Penjelasan disamakan dengan gaya referensi: Benar — [Penjelasan]
+          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar!</div><div class="muted">Benar — ${item.explain}</div>`;
+          btnNextQuiz.disabled = false;
+          Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
+        } else {
+          btn.style.background = '#fff0f0';
+          btn.style.borderColor = '#f5c6c6';
+          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Salah — coba lagi.</div>';
+        }
+      };
+      optsCont.appendChild(btn);
+    });
+  }
+
+  btnNextQuiz.onclick = () => {
+    currentIdx++;
+    if (currentIdx < quizData.length) {
+      renderQuestion(currentIdx);
+    } else {
+      updateProgressDatabase();
+    }
+  };
+
+  function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: currentSlug })
+    })
+    .then(async response => {
+        const contentType = response.headers.get("content-type");
+        if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Sesi berakhir atau URL tidak ditemukan.');
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonColor: '#3b7be3'
+        }).then(() => {
+          // Buka navigasi selanjutnya
+          btnNavNext.classList.remove('disabled');
+          btnNavNext.style.opacity = '1';
+          btnNavNext.style.pointerEvents = 'auto';
+          
+          feedback.innerHTML = '<b style="color:blue">Aktivitas Selesai. Anda tetap bisa mencoba kuis lagi.</b>';
+          
+          // Sinkronisasi Sidebar
+          const sidebarLink = document.querySelector('a[href*="ringkasan_citra"]');
+          if (sidebarLink) {
+              sidebarLink.classList.remove('locked');
+              sidebarLink.style.pointerEvents = 'auto';
+              sidebarLink.style.opacity = '1';
+          }
+
+          // Reset Kuis agar tombol tetap berfungsi
+          currentIdx = 0;
+          renderQuestion(0);
+        });
+      }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Gagal Simpan', err.message, 'error');
+    });
+  }
+
+  // Initial Load
+  renderQuestion(0);
+})();
+</script>
+{% endblock %}

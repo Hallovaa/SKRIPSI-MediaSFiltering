@@ -1,0 +1,249 @@
+{% extends "dosen/base.html" %}
+{% load static %}
+
+{% block title %}Data Kelas — Citra Digital{% endblock %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+.hero {
+  background: linear-gradient(135deg, #eff6ff, #eef2ff);
+  padding: 36px 28px;
+  border-radius: 22px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.hero p {
+  color: #64748b;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.main-box {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+}
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.box-header h4 {
+  font-weight: 800;
+  margin-bottom: 0;
+}
+
+.kelas-card{
+  background:#ffffff;
+  border-radius:16px;
+  padding:22px;
+  border:1px solid #e5e7eb;
+  position: relative;
+  height: 100%;
+  transition: transform 0.2s;
+}
+
+.kelas-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-delete-kelas {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #ef4444;
+  background: #fef2f2;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.btn-delete-kelas:hover {
+  background: #ef4444;
+  color: #fff;
+}
+
+.kelas-card h5{
+  font-weight:800;
+  margin-bottom:4px;
+  padding-right: 30px;
+}
+
+.kelas-meta{
+  font-size:14px;
+  color:#64748b;
+  margin-bottom:14px;
+}
+
+.token-box{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:#f1f5f9;
+  border-radius:12px;
+  padding:12px 16px;
+}
+
+.token{
+  font-weight:900;
+  letter-spacing:3px;
+  font-size:18px;
+  color:#2563eb;
+}
+
+.copy-btn{
+  border:none;
+  background:#2563eb;
+  color:#fff;
+  padding:6px 14px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:600;
+}
+
+.modal-content{
+  border-radius:18px;
+}
+</style>
+
+<div class="hero">
+  <h1>Data <span class="text-primary">Kelas</span></h1>
+  <p>Kelola kelas dan token akses mahasiswa</p>
+</div>
+
+<div class="main-box">
+  <div class="box-header">
+    <h4>Daftar Kelas</h4>
+    <button class="btn btn-primary d-flex align-items-center gap-2"
+        data-bs-toggle="modal" 
+        data-bs-target="#modalTambahKelas">
+      Tambah Kelas
+      <i class="bi bi-plus-circle"></i>
+    </button>
+  </div>
+
+  <div class="row g-4">
+    {% for k in daftar_kelas %}
+    <div class="col-md-4">
+      <div class="kelas-card">
+        <a href="javascript:void(0)" onclick="confirmDelete('{{ k.id }}', '{{ k.nama_kelas }}')" class="btn-delete-kelas">
+          <i class="bi bi-trash"></i>
+        </a>
+
+        <h5>{{ k.nama_kelas }}</h5>
+        <div class="kelas-meta">
+          Angkatan {{ k.angkatan }} • {{ k.mahasiswa_list.count }} Mahasiswa
+        </div>
+
+        <div class="token-box">
+          <span class="token" id="token-{{ k.id }}">{{ k.token }}</span>
+          <button class="copy-btn" onclick="salinToken('token-{{ k.id }}')">
+            Salin
+          </button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <p class="text-muted">Belum ada kelas yang dibuat</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="modal fade" id="modalTambahKelas" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Tambah Kelas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nama Kelas</label>
+            <input type="text" name="nama_kelas" class="form-control" placeholder="Contoh: PCD 2026" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Angkatan</label>
+            <input type="text" name="angkatan" class="form-control" placeholder="Contoh: 2025" required>
+          </div>
+
+          <div class="alert alert-info mb-0">
+            Token kelas akan dibuat otomatis.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Kelas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+{% if messages %}
+  {% for message in messages %}
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil!',
+      text: '{{ message|safe }}',
+      confirmButtonColor: '#2563eb',
+      timer: 3000,
+      showConfirmButton: false
+    });
+  {% endfor %}
+{% endif %}
+
+function salinToken(id){
+  const token = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(token);
+  Swal.fire({
+    icon: 'success',
+    title: 'Token Disalin',
+    text: `Token kelas berhasil disalin: ${token}`,
+    confirmButtonColor: '#2563eb',
+    timer: 2000,
+    showConfirmButton: false
+  });
+}
+
+function confirmDelete(id, nama) {
+  Swal.fire({
+    title: 'Hapus Kelas?',
+    text: `Apakah Anda yakin ingin menghapus kelas "${nama}"? Semua data mahasiswa di kelas ini akan terhapus.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#64748b',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal',
+    reverseButtons: true
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = `/dash-dosen/hapus-kelas/${id}/`;
+    }
+  })
+}
+</script>
+
+{% endblock %}

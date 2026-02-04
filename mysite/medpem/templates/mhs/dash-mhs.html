@@ -1,0 +1,288 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<style>
+  .hero-section {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 22px;
+    border: 1px solid rgba(16,32,58,0.06);
+    margin-bottom: 28px;
+  }
+  .title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .progress-wrapper {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid rgba(16,32,58,0.08);
+    padding: 24px;
+    margin-bottom: 30px;
+  }
+  .module-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(16,32,58,0.08) !important;
+  }
+  .module-card:hover:not(.locked) {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(59,123,227,0.1) !important;
+    border-color: #3b7be3 !important;
+  }
+  .locked {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+  .icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+  }
+</style>
+
+<div class="hero-section">
+  <div style="background:rgba(59,123,227,0.08); color:#3b7be3; padding:6px 16px; border-radius:999px; display:inline-block; font-size: 14px; font-weight: 700;">
+    Pemrosesan Citra Digital
+  </div>
+  <h1 class="title mt-3"><em>Spatial</em> <span style="color:#3b7be3"><em>Filtering</em></span></h1>
+  <p class="text-muted fs-5 mb-0">
+    Halo, <strong>{% if user.role == "mahasiswa" %}{{ user.mahasiswa_profile.nama_lengkap }}{% else %}{{ user.username }}{% endif %}</strong>. 
+    Selesaikan setiap materi dan kuis untuk membuka bab selanjutnya.
+  </p>
+</div>
+
+<div class="progress-wrapper mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="fw-bold"><i class="bi bi-bar-chart-steps me-2"></i>Progress Pembelajaran</div>
+    <div style="color:#3b7be3; font-weight:800; font-size:1.2rem;">{{ progress_percent }}%</div>
+  </div>
+  <div class="progress" style="height:12px; border-radius:999px; background:#f1f5fb;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width:{{ progress_percent }}%; background:#3b7be3"></div>
+  </div>
+</div>
+
+<h4 class="mb-3 fw-bold">Modul Pembelajaran</h4>
+<div class="row g-3 mb-5">
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: linear-gradient(135deg, #3b7be3, #2f6dd1);">
+          <i class="bi bi-1-square"></i>
+        </div>
+        <div>
+          <a href="{% url 'pengertian_citra' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Pendahuluan</div>
+            <small class="text-muted">Pengertian & Jenis Citra Digital</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_1 and 'ringkasan-citra' not in selesai_slugs %}opacity-50 locked{% endif %}">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_1 or 'ringkasan-citra' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_1 and 'ringkasan-citra' not in selesai_slugs %}bi-lock-fill{% else %}bi-2-square{% endif %}"></i>
+        </div>
+        <div>
+          <a href="{% url 'pengertian_spatial' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Pengenalan <em>Spatial Filtering</em></div>
+            <small class="text-muted">Domain Spasial & Frekuensi</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_2 and 'ringkasan2' not in selesai_slugs %}opacity-50 locked{% endif %}">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_2 or 'ringkasan2' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_2 and 'ringkasan2' not in selesai_slugs %}bi-lock-fill{% else %}bi-3-square{% endif %}"></i>
+        </div>
+        <div>
+          <a href="{% url 'k_konvolusi' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Konvolusi</div>
+            <small class="text-muted">Prinsip Kerja Konvolusi Citra</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_3 and 'ringkasan3' not in selesai_slugs %}opacity-50 locked{% endif %}">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_3 or 'ringkasan3' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_3 and 'ringkasan3' not in selesai_slugs %}bi-lock-fill{% else %}bi-4-square{% endif %}"></i>
+        </div>
+        <div>
+          <a href="{% url 'sl_filters' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Smoothing Filters</div>
+            <small class="text-muted">Linear & Non-Linear</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_4 and 'ringkasan4' not in selesai_slugs %}opacity-50 locked{% endif %}">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_4 or 'ringkasan4' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_4 and 'ringkasan4' not in selesai_slugs %}bi-lock-fill{% else %}bi-5-square{% endif %}"></i>
+        </div>
+        <div>
+          <a href="{% url 'sharp_citra' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Sharpening Filters</div>
+            <small class="text-muted">Teknik Penajaman Citra</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_5 and 'ringkasan5' not in selesai_slugs %}opacity-50 locked{% endif %}">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_5 or 'ringkasan5' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_5 and 'ringkasan5' not in selesai_slugs %}bi-lock-fill{% else %}bi-6-square{% endif %}"></i>
+        </div>
+        <div>
+          <a href="{% url 'gray_biner' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Praktikum</div>
+            <small class="text-muted">Implementasi Kode Python</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 mt-3">
+    <div class="card p-3 border shadow-sm rounded-4 {% if 'ringkasan6' not in selesai_slugs %}opacity-50 locked{% endif %}" style="background: #f8fafc;">
+      <div class="d-flex gap-3 align-items-center justify-content-between">
+        <div class="d-flex gap-3 align-items-center">
+          <div class="icon-box" style="background: {% if 'ringkasan6' in selesai_slugs %}linear-gradient(135deg,#198754,#157347){% else %}#94a3b8{% endif %};">
+            <i class="bi {% if 'ringkasan6' not in selesai_slugs %}bi-lock-fill{% else %}bi-trophy-fill{% endif %}"></i>
+          </div>
+          <div>
+            <div class="fw-bold">Evaluasi Akhir</div>
+            <small class="text-muted">Uji pemahaman seluruh materi</small>
+          </div>
+        </div>
+        <a href="{% url 'evaluasi' %}" class="btn {% if 'ringkasan6' in selesai_slugs %}btn-success{% else %}btn-secondary disabled{% endif %} px-4 rounded-pill">
+          <b>Mulai Ujian</b>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrapper">
+  <div class="d-flex align-items-center gap-2 mb-3">
+    <i class="bi bi-clipboard-check" style="font-size:20px; color:#3b7be3;"></i>
+    <div class="fw-bold">Nilai Aktivitas</div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="small text-uppercase bg-light">
+        <tr>
+          <th class="ps-3 py-3">Aktivitas</th>
+          <th class="text-center">Nilai</th>
+          <th class="text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ps-3">Kuis 1: Pendahuluan</td>
+          <td class="text-center fw-bold">{{ nilai_kuis.kuis_1|default:"-" }}</td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_1 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_1 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="ps-3">Kuis 2: Pengenalan <em>Spatial Filtering</em></td>
+          <td class="text-center fw-bold">{{ nilai_kuis.kuis_2|default:"-" }}</td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_2 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_2 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="ps-3">Kuis 3: Konvolusi</td>
+          <td class="text-center fw-bold">{{ nilai_kuis.kuis_3|default:"-" }}</td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_3 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_3 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="ps-3">Kuis 4: <em>Smoothing Filters</em></td>
+          <td class="text-center fw-bold">{{ nilai_kuis.kuis_4|default:"-" }}</td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_4 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_4 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td class="ps-3">Kuis 5: <em>Sharpening Filters</em></td>
+          <td class="text-center fw-bold">{{ nilai_kuis.kuis_5|default:"-" }}</td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_5 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_5 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+            {% endif %}
+          </td>
+        </tr>
+        <tr class="table-primary">
+          <td class="ps-3 fw-bold">Evaluasi Akhir</td>
+          <td class="text-center fw-bold">{{ nilai_evaluasi|default:"-" }}</td>
+          <td class="text-center">
+            {% if lulus_evaluasi %}
+              <span class="badge bg-primary rounded-pill px-3">Lulus</span>
+            {% elif nilai_evaluasi %}
+              <span class="badge bg-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-white text-primary border border-primary rounded-pill px-3">Belum</span>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

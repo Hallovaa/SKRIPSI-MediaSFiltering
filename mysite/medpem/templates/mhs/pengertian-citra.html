@@ -1,0 +1,336 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 1 - Pengertian Citra Digital{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+  .card-section-body p { margin-bottom:12px; line-height:1.6; }
+  .card-section-body ol { margin-top:8px; padding-left:35px; }
+  .card-section-body li { margin-bottom:12px; font-size:19px; }
+  .option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 8px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(16,32,58,0.1);
+    background: #fff;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  #quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+  }
+
+  #quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+  }
+
+  #quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+  
+  .option-label { font-weight: 800; margin-right: 10px; color: #000000; }
+  .material-nav {
+    display:flex;
+    gap:12px;
+    justify-content:flex-end;
+    margin-top:18px;
+    margin-bottom:34px;
+  }
+  @media (max-width:767px){
+    .card-section-header { font-size:16px; }
+    .card-section-body { padding:16px; font-size:15.5px; }
+    .material-nav { justify-content:stretch; flex-direction:column-reverse; }
+  }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">SUBBAB 1 - <span style="color:var(--primary-500)">PENGERTIAN CITRA DIGITAL</span></h1>
+</div>
+
+<section class="card-section" aria-labelledby="tujuan-heading">
+  <div class="card-section-header">
+    <i class="bi bi-journal-bookmark"></i>
+    <div id="tujuan-heading">Tujuan Pembelajaran</div>
+  </div>
+  <div class="card-section-body">
+    <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
+    <ol>
+      <li>Memahami apa itu citra digital.</li>
+      <li>Mengenal jenis-jenis citra digital.</li>
+      <li>Mengidentifikasi jenis-jenis citra digital.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="card-section" aria-labelledby="materi-heading">
+  <div class="card-section-header">
+    <i class="bi bi-image"></i>
+    <div id="materi-heading">Pengertian Citra Digital</div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Citra digital</strong> merupakan representasi visual dua dimensi dari dunia nyata dalam bentuk digital yang dapat dipahami dan diolah oleh komputer. 
+      <strong>Citra ini tersusun atas kumpulan titik kecil yang disebut piksel (<em>pixel</em> atau <em>picture element</em>) yang membentuk baris dan kolom</strong>. 
+      Setiap piksel digambarkan sebagai sebuah kotak kecil dengan nilai numerik tertentu yang menunjukkan tingkat kecerahan atau warna pada posisi tertentu dalam citra. 
+      <strong>Melalui susunan piksel-piksel tersebut, terbentuklah gambaran utuh yang dapat merepresentasikan objek nyata</strong>. 
+      Citra digital dapat diperoleh dari berbagai sumber, seperti kamera digital, <em>scanner</em>, maupun hasil simulasi komputer.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/1A.png' %}" style="display:block; margin:auto; width:90%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.1 Citra <em>grayscale</em> (6×6) beserta nilai pikselnya
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Terlihat pada Gambar A.1 citra terbentuk dari susunan piksel yang tersusun dalam baris dan kolom. 
+      Nilai pada setiap <strong>piksel mempresentasikan tingkat kecerahan</strong>, di mana semakin 
+      <strong>tinggi nilai piksel</strong> maka citra akan terlihat semakin <strong>cerah</strong>, 
+      sedangkan semakin <strong>rendah nilai piksel</strong> maka citra akan terlihat semakin 
+      <strong>gelap</strong>. Resolusi citra sangat memengaruhi kualitas tampilan gambar. Citra dengan resolusi rendah cenderung 
+      terlihat buram (<em>blur</em>) karena jumlah piksel penyusunnya sedikit, sehingga detail visual tidak 
+      dapat direpresentasikan dengan baik, seperti ditunjukkan pada Gambar A.2.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/2A.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.2 Citra <em>grayscale</em> dengan tiga jenis resolusi yang berbeda
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada gambar A.3 sebuah citra berukuran 16×16 piksel hanya memiliki 16 baris dan 16 kolom nilai piksel, sehingga detail gambar menjadi sangat terbatas dan tampak kurang jelas. 
+      Sebaliknya, <strong>semakin tinggi jumlah piksel atau resolusi citra, maka semakin baik kualitas citra</strong> 
+      yang dihasilkan karena detail visual dapat direpresentasikan dengan lebih akurat. 
+      Seperti yang terlihat pada Gambar A.2 bahwa citra berukuran 128×128 memiliki tampilan yang lebih tajam dan jelas 
+      dibandingkan citra berukuran 64×64 dan 32×32. Perbedaan ini menegaskan bahwa 
+      <strong>resolusi berperan penting dalam menentukan tingkat detail dan ketajaman suatu citra digital</strong>.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/3A.png' %}" style="display:block; margin:auto; width:90%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.3 Citra <em>grayscale</em> dengan resolusi 16x16
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Perbedaan cara manusia dan komputer dalam melihat citra juga perlu diperhatikan. 
+      <strong>Manusia melihat citra sebagai bentuk visual yang utuh, sedangkan komputer memandang citra sebagai kumpulan nilai numerik yang tersusun dalam bentuk matriks</strong>. 
+      Oleh karena itu dalam pengolahan citra digital setiap proses yang dilakukan pada citra sebenarnya merupakan manipulasi terhadap nilai-nilai piksel tersebut seperti yang terlihat pada Gambar A.3.
+    </p>
+  </div>
+</section>
+
+<section class="card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 1</div>
+  </div>
+  <div class="card-section-body">
+    <p class="muted">Pilih jawaban yang paling tepat. Jika salah — coba lagi sampai benar.</p>
+    <div id="question-counter" style="font-weight:700; margin-bottom:12px;">Soal 1 / 5</div>
+    <div id="question-area">
+      <div id="question-text" style="font-weight:800; font-size:18px; margin-bottom:15px;"></div>
+      <div id="options-container"></div>
+    </div>
+    <div id="quiz-feedback" style="min-height:48px; margin-top:10px;"></div>
+    <div style="margin-top:20px;">
+      <button id="next-quiz-btn" class="btn btn-primary" disabled>Selanjutnya</button>
+    </div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a id="nav-next-materi" href="{% url 'jenis_citra' %}" 
+     class="btn btn-primary {% if 'pengertian-citra' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'pengertian-citra' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(function() {
+  const currentSlug = 'pengertian-citra';
+  const questions = [
+    {
+      q: 'Citra digital tersusun dari elemen-elemen kecil yang membentuk gambar utuh. Elemen tersebut disebut ….',
+      opts: ['bit','piksel','raster','frame','segmen'],
+      ans: 'piksel',
+      explain: 'elemen kecil penyusun gambar digital disebut piksel.'
+    },
+    {
+      q: 'Setiap piksel pada citra digital memiliki nilai yang menunjukkan ….',
+      opts: ['tingkat kecerahan atau warna','ukuran gambar','jenis file','panjang dan lebar gambar','resolusi layar'],
+      ans: 'tingkat kecerahan atau warna',
+      explain: 'nilai piksel menunjukkan tingkat kecerahan atau warna pada posisi tersebut.'
+    },
+    {
+      q: 'Ketika jumlah piksel dalam sebuah citra berkurang maka yang terjadi adalah ….',
+      opts: ['kualitas citra meningkat','citra menjadi lebih tajam','warna citra bertambah','resolusi tidak berubah','citra menjadi buram'],
+      ans: 'citra menjadi buram',
+      explain: 'jumlah piksel yang lebih sedikit menyebabkan detail hilang sehingga citra tampak buram.'
+    },
+    {
+      q: 'Dua gambar memiliki ukuran berbeda, gambar A beresolusi 128×128 piksel dan gambar B beresolusi 32×32 piksel. Jika kedua gambar menampilkan objek yang sama, maka ….',
+      opts: ['gambar B memiliki detail lebih banyak', 'kedua gambar sama jelasnya', 'gambar A memiliki detail lebih baik', 'gambar A lebih buram dari gambar B', 'tidak ada perbedaan yang terlihat'],
+      ans: 'gambar A memiliki detail lebih baik',
+      explain: 'gambar dengan resolusi lebih tinggi (128×128) memiliki detail lebih baik.'
+    },
+    {
+      q: 'Jika dosen menampilkan gambar wajah dengan resolusi 32×32 dan 256×256, aspek yang paling tepat dianalisis adalah ….',
+      opts: ['jumlah warna dalam gambar', 'intensitas kecerahan layar', 'ukuran file gambar', 'perbedaan ketajaman dan detail wajah','jenis format file'],
+      ans: 'perbedaan ketajaman dan detail wajah',
+      explain: 'perbedaan resolusi akan terlihat pada ketajaman dan detail objek (wajah).'
+    }
+  ];
+
+  let currentIdx = 0;
+  const qText = document.getElementById('question-text');
+  const optsCont = document.getElementById('options-container');
+  const feedback = document.getElementById('quiz-feedback');
+  const btnNextQuiz = document.getElementById('next-quiz-btn');
+  const btnNavNext = document.getElementById('nav-next-materi');
+
+  function renderQuestion(idx) {
+    const item = questions[idx];
+    document.getElementById('question-counter').textContent = `Soal ${idx + 1} / ${questions.length}`;
+    qText.textContent = item.q;
+    optsCont.innerHTML = '';
+    feedback.innerHTML = '';
+    btnNextQuiz.disabled = true;
+
+    const labels = ['a', 'b', 'c', 'd', 'e'];
+    item.opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.innerHTML = `<span class="option-label">${labels[i]}.</span> ${opt}`;
+      
+      btn.onclick = () => {
+        Array.from(optsCont.children).forEach(child => {
+          child.style.background = '#fff';
+          child.style.borderColor = 'rgba(16,32,58,0.1)';
+        });
+        feedback.innerHTML = '';
+
+        if (opt === item.ans) {
+          btn.style.background = '#e9f2ff';
+          btn.style.borderColor = '#3b7be3';
+          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar!</div><div class="muted">Benar — ${item.explain}</div>`;
+          btnNextQuiz.disabled = false;
+          Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
+        } else {
+          btn.style.background = '#fff0f0';
+          btn.style.borderColor = '#f5c6c6';
+          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Salah — coba lagi.</div>';
+        }
+      };
+      optsCont.appendChild(btn);
+    });
+  }
+
+  btnNextQuiz.onclick = () => {
+    currentIdx++;
+    if (currentIdx < questions.length) {
+      renderQuestion(currentIdx);
+    } else {
+      updateProgressDatabase();
+    }
+  };
+
+  function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: currentSlug })
+    })
+    .then(async response => {
+        const contentType = response.headers.get("content-type");
+        if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Sesi berakhir atau URL tidak ditemukan. Silakan login kembali.');
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3b7be3'
+        }).then(() => {
+          btnNavNext.classList.remove('disabled');
+          btnNavNext.style.opacity = '1';
+          btnNavNext.style.pointerEvents = 'auto';
+          
+          feedback.innerHTML = '<b style="color:blue">Aktivitas Selesai. Anda tetap bisa mencoba kuis lagi.</b>';
+
+          currentIdx = 0;
+          renderQuestion(0);
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Gagal Simpan', err.message, 'error');
+    });
+  }
+  renderQuestion(0);
+})();
+</script>
+{% endblock %}

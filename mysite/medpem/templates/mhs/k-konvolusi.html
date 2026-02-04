@@ -1,0 +1,1048 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 3 - Konsep Konvolusi{% endblock %}
+
+{% block content %}
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+
+  .card-section-body p { margin-bottom:12px; line-height:1.6; }
+  .card-section-body ol { margin-top:8px; padding-left:35px; }
+  .card-section-body li { margin-bottom:12px; font-size:19px; }
+
+  .conv-container {
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    align-items:center;
+  }
+  .conv-top {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap:wrap;
+    width:100%;
+  }
+  .conv-section {
+    background:#faf9f7;
+    border-radius:12px;
+    padding:14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    text-align:center;
+    min-width:220px;
+  }
+  .conv-section h4 {
+    margin:6px 0 10px;
+    color:#003049;
+    font-size:16px;
+    font-weight: 700;
+  }
+  .conv-table {
+    border-collapse:collapse;
+    margin:8px auto;
+  }
+  .conv-table td {
+    width:44px;
+    height:44px;
+    border:1px solid #999;
+    text-align:center;
+    vertical-align:middle;
+    font-weight:700;
+    padding:0;
+    transition:background-color .2s;
+  }
+
+  .input-cell, .output-cell { background:#fff9ee; }
+  .kernel-cell { background:#d9eafd; }
+  .output-target { background:#4472c4; color:#fff; font-weight:800; }
+  .highlight { background:#d9eafd !important; color:#000; font-weight:800; }
+  .output-highlight { background:#003049 !important; color:#fff; font-weight:800; }
+  
+  .conv-controls {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .conv-controls button {
+    padding:8px 14px;
+    border-radius:8px;
+    border:none; cursor:pointer;
+    background:var(--primary-500);
+    color:#fff;
+    font-weight:700;
+    font-family: inherit;
+  }
+  .conv-controls button.btn-outline {
+    background:#fff;
+    color:var(--primary-500);
+    border:1px solid rgba(16,32,58,0.15);
+  }
+  .conv-controls button.btn-warning {
+    background: #ffc107;
+    color: #000;
+  }
+
+  .calc-wrapper { 
+    width: 100%; 
+    max-width: 800px; 
+    margin-top: 10px; 
+  }
+  .calc-title { font-weight: 800; color: #003049; margin-bottom: 5px; text-align: center; font-size: 15px; }
+  .calculation {
+    background-color: #faf9f7;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px #edf4fe;
+    padding: 20px 24px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    min-height: 60px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.6;
+    border: 1px solid #eee;
+  }
+
+  .quiz-input {
+    width: 100%; height: 100%; text-align: center; background: transparent;
+    color: #0b2540; font-weight: 700; border: none; outline: none; font-family: inherit;
+  }
+  .quiz-cell-input { background: #fff9ee; padding: 0 !important; }
+  .quiz-cell-disabled { background: #f0f0f0; color: #333; }
+
+  .spatial-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-family: 'Inter', sans-serif;
+  }
+  .spatial-card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 15px;
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .spatial-matrix { border-collapse: separate; border-spacing: 4px; }
+  .spatial-matrix td {
+    width: 40px; height: 40px; border-radius: 6px; border: 1.5px solid #e2e8f0;
+    text-align: center; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+  }
+  .spatial-matrix td:hover { border-color: var(--primary-500); background: #eff6ff; transform: scale(1.05); }
+  .center-node { background: #222f3a !important; color: white !important; }
+  .formula-badge { padding: 4px 12px; background: #edf4fe; color: var(--primary-500); border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 10px; }
+  .calc-box-spatial { width: 100%; background: #fdfaf3; border-left: 4px solid #ffc107; padding: 12px; font-family: 'Inter', sans-serif; font-size: 0.85rem; }
+  
+  .full-calc-area { 
+    display: none; 
+    width: 100%; 
+    margin-top: 15px; 
+    padding: 20px; 
+    border-top: 1px dashed #ccc; 
+    font-family: 'Inter', sans-serif; 
+    font-size: 0.95rem; 
+    font-weight: 600; 
+    line-height: 2.2;
+    background: #fcfcfc;
+  }
+  .eq-val { color: var(--primary-500); font-weight: 800; }
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin: 34px 0; }
+
+  .quiz-card-section {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+  }
+
+  .quiz-card-section .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+  }
+
+  .quiz-card-section .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+  .kernel-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+  }
+
+  .kernel-card {
+    border: 1px solid #dcdde1;
+    border-radius: 10px;
+    background-color: #fff;
+    min-width: 300px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+  }
+
+  .kernel-card:hover {
+    border-color: #bcccdc;
+  }
+
+  .kernel-header {
+    background-color: #fcfcfc;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    border-radius: 10px 10px 0 0;
+    font-size: 1.1em;
+    color: #2c3e50;
+  }
+
+  .kernel-math {
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+  }
+
+  .kernel-footer {
+    padding: 15px;
+    text-align: center;
+    border-top: 1px dashed #eee;
+    background-color: #fafafa;
+    border-radius: 0 0 10px 10px;
+  }
+
+  .kernel-footer strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+  }
+
+  .kernel-footer span {
+    font-size: 0.9em;
+    color: #666;
+    line-height: 1.4;
+    display: block;
+  }
+
+  .math-container {
+    font-size: 1.2em;
+  }
+
+  .sub-card {
+    background: #ffffff;
+    border: 2px solid #bcccdc;
+    border-radius: 10px;
+    padding: 0;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 6%);
+  }
+  .sub-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 10px;
+    padding: 12px 15px;
+    font-weight: 600;
+    background: #d9eafd;
+    border-bottom: 2px solid #bcccdc;
+    border-radius: 10px 10px 0 0;
+    border-left: 6px solid #bcccdc;
+  }
+  .sub-card-body { padding: 12px 15px; }
+
+  .instruction {
+    background: #fdfcfe;
+    border: 1px solid #e1e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+  }
+
+  .instruction ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+  }
+
+  .instruction li {
+        text-align: justify;     
+        text-justify: inter-word;
+        margin-left: 15px;
+        margin-bottom: 5px;
+        font-size: 14px;
+  }
+
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main" style="font-family: 'Inter', sans-serif; font-weight: 800;">SUBBAB 3 - <span style="color:var(--primary-500)">KONSEP KONVOLUSI</span></h1>
+</div>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-journal-bookmark"></i>
+    <div>Tujuan Pembelajaran</div>
+  </div>
+  <div class="card-section-body">
+    <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
+    <ol>
+      <li>Memahami konsep operasi konvolusi pada pemrosesan citra digital.</li>
+      <li>Menerapkan operasi konvolusi pada matriks citra sederhana.</li>
+      <li>Menerapkan teknik <em>padding</em> pada proses konvolusi untuk mempertahankan ukuran citra.</li>
+      <li>Menerapkan proses normalisasi hasil konvolusi agar nilai piksel berada dalam rentang yang valid.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-lightbulb"></i>
+    <div>Konsep Konvolusi</div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Salah satu teknik utama yang digunakan pada <strong><em>Spatial Domain</em></strong> adalah 
+      <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) yang memanfaatkan nilai 
+      piksel pusat dan piksel-piksel di sekitarnya</strong>. Konvolusi digunakan karena melihat satu piksel 
+      saja tidak cukup untuk memahami isi sebuah gambar. Sebuah piksel hanya menunjukkan seberapa terang 
+      atau gelap titik tersebut, tetapi tidak memberi tahu apa yang ada di sekitarnya. Jika kita hanya 
+      melihat satu titik, kita tidak bisa memastikan apakah titik tersebut bagian dari suatu objek, bagian 
+      latar belakang, atau hanya gangguan kecil pada gambar.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/1C.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar C.1 Perbedaan nilai gelap dan terang piksel pada suatu area citra
+      </figcaption>
+    </figure>
+
+  <p style="text-align: justify; text-indent: 30px;">
+    Pada Gambar C.1 terlihat bahwa 
+    <strong>satu nilai piksel saja belum cukup untuk memahami sebuah gambar, sehingga perlu diperhatikan 
+    piksel-piksel di sekitarnya</strong>. Piksel yang berada di tengah area (ditandai dengan warna biru) 
+    disebut sebagai piksel pusat, sedangkan piksel-piksel di sekitarnya disebut piksel tetangga.
+  </p>
+
+  <p style="text-align: justify; text-indent: 30px;">
+    Dengan membandingkan nilai piksel pusat dan piksel-piksel tetangganya, barulah dapat diketahui bahwa 
+    pada area tersebut terdapat perbedaan tingkat gelap dan terang yang cukup kontras, sehingga 
+    menandakan adanya perubahan intensitas yang tajam. Perubahan intensitas yang tajam inilah yang 
+    menunjukkan bahwa area tersebut merupakan area tepi (<em>edge</em>) pada citra.
+  </p>
+
+  <p style="text-align: justify; text-indent: 30px;">
+    <strong><em>Filtering</em></strong> bertujuan untuk menghasilkan citra sesuai dengan kebutuhan. 
+    Dengan menggunakan konvolusi, <em>filtering</em> dapat menghasilkan citra baru yang 
+    <strong>lebih halus, lebih tajam, atau dengan tepi objek yang lebih jelas</strong>. Pada proses 
+    konvolusi digunakan sebuah <strong><em>kernel</em></strong>, yaitu 
+    <strong>matriks kecil berisi nilai bobot</strong> yang dapat dibayangkan seperti jendela kecil yang 
+    digeser di atas gambar dari satu piksel ke piksel lainnya.
+  </p>
+
+  <p style="text-align: justify; text-indent: 30px;">
+    Saat <em>kernel</em> digeser, nilai piksel pusat dan piksel-piksel di sekitarnya dikalikan dengan bobot 
+    <em>kernel</em>, lalu hasilnya dijumlahkan. Hasil perhitungan ini menjadi nilai baru bagi piksel pusat. 
+    Proses yang sama diterapkan pada seluruh citra sehingga tampilan gambar berubah sesuai dengan tujuan 
+    <em>filtering</em>.
+  </P>
+  </div>
+</section>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-intersect"></i>
+    <div><em>Kernel Filtering</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Nilai bobot pada <em>kernel</em> mengatur seberapa besar peran setiap piksel tetangga dalam 
+      menentukan nilai piksel pusat</strong>. Setiap nilai piksel di sekitar pusat dikalikan dengan bobot 
+      <em>kernel</em>, kemudian seluruh hasil perkalian tersebut dijumlahkan untuk menghasilkan nilai 
+      piksel baru. <strong>Perbedaan bobot inilah yang menyebabkan hasil <em>filtering</em> dapat 
+      berbeda-beda</strong>.
+    </p>
+
+    <div class="kernel-wrapper">
+      <div class="kernel-card">
+        <div class="kernel-header">Kernel Laplacian</div>
+        <div class="kernel-math">
+          <div class="math-container">
+            $$ \begin{bmatrix} 0 & -1 & 0 \\ -1 & 4 & -1 \\ 0 & -1 & 0 \end{bmatrix} $$
+          </div>
+        </div>
+        <div class="kernel-footer">
+          <strong>Fungsi:</strong>
+          <span>Mendeteksi perubahan tajam (tepi) dalam citra.</span>
+        </div>
+      </div>
+
+      <div class="kernel-card">
+        <div class="kernel-header">Kernel Gaussian</div>
+        <div class="kernel-math">
+          <div class="math-container">
+            $$ \frac{1}{16} \times \begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix} $$
+          </div>
+        </div>
+        <div class="kernel-footer">
+          <strong>Fungsi:</strong>
+          <span>Menghaluskan citra dan mengurangi noise.</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada dua jenis <em>kernel</em> di atas memiliki ukuran yang sama yaitu 3×3, tetapi memiliki nilai 
+      bobot yang berbeda. Nilai bobot inilah yang menentukan bagaimana piksel di sekitar ikut 
+      dihitung. Pada <em>Laplacian kernel</em> nilai bobotnya dibuat agar perbedaan antara piksel gelap dan 
+      terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk menonjolkan tepi gambar. 
+      Sebaliknya, pada <em>Gaussian kernel</em> nilai bobotnya dibuat lebih merata sehingga nilai piksel di 
+      sekitar saling diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Selain nilai bobot, ukuran <em>kernel</em> juga menentukan berapa banyak piksel tetangga yang 
+      terlibat dalam perhitungan</strong>. Karena <em>kernel</em> diletakkan tepat di atas satu piksel, maka 
+      ukurnya harus ganjil, seperti 3×3 atau 5×5 agar terdapat satu piksel pusat yang jelas. Piksel pusat 
+      inilah yang nilainya diperbarui melalui proses konvolusi.
+    </p>
+  </div>
+</section>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-plus-slash-minus"></i>
+    <div>Persamaan Konvolusi</div>
+  </div>
+
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada umumnya <em>kernel</em> berukuran 3×3 paling sering digunakan karena sederhana dan sudah cukup 
+      untuk melihat perubahan gelap dan terang di sekitar piksel pusat. Dengan <em>kernel</em> ini, satu 
+      piksel pusat akan dihitung bersama delapan piksel tetangganya untuk menghasilkan nilai baru.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Proses perhitungan konvolusi dapat dinyatakan secara matematis dengan persamaan berikut:
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+    \[
+    g(x,y) = \sum_{k=-1}^{1} \sum_{j=-1}^{1} h(j+1,k+1)\, f(x-j, y-k)
+    \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Dengan keterangan:
+    </p>
+
+    <ul style="text-align: justify; margin-left: 30px; margin-bottom:20px">
+      <li>\( f(x,y) \) = citra input</li>
+      <li>\( h(j,k) \) = <em>kernel</em></li>
+      <li>\( g(x,y) \) = citra hasil konvolusi</li>
+    </ul>
+
+    <p style="text-align: justify; text-indent: 30px; margin-bottom: 40px;">
+      Pada rumus konvolusi perhitungan dilakukan untuk satu piksel pusat pada posisi \( (x, y) \). 
+      Nilai \( x - j \) dan \( y - k \) menunjukkan posisi piksel-piksel di sekitar piksel pusat, yaitu 
+      piksel tetangga yang ikut dihitung. Sementara itu, \( j + 1 \) dan \( k + 1 \) digunakan untuk 
+      menyesuaikan posisi angka pada <em>kernel</em> agar setiap piksel tetangga dikalikan dengan bobot 
+      <em>kernel</em> yang tepat. Dengan cara ini setiap piksel di sekitar dipasangkan dengan bobot 
+      <em>kernel</em> yang sesuai, lalu hasilnya dijumlahkan untuk menghasilkan nilai baru piksel pusat.
+    </p>
+
+    <div class="sub-card">
+      <div class="sub-card-header"><span>Bagaimana Elemen Kernel dipasangkan dengan Piksel Citra?</span></div>
+      <div class="sub-card-body">
+
+        <div class="card-section-body">
+          <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
+            Untuk memahami bagaimana setiap elemen <em>kernel</em> \( h(j,k) \) dipasangkan dengan koordinat 
+            piksel citra \( f(x, y) \), silakan arahkan kursor ke <em>kernel</em> dan piksel yang ditampilkan. 
+            Bagian ini akan membantu kamu memahami koordinat yang sedang dihitung serta bagaimana nilai pada 
+            posisi tersebut dikalikan dengan nilai bobot <em>kernel</em> untuk menghasilkan nilai piksel baru.
+          </p>
+
+          <div class="instruction">
+            <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
+            <ul>
+              <li>Arahkan kursor ke salah satu angka pada tabel <strong>kernel Laplacian (h)</strong> atau <strong>citra masukan (f)</strong>.</li>
+              <li>Lihat bagian <strong>Detail Operasi</strong> untuk mengetahui posisi elemen dan amati bagaimana elemen kernel dipasangkan dengan piksel citra yang bersesuaian.</li>
+              <li>Klik tombol <strong>Tampilkan Uraian Lengkap</strong> untuk melihat seluruh langkah perhitungan konvolusi.</li>
+              <li>Perhatikan bagian <strong>Hasil Akhir</strong> untuk mengetahui nilai piksel baru yang dihasilkan pada posisi piksel pusat.</li>
+            </ul>
+          </div>
+
+          <div class="spatial-layout">
+              <div class="spatial-card">
+                  <h5 class="mb-3" style="font-weight: 700;">Kernel h (Laplacian)</h5>
+                  <table class="spatial-matrix">
+                      <tr>
+                          <td onmouseover="fromKernel(0,0,0,'h(0,0)')">0</td>
+                          <td onmouseover="fromKernel(0,1,-1,'h(0,1)')">-1</td>
+                          <td onmouseover="fromKernel(0,2,0,'h(0,2)')">0</td>
+                      </tr>
+                      <tr>
+                          <td onmouseover="fromKernel(1,0,-1,'h(1,0)')">-1</td>
+                          <td class="center-node" onmouseover="fromKernel(1,1,4,'h(1,1)')">4</td>
+                          <td onmouseover="fromKernel(1,2,-1,'h(1,2)')">-1</td>
+                      </tr>
+                      <tr>
+                          <td onmouseover="fromKernel(2,0,0,'h(2,0)')">0</td>
+                          <td onmouseover="fromKernel(2,1,-1,'h(2,1)')">-1</td>
+                          <td onmouseover="fromKernel(2,2,0,'h(2,2)')">0</td>
+                      </tr>
+                  </table>
+                  <p class="small text-muted mt-3 text-center">Arahkan kursor ke elemen kernel</p>
+              </div>
+
+              <div class="spatial-card">
+                  <h5 class="mb-3" style="font-weight: 700;">Input Citra (f)</h5>
+                  <table class="spatial-matrix">
+                      <tr>
+                          <td onmouseover="fromPixel('x-1, y-1', 99, 'h(0,0)', 0, 'Pojok Kiri Atas')">99</td>
+                          <td onmouseover="fromPixel('x-1, y', 112, 'h(0,1)', -1, 'Atas')">112</td>
+                          <td onmouseover="fromPixel('x-1, y+1', 110, 'h(0,2)', 0, 'Pojok Kanan Atas')">110</td>
+                      </tr>
+                      <tr>
+                          <td onmouseover="fromPixel('x, y-1', 97, 'h(1,0)', -1, 'Kiri')">97</td>
+                          <td class="center-node" onmouseover="fromPixel('x, y', 110, 'h(1,1)', 4, 'Pusat')">110</td>
+                          <td onmouseover="fromPixel('x, y+1', 109, 'h(1,2)', -1, 'Kanan')">109</td>
+                      </tr>
+                      <tr>
+                          <td onmouseover="fromPixel('x+1, y-1', 95, 'h(2,0)', 0, 'Pojok Kiri Bawah')">95</td>
+                          <td onmouseover="fromPixel('x+1, y', 108, 'h(2,1)', -1, 'Bawah')">108</td>
+                          <td onmouseover="fromPixel('x+1, y+1', 108, 'h(2,2)', 0, 'Pojok Kanan Bawah')">108</td>
+                      </tr>
+                  </table>
+                  <p class="small text-muted mt-3 text-center">Arahkan kursor ke nilai piksel</p>
+              </div>
+
+              <div class="spatial-card">
+                  <h5 class="mb-2" style="font-weight: 700;">Detail Operasi</h5>
+                  <div id="sp-coord" class="h4 fw-bold text-primary mb-1" style="font-weight: 800;">(x, y)</div>
+                  <div id="sp-label" class="badge bg-light text-dark mb-3">Siap</div>
+                  <div class="calc-box-spatial">
+                      <strong>Proses:</strong><br>
+                      <span id="sp-math">Pilih elemen matriks...</span><br>
+                      <span id="sp-res" class="text-danger fw-bold">--</span>
+                  </div>
+                  <button class="btn btn-sm btn-primary mt-3 w-100" onclick="toggleFullCalc()" style="font-weight: 700;">Tampilkan Uraian Lengkap</button>
+              </div>
+          </div>
+          <div id="fullCalcArea" class="full-calc-area">
+              <div id="sym-eq"></div>
+              <div style="margin:10px 0; border-bottom:1px solid #eee;"></div>
+              <div id="num-eq"></div>
+              <div id="fin-res" class="mt-2 fw-bold text-success" style="font-size: 1.1rem; font-weight: 800;"></div>
+          </div>
+
+          <figure style="margin:20px 0; margin-top:50px;">
+            <img src="{% static 'assets/img/konten/C3.png' %}" style="display:block; margin:auto; width:95%;">
+            <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+              Gambar C.2 Citra grayscale dan citra hasil konvolusi menggunakan kernel 3x3
+            </figcaption>
+          </figure>
+
+          <p style="text-align: justify; text-indent: 30px;">
+            Pada Gambar C.2 ditunjukkan hasil penerapan <em>Laplacian filter</em> dan <em>smoothing filter</em> pada 
+            citra <em>grayscale</em> menggunakan proses konvolusi. Ketika citra diproses menggunakan 
+            <em>Laplacian kernel</em>, bagian tepi dan garis pada citra terlihat lebih jelas dan tajam karena 
+            perbedaan nilai gelap dan terang diperkuat. Sebaliknya, ketika citra diproses menggunakan 
+            <em>smoothing kernel</em>, tampilan citra menjadi lebih halus karena nilai piksel di sekitarnya 
+            diratakan, sehingga gangguan kecil atau <em>noise</em> menjadi berkurang.
+          </p>
+        
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section" aria-labelledby="materi-heading">
+  <div class="card-section-header">
+    <i class="bi bi-images"></i>
+    <div id="materi-heading">Bagaimana Cara Kerja Konvolusi?</div>
+  </div>
+
+  <div class="card-section-body">
+    <p style="text-align: justify;">
+      Proses konvolusi pada citra dapat dilakukan melalui langkah-langkah berikut:
+    </p>
+    <ol style="text-align: justify; margin-left: 20px">
+      <li><strong>Tentukan <em>kernel</em> (matriks <em>filter</em>)</strong> yang akan digunakan pada proses konvolusi.</li>
+      <li><strong>Letakkan <em>kernel</em> di atas citra</strong> sehingga bagian tengah <em>kernel</em> tepat berada pada piksel yang sedang dihitung (piksel pusat).</li>
+      <li><strong>Kalikan setiap nilai bobot pada <em>kernel</em></strong> dengan nilai piksel citra yang berada pada posisi yang bersesuaian.</li>
+      <li><strong>Jumlahkan seluruh hasil perkalian</strong> tersebut. Nilai totalnya menjadi nilai piksel baru pada citra hasil konvolusi.</li>
+      <li><strong>Geser <em>kernel</em> ke piksel berikutnya</strong> lalu ulangi langkah-langkah tersebut hingga seluruh piksel citra diproses.</li>
+    </ol>
+
+    <figure style="margin:20px 0; margin-top: 50px;">
+      <img src="{% static 'assets/img/konten/2C.png' %}" style="display:block; margin:auto; width:90%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar C.2 Ilustrasi proses perhitungan konvolusi pada citra
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
+      Pada gambar C.2 merupakan ilustrasi cara kerja konvolusi dengan <em>kernel</em> Laplacian yang digunakan untuk proses penajaman citra. 
+    </P>
+
+    <figure style="margin:20px 0; margin-top: 50px">
+      <img src="{% static 'assets/img/konten/3C.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar C.3 Citra <em>grayscale</em> dan citra hasil konvolusi menggunakan kernel 3x3
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px; margin-top: 30px">
+      Pada Gambar C.3 ditunjukkan hasil penerapan <em>Laplacian filter</em> dan <em>smoothing filter</em> pada 
+      citra <em>grayscale</em> menggunakan proses konvolusi. Ketika citra diproses menggunakan 
+      <em>Laplacian kernel</em>, bagian tepi dan garis pada citra terlihat lebih jelas dan tajam karena 
+      perbedaan nilai gelap dan terang diperkuat. Sebaliknya, ketika citra diproses menggunakan 
+      <em>smoothing kernel</em>, tampilan citra menjadi lebih halus karena nilai piksel di sekitarnya 
+      diratakan, sehingga gangguan kecil atau <em>noise</em> menjadi berkurang.
+    </p>
+  </div>
+</section>
+
+
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-images"></i>
+    <div>Contoh Proses Perhitungan Konvolusi</div>
+  </div>
+  <div class="card-section-body">
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Agar lebih mudah dipahami, 
+      <strong>perhatikan contoh proses konvolusi pada citra berukuran 4×4 menggunakan <em>kernel</em> 3×3</strong>. 
+      Pada contoh ini, setiap langkah menunjukkan bagaimana <em>kernel</em> bekerja menghitung nilai piksel 
+      baru melalui proses perkalian dan penjumlahan nilai piksel di sekitarnya.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:65%;">
+    </figure>
+
+    <div class="instruction">
+      <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur konvolusi:</strong>
+      <ul>
+        <li>Perhatikan <strong>Input Citra</strong>, <strong>Kernel (Laplacian)</strong>, dan <strong>Hasil</strong> yang ditampilkan.</li>
+        <li>Klik tombol <strong>Mulai</strong> untuk memulai proses konvolusi secara bertahap pada satu piksel pusat.</li>
+        <li>Area berwarna biru muda pada <strong>Input Citra</strong> menunjukkan area piksel (3×3) yang sedang diproses oleh kernel.</li>
+        <li>Gunakan tombol <strong>Lanjut</strong> untuk melanjutkan ke langkah perhitungan berikutnya.</li>
+        <li>Klik <strong>Auto Play</strong> jika ingin melihat proses konvolusi berjalan secara otomatis.</li>
+        <li>Tekan <strong>Pause</strong> untuk menghentikan sementara proses yang sedang berlangsung.</li>
+        <li>Angka berwarna biru pada bagian <strong>Perhitungan</strong> menunjukkan bobot kernel yang sedang dikalikan dengan nilai piksel citra.</li>
+        <li>Hasil konvolusi akan ditampilkan pada bagian <strong>Hasil</strong> sesuai dengan posisi piksel yang sedang dihitung.</li>
+        <li>Perhatikan bagian <strong>Perhitungan</strong> untuk melihat proses perkalian dan penjumlahan nilai piksel dengan bobot kernel secara rinci.</li>
+        <li>Klik tombol <strong>Ulangi</strong> untuk mengulang proses konvolusi dari kondisi awal.</li>
+      </ul>
+    </div>
+
+    <div class="conv-container">
+      <div class="conv-top">
+        <div class="conv-section">
+          <h4>Input Citra (Matriks)</h4>
+          <table id="inputMatrix" class="conv-table"></table>
+        </div>
+        <div class="conv-section">
+          <h4>Kernel (Laplacian)</h4>
+          <table id="kernelMatrix" class="conv-table"></table>
+          <div class="conv-controls">
+            <button id="startBtn">Mulai</button>
+            <button id="autoBtn" class="btn-outline">Auto Play</button>
+            <button id="nextBtn" style="display:none;">Lanjut</button>
+            <button id="pauseBtn" style="display:none;">Pause</button>
+            <button id="resetBtn" class="btn-outline" style="display:none;">Ulangi</button>
+          </div>
+        </div>
+        <div class="conv-section">
+          <h4>Hasil Konvolusi</h4>
+          <table id="outputMatrix" class="conv-table"></table>
+        </div>
+      </div>
+      <div class="calc-wrapper">
+        <div class="calc-title">PERHITUNGAN:</div>
+        <div class="calculation" id="calculationText">Belum ada perhitungan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section quiz-card-section">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 1</div>
+  </div>
+  <div class="card-section-body">
+    <p>Diberikan citra <em>grayscale</em> berukuran 4x4 berikut:</p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/soal.png' %}" style="display:block; margin:auto; width:50%;">
+    </figure>
+
+    <p style="margin-bottom: 30px">
+      Hitung dan tentukan setiap nilai elemen pada matriks hasil konvolusi menggunakan <em>kernel</em> Laplacian 3×3!
+    </p>
+
+
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:22px 0;">
+      <div style="text-align:center;">
+        <h5 style="font-weight: 700;">Matriks Citra</h5>
+        <table class="conv-table">
+          <tr><td class="input-cell">79</td><td class="input-cell">77</td><td class="input-cell">102</td><td class="input-cell">208</td></tr>
+          <tr><td class="input-cell">84</td><td class="input-cell">79</td><td class="input-cell">106</td><td class="input-cell">118</td></tr>
+          <tr><td class="input-cell">89</td><td class="input-cell">112</td><td class="input-cell">114</td><td class="input-cell">114</td></tr>
+          <tr><td class="input-cell">83</td><td class="input-cell">99</td><td class="input-cell">90</td><td class="input-cell">109</td></tr>
+        </table>
+      </div>
+      <div style="text-align:center;">
+        <h5 style="font-weight: 700;">Kernel</h5>
+        <table class="conv-table">
+          <tr><td class="kernel-cell">0</td><td class="kernel-cell">-1</td><td class="kernel-cell">0</td></tr>
+          <tr><td class="kernel-cell">-1</td><td class="kernel-cell">5</td><td class="kernel-cell">-1</td></tr>
+          <tr><td class="kernel-cell">0</td><td class="kernel-cell">-1</td><td class="kernel-cell">0</td></tr>
+        </table>
+      </div>
+      <div style="text-align:center;">
+        <h5 style="font-weight: 700;">Hasil Konvolusi</h5>
+        <table id="quizOutput" class="conv-table">
+          <tr><td class="quiz-cell-disabled">79</td><td class="quiz-cell-disabled">77</td><td class="quiz-cell-disabled">102</td><td class="quiz-cell-disabled">208</td></tr>
+          <tr><td class="quiz-cell-disabled">84</td><td class="quiz-cell-input"><input class="quiz-input" data-pos="0"></td><td class="quiz-cell-input"><input class="quiz-input" data-pos="1"></td><td class="quiz-cell-disabled">118</td></tr>
+          <tr><td class="quiz-cell-disabled">89</td><td class="quiz-cell-input"><input class="quiz-input" data-pos="2"></td><td class="quiz-cell-input"><input class="quiz-input" data-pos="3"></td><td class="quiz-cell-disabled">114</td></tr>
+          <tr><td class="quiz-cell-disabled">83</td><td class="quiz-cell-disabled">99</td><td class="quiz-cell-disabled">90</td><td class="quiz-cell-disabled">109</td></tr>
+        </table>
+        <small class="text-muted d-block mt-2" style="max-width: 190px; line-height: 1.2;">
+          *Piksel tepi akan diproses menggunakan teknik <b>Padding</b> yang akan dipelajari pada materi berikutnya.
+        </small>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button id="checkAnswers" style="background:#fff5e6;padding:12px 26px;border-radius:10px;border:1px solid #ddd;font-weight:800; font-family: inherit;">Cek Jawaban</button>
+      <button id="resetAnswers" style="background:#d9eafd;padding:12px 26px;border-radius:10px;border:1px solid #c3d9f8;font-weight:700; font-family: inherit;">Reset Jawaban</button>
+    </div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'kuis_2' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nav-next-materi" href="{% url 't_padding' %}" 
+     class="btn btn-primary {% if 'k-konvolusi' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'k-konvolusi' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function fromKernel(r, c, val, name) {
+    document.getElementById('sp-coord').innerText = name;
+    document.getElementById('sp-label').innerText = "Koefisien Kernel";
+    document.getElementById('sp-math').innerText = `Elemen h baris ${r}, kolom ${c}`;
+    document.getElementById('sp-res').innerText = `Bobot kernel: ${val}`;
+}
+
+function fromPixel(coord, val, hName, hVal, label) {
+    document.getElementById('sp-coord').innerText = `(${coord})`;
+    document.getElementById('sp-label').innerText = label;
+    document.getElementById('sp-math').innerText = `${hName} f(${coord})`;
+    document.getElementById('sp-res').innerText = `${hVal} x ${val} = ${hVal * val}`;
+}
+
+function toggleFullCalc() {
+    const area = document.getElementById('fullCalcArea');
+    if (area.style.display === 'block') {
+        area.style.display = 'none';
+    } else {
+        area.style.display = 'block';
+        const data = [
+            {h: 'h(0,0)', hv: 0, f: 'f(x-1, y-1)', fv: 99},
+            {h: 'h(0,1)', hv: -1, f: 'f(x-1, y)', fv: 112},
+            {h: 'h(0,2)', hv: 0, f: 'f(x-1, y+1)', fv: 110},
+            {h: 'h(1,0)', hv: -1, f: 'f(x, y-1)', fv: 97},
+            {h: 'h(1,1)', hv: 4, f: 'f(x, y)', fv: 110},
+            {h: 'h(1,2)', hv: -1, f: 'f(x, y+1)', fv: 109},
+            {h: 'h(2,0)', hv: 0, f: 'f(x+1, y-1)', fv: 95},
+            {h: 'h(2,1)', hv: -1, f: 'f(x+1, y)', fv: 108},
+            {h: 'h(2,2)', hv: 0, f: 'f(x+1, y+1)', fv: 108}
+        ];
+        
+        let symStr = 'g(x,y) = ';
+        let numStr = 'g(x,y) = ';
+        let total = 0;
+        
+        data.forEach((item, index) => {
+            const separator = index === 0 ? "" : " + ";
+            symStr += `${separator}(<span class="eq-val">${item.h}</span> x ${item.f})`;
+            numStr += `${separator}(<span class="eq-val">${item.hv}</span> x ${item.fv})`;
+            total += (item.hv * item.fv);
+        });
+        
+        document.getElementById('sym-eq').innerHTML = symStr;
+        document.getElementById('num-eq').innerHTML = numStr;
+        document.getElementById('fin-res').innerHTML = `Hasil Akhir = ${total}`;
+    }
+}
+
+(function() {
+  const currentSlug = 'k-konvolusi';
+  const btnNavNext = document.getElementById('nav-next-materi');
+
+  const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
+  const kernel = [[0,-1,0],[-1,4,-1],[0,-1,0]];
+  const positions = [[1,1],[1,2],[2,1],[2,2]];
+  let step = 0;
+  let intervalId = null;
+  let isPaused = false;
+
+  const inputTable = document.getElementById("inputMatrix");
+  const kernelTable = document.getElementById("kernelMatrix");
+  const outputTable = document.getElementById("outputMatrix");
+  const calcText = document.getElementById("calculationText");
+
+  function initTables() {
+    inputTable.innerHTML = "";
+    inputData.forEach(row => {
+      const tr = document.createElement("tr");
+      row.forEach(val => {
+        const td = document.createElement("td");
+        td.classList.add("input-cell");
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      inputTable.appendChild(tr);
+    });
+
+    kernelTable.innerHTML = "";
+    kernel.forEach(row => {
+      const tr = document.createElement("tr");
+      row.forEach(val => {
+        const td = document.createElement("td");
+        td.classList.add("kernel-cell");
+        td.textContent = val;
+        tr.appendChild(td);
+      });
+      kernelTable.appendChild(tr);
+    });
+
+    outputTable.innerHTML = "";
+    for(let i=0; i<4; i++){
+      const tr = document.createElement("tr");
+      for(let j=0; j<4; j++){
+        const td = document.createElement("td");
+        td.classList.add("output-cell");
+        if(i >= 1 && i <= 2 && j >= 1 && j <= 2) td.classList.add("output-target");
+        tr.appendChild(td);
+      }
+      outputTable.appendChild(tr);
+    }
+  }
+
+  function processStep() {
+    if (step >= positions.length) {
+      clearInterval(intervalId);
+      document.getElementById("nextBtn").style.display = "none";
+      document.getElementById("pauseBtn").style.display = "none";
+      document.getElementById("resetBtn").style.display = "inline-block";
+      return;
+    }
+
+    const [x,y] = positions[step];
+    Array.from(inputTable.querySelectorAll("td")).forEach(td => td.classList.remove("highlight"));
+    for(let i=x-1; i<=x+1; i++)
+      for(let j=y-1; j<=y+1; j++) inputTable.rows[i].cells[j].classList.add("highlight");
+
+    let sum = 0;
+    let detail = [];
+    for(let i=-1; i<=1; i++){
+      for(let j=-1; j<=1; j++){
+        const val = inputData[x+i][y+j];
+        const k = kernel[i+1][j+1];
+        sum += val * k;
+        detail.push(`(<span class="eq-val">${k}</span> x ${val})`);
+      }
+    }
+
+    calcText.innerHTML = `${detail.join(" + ")} = <b>${sum}</b>`;
+    outputTable.rows[x].cells[y].textContent = sum;
+    outputTable.rows[x].cells[y].classList.add("output-highlight");
+    step++;
+  }
+
+  document.getElementById("startBtn").onclick = () => {
+    document.getElementById("startBtn").style.display = "none";
+    document.getElementById("autoBtn").style.display = "none";
+    document.getElementById("nextBtn").style.display = "inline-block";
+    document.getElementById("resetBtn").style.display = "inline-block";
+    processStep();
+  };
+
+  document.getElementById("autoBtn").onclick = () => {
+    document.getElementById("startBtn").style.display = "none";
+    document.getElementById("autoBtn").style.display = "none";
+    document.getElementById("pauseBtn").style.display = "inline-block";
+    document.getElementById("resetBtn").style.display = "inline-block";
+    processStep();
+    intervalId = setInterval(() => { if(!isPaused) processStep(); }, 1000);
+  };
+
+  document.getElementById("pauseBtn").onclick = function() {
+    isPaused = !isPaused;
+    this.textContent = isPaused ? "Resume" : "Pause";
+  };
+
+  document.getElementById("nextBtn").onclick = processStep;
+
+  document.getElementById("resetBtn").onclick = () => {
+    clearInterval(intervalId);
+    step = 0; isPaused = false;
+    initTables();
+    calcText.textContent = "Belum ada perhitungan";
+    document.getElementById("startBtn").style.display = "inline-block";
+    document.getElementById("autoBtn").style.display = "inline-block";
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("pauseBtn").style.display = "none";
+    document.getElementById("resetBtn").style.display = "none";
+  };
+
+  initTables();
+
+  const inputDataQuiz = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+  const kernelQuiz = [[0,-1,0],[-1,5,-1],[0,-1,0]];
+  const positionsQuiz = [[1,1],[1,2],[2,1],[2,2]];
+  const correctAnswers = positionsQuiz.map(([x,y]) => {
+    let sum = 0;
+    for(let i=-1; i<=1; i++)
+      for(let j=-1; j<=1; j++) sum += inputDataQuiz[x+i][y+j] * kernelQuiz[i+1][j+1];
+    return sum;
+  });
+
+  const inputs = [...document.querySelectorAll(".quiz-input")];
+
+  document.getElementById("checkAnswers").onclick = () => {
+    let allCorrect = true;
+    let anyEmpty = false;
+
+    inputs.forEach((inp, i) => {
+      if (inp.value.trim() === "") anyEmpty = true;
+      const val = parseInt(inp.value.trim());
+      if(val === correctAnswers[i]){
+        inp.parentElement.style.background = "#4f71be";
+        inp.style.color = "white";
+      } else {
+        inp.parentElement.style.background = "#c0392b";
+        inp.style.color = "white";
+        allCorrect = false;
+      }
+    });
+
+    if (anyEmpty) {
+      Swal.fire('Belum Lengkap!', 'Silakan isi semua kolom jawaban.', 'warning');
+    } else if (allCorrect) {
+      updateProgressDatabase();
+    } else {
+      Swal.fire('Coba Lagi!', 'Masih ada jawaban yang salah, periksa kembali.', 'error');
+    }
+  };
+
+  function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({ slug: currentSlug })
+    })
+    .then(async response => {
+        const contentType = response.headers.get("content-type");
+        if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Sesi berakhir atau URL tidak ditemukan. Silakan login kembali.');
+        }
+        return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#3b7be3'
+        }).then(() => {
+          btnNavNext.classList.remove('disabled');
+          btnNavNext.style.opacity = '1';
+          btnNavNext.style.pointerEvents = 'auto';
+        });
+      } else {
+        throw new Error(data.message);
+      }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Gagal Simpan', err.message, 'error');
+    });
+  }
+
+  document.getElementById("resetAnswers").onclick = () => {
+    inputs.forEach(i => { 
+      i.value=""; 
+      i.parentElement.style.background = "#fff9ee"; 
+      i.style.color = "#0b2540"; 
+    });
+  };
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{% endblock %}

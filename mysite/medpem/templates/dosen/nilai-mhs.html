@@ -1,0 +1,436 @@
+{% extends "dosen/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}Nilai Mahasiswa — Dashboard Dosen{% endblock %}
+
+{% block content %}
+
+<style>
+.hero {
+    background: linear-gradient(135deg, #eff6ff, #eef2ff);
+    padding: 26px;
+    border-radius: 18px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+.hero h1 { font-size: 30px; font-weight: 800; }
+
+.card-section {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 22px;
+}
+
+.filter-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    gap: 16px;
+}
+
+.filter-left, .filter-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.search-wrapper {
+    position: relative;
+    width: 260px;
+}
+
+.search-wrapper i {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.search-box {
+    padding-left: 36px;
+}
+
+.table { border-collapse: collapse; font-size: 14px; width: 100%; }
+.table thead th {
+    background: #f8fafc;
+    font-weight: 700;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    color: #475569;
+}
+
+.table tbody td {
+    border: 1px solid #e5e7eb;
+    padding: 12px;
+    vertical-align: middle;
+    text-align: center;
+    color: #1e293b;
+}
+
+.col-no { width: 60px; }
+.col-nama { text-align: left !important; min-width: 250px; font-size: 15px; font-weight: 500; }
+.col-nim { width: 150px; font-size: 14px; }
+.col-kelas { width: 150px; font-size: 14px; }
+
+.score.good { color: #16a34a; font-weight: 700; }
+.score.low { color: #dc2626; font-weight: 700; }
+.action-link { cursor: pointer; color: #2563eb; font-size: 18px; }
+
+.pagination-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.page-info {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.pagination-btns {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-page {
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    color: #475569;
+    text-decoration: none;
+}
+
+.btn-page-nav:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.page-current {
+    padding: 6px 14px;
+    border: 2px solid #9ca3af;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #1e293b;
+    min-width: 40px;
+    text-align: center;
+}
+
+.btn-page.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f1f5f9;
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+.modal-box {
+    background: #fff;
+    width: 95%;
+    max-width: 1450px;
+    border-radius: 16px;
+    padding: 24px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.modal-title { font-size: 22px; font-weight: 800; }
+.modal-close { cursor: pointer; font-size: 22px; color: #6b7280; }
+.history-card {
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 24px;
+}
+.history-title { font-weight: 800; font-size: 18px; margin-bottom: 12px; color: #1e293b; }
+.table-scroll { width: 100%; overflow-x: auto; }
+.table-scroll table { min-width: 1200px; }
+.row-percentage {
+    background-color: #f8fafc;
+    font-weight: bold;
+    color: #1e293b;
+}
+</style>
+
+<div class="hero">
+    <h1>Nilai <span class="text-primary">Mahasiswa</span></h1>
+    <p class="text-muted">Rekap nilai kuis, evaluasi, dan riwayat pengerjaan (WITA)</p>
+</div>
+
+<div class="card-section">
+    <form method="GET" action="{% url 'nilai_mhs' %}" id="filterForm">
+        <div class="filter-bar">
+            <div class="filter-left">
+                <div class="filter-group">
+                    <span>Tampilkan</span>
+                    <select name="per_page" class="form-select" style="width:85px;" onchange="this.form.submit()">
+                        <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+                        <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+                        <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+                    </select>
+                    <span>data</span>
+                </div>
+
+                <div class="filter-group">
+                    <span>Pilih Kelas:</span>
+                    <select name="kelas" class="form-select" style="min-width:220px;" onchange="this.form.submit()">
+                        <option value="">Semua Kelas</option>
+                        {% for k in daftar_kelas %}
+                        <option value="{{ k.id }}" {% if request.GET.kelas == k.id|stringformat:"s" %}selected{% endif %}>
+                            {{ k.nama_kelas }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-right align-items-end">
+                <a href="{% url 'export_nilai_excel' %}?kelas={{ request.GET.kelas }}&q={{ request.GET.q }}" class="btn btn-success" style="width: fit-content;">
+                    <i class="bi bi-file-earmark-excel"></i> Export Excel
+                </a>
+                <div class="search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" 
+                        name="q" 
+                        id="searchInput"
+                        class="form-control search-box" 
+                        placeholder="Cari nama / NIM..." 
+                        value="{{ request.GET.q|default:'' }}"
+                        autocomplete="off">
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th class="col-no">No</th>
+                    <th style="text-align: center;">Nama Mahasiswa</th>
+                    <th class="col-nim">NIM</th>
+                    <th class="col-kelas">Kelas</th>
+                    <th>K1</th><th>K2</th><th>K3</th><th>K4</th><th>K5</th><th>K6</th>
+                    <th>Evaluasi</th>
+                    <th style="width:80px">Riwayat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mhs in daftar_mahasiswa %}
+                <tr>
+                    <td>{{ daftar_mahasiswa.start_index|add:forloop.counter0 }}</td>
+                    <td class="col-nama">{{ mhs.nama_lengkap }}</td>
+                    <td class="col-nim">{{ mhs.nim }}</td>
+                    <td class="col-kelas">{{ mhs.kelas.nama_kelas|default:"-" }}</td>
+                    <td class="score {% if mhs.nilai_rekap.k1 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k1 }}</td>
+                    <td class="score {% if mhs.nilai_rekap.k2 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k2 }}</td>
+                    <td class="score {% if mhs.nilai_rekap.k3 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k3 }}</td>
+                    <td class="score {% if mhs.nilai_rekap.k4 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k4 }}</td>
+                    <td class="score {% if mhs.nilai_rekap.k5 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k5 }}</td>
+                    <td class="score {% if mhs.nilai_rekap.k6 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k6 }}</td>
+                    <td class="score {% if mhs.nilai_rekap.evaluasi >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.evaluasi }}</td>
+                    <td>
+                        <span class="action-link" onclick="openHistory('modal-{{ mhs.id }}')">
+                            <i class="bi bi-clock-history"></i>
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="12" class="py-4 text-muted text-center">Belum ada data mahasiswa</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-wrapper">
+        <div class="page-info">
+            Menampilkan <strong>{{ daftar_mahasiswa.start_index }}</strong> sampai <strong>{{ daftar_mahasiswa.end_index }}</strong> dari <strong>{{ total_data }}</strong> data
+        </div>
+
+        <div class="pagination-btns">
+            {% if daftar_mahasiswa.has_previous %}
+                <a href="?page={{ daftar_mahasiswa.previous_page_number }}&q={{ request.GET.q }}&kelas={{ request.GET.kelas }}&per_page={{ per_page }}" class="btn-page btn-page-nav">
+                    Sebelumnya
+                </a>
+            {% else %}
+                <span class="btn-page disabled">Sebelumnya</span>
+            {% endif %}
+
+            <div class="page-current">{{ daftar_mahasiswa.number }}</div>
+
+            {% if daftar_mahasiswa.has_next %}
+                <a href="?page={{ daftar_mahasiswa.next_page_number }}&q={{ request.GET.q }}&kelas={{ request.GET.kelas }}&per_page={{ per_page }}" class="btn-page btn-page-nav">
+                    Berikutnya
+                </a>
+            {% else %}
+                <span class="btn-page disabled">Berikutnya</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% for mhs in daftar_mahasiswa %}
+<div class="modal-overlay" id="modal-{{ mhs.id }}">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title">Riwayat Nilai — {{ mhs.nama_lengkap }}</div>
+            <div class="modal-close" onclick="closeHistory('modal-{{ mhs.id }}')">
+                <i class="bi bi-x-lg"></i>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <span class="badge bg-warning-subtle text-dark px-3 py-2">
+                <strong>KKM:</strong> {{ kkm }}
+            </span>
+        </div>
+
+        {% for n in "1234567"|make_list %}
+        <div class="history-card">
+            <div class="history-title">
+                {% if n == "7" %}EVALUASI AKHIR (20 SOAL){% else %}KUIS {{ n }}{% endif %}
+            </div>
+            <div class="table-scroll">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th style="width:80px;">Percobaan</th>
+                            <th style="width:120px;">Tanggal</th>
+                            <th style="width:110px;">Mulai</th>
+                            <th style="width:110px;">Selesai</th>
+                            <th style="width:70px;">Nilai</th>
+                            <th style="width:100px;">Status</th>
+                            {% if n == "7" %}
+                                {% for i in "12345678901234567890"|make_list %}
+                                <th style="width:35px;">S{{ forloop.counter }}</th>
+                                {% endfor %}
+                            {% else %}
+                                {% for i in "1234567890"|make_list %}
+                                <th style="width:40px;">S{{ forloop.counter }}</th>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% with riwayats=mhs.riwayat_per_kuis|dict_get:n %}
+                            {% for riwayat in riwayats %}
+                            <tr>
+                                <td>Ke-{{ riwayat.percobaan_ke }}</td>
+                                <td>{{ riwayat.waktu_selesai|date:"d/m/Y" }}</td>
+                                <td>{{ riwayat.waktu_mulai|date:"H:i:s"|default:"-" }}</td>
+                                <td>{{ riwayat.waktu_selesai|date:"H:i:s"|default:"-" }}</td>
+                                <td><strong>{{ riwayat.skor }}</strong></td>
+                                <td>
+                                    {% if riwayat.lulus %}
+                                        <span class="badge bg-success">Lulus</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Tidak Lulus</span>
+                                    {% endif %}
+                                </td>
+                                
+                                {% for status in riwayat.detail_jawaban %}
+                                    <td>
+                                        {% if status %}
+                                            <i class="bi bi-check-lg text-success" style="font-size: 1.2rem; font-weight: bold;"></i>
+                                        {% else %}
+                                            <i class="bi bi-x-lg text-danger" style="font-size: 1rem;"></i>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="{% if n == '7' %}26{% else %}16{% endif %}" class="text-muted text-center py-3">
+                                    Belum ada riwayat pengerjaan.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endwith %}
+                    </tbody>
+                    <tfoot>
+                        <tr class="row-percentage">
+                            <td colspan="6" class="text-end">Persentase Benar Mahasiswa (%)</td>
+                            {% if n == "1" %}
+                                {% for p in mhs.persentase_k1 %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% elif n == "2" %}
+                                {% for p in mhs.persentase_k2 %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% elif n == "3" %}
+                                {% for p in mhs.persentase_k3 %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% elif n == "4" %}
+                                {% for p in mhs.persentase_k4 %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% elif n == "5" %}
+                                {% for p in mhs.persentase_k5 %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% elif n == "6" %}
+                                {% for p in mhs.persentase_k6 %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% elif n == "7" %}
+                                {% for p in mhs.persentase_evaluasi %}<td class="text-center">{{ p }}%</td>{% endfor %}
+                            {% endif %}
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    let timeout = null;
+    const searchInput = document.getElementById('searchInput');
+    const filterForm = document.getElementById('filterForm');
+
+    searchInput.addEventListener('keyup', function() {
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            filterForm.submit();
+        }, 600);
+    });
+
+    function openHistory(id){
+        document.getElementById(id).style.display="flex";
+    }
+    function closeHistory(id){
+        document.getElementById(id).style.display="none";
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeHistory(overlay.id);
+        });
+    });
+</script>
+
+{% endblock %}

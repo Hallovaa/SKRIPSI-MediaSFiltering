@@ -1,0 +1,941 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 3 - Teknik Padding{% endblock %}
+
+{% block content %}
+<style>
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+  .card-section-header i {
+    font-size:20px;
+    color:var(--primary-500);
+    display:inline-flex;
+    width:36px;
+    height:36px;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    background: rgba(59,123,227,0.12);
+  }
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+  .material-nav { 
+    display:flex; 
+    gap:12px; 
+    justify-content:flex-end; 
+    margin-top:18px; 
+    margin-bottom:34px; 
+  }
+  .conv-container { display:flex; 
+    flex-direction:column; 
+    gap:18px; 
+    align-items:center; 
+  }
+  .conv-top { 
+    display:flex; 
+    justify-content:center; 
+    gap:30px; 
+    flex-wrap:wrap; 
+    width:100%; 
+  }
+  .conv-section { 
+    background:#faf9f7; 
+    border-radius:12px; 
+    padding:14px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04); 
+    text-align:center; 
+    min-width:220px; 
+  }
+  .conv-table {
+    border-collapse: collapse;
+    margin: 8px auto;
+  }
+  .conv-table td {
+    width: 44px;
+    height: 44px;
+    border: 1px solid #999;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 700;
+    padding: 0;
+    transition: background-color 0.18s;
+  }
+  .input-cell,
+  .output-cell {
+    background: #fff9ee;
+  }
+  .padding-cell {
+    background: #bcccdc !important;
+    font-weight: 700;
+    color: #444;
+  }
+  .input-highlight {
+    background: #d9eafd !important;
+    font-weight: 800;
+    color: #0b2540;
+  }
+  .output-highlight {
+    background: #003049 !important;
+    color: #fff !important;
+    font-weight: 800;
+  }
+  .kernel-cell {
+    background: #d9eafd;
+    padding: 0;
+    font-weight: 800;
+    text-align: center;
+  }
+  .conv-controls {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .conv-controls button {
+    padding:8px 14px;
+    border-radius:8px; 
+    border:none; 
+    cursor:pointer;
+    background:var(--primary-500); 
+    color:#fff;
+    font-weight:700;
+    font-family: inherit;
+  }
+  .conv-controls button.btn-outline {
+    background:#fff;
+    color:var(--primary-500);
+    border:1px solid rgba(16,32,58,0.15);
+  }
+  .calc-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin-top: 10px;
+  }
+  .calc-title {
+    font-weight: 800;
+    color: #003049;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 15px;
+  }
+  .calculation { 
+    background-color: #faf9f7; 
+    border-radius: 10px; 
+    box-shadow: 0 6px 18px #edf4fe; 
+    padding: 15px; 
+    text-align:center; 
+    font-family: 'Courier New', monospace; 
+    color:#333; 
+    min-height:50px; 
+    border: 1px solid #eee; 
+    font-size: 1.1rem; 
+    font-weight: 700;
+    line-height: 1.4;
+  }
+  .eq-val {
+    color: #3b7be3;
+    font-weight: 800;
+  }
+  .quiz-input {
+    width: 60px;
+    height: 50px;
+    text-align: center;
+    background: #fff9ee;
+    color: #0b2540;
+    font-weight: 700;
+    font-size: 19px;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    transition: background 0.12s;
+  }
+  .quiz-input:focus {
+    outline: none;
+    border: 2px solid #000 !important;
+    border-radius: 0 !important;
+  }
+  .select-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 100%;
+    align-items: flex-end;
+  }
+  .custom-select-box {
+    display: inline-block !important;
+    width: auto !important;
+    padding: 6px 8px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #444 !important;
+    background-color: #fff !important;
+    border: 2px solid #3b7dd8 !important;
+    border-radius: 8px !important;
+  }
+  .control-label {
+    display: block;
+    text-align: left;
+    font-weight: 800;
+    font-size: 10px;
+    margin-bottom: 2px;
+    color: #666;
+    text-transform: uppercase;
+  }
+  .select-group {
+    flex: 0 1 auto;
+  }
+  #constInputGroup {
+    width: 50px;
+    display: none;
+  }
+  .const-input {
+    width: 100%;
+    padding: 6px 2px;
+    border: 2px solid #3b7dd8;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  #quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+  }
+  #quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+  }
+  #quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+  .instruction {
+    background: #fdfcfe;
+    border: 1px solid #e1e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+  }
+
+  .instruction ul {
+        margin-bottom: 0;
+        padding-left: 20px;
+  }
+
+  .instruction li {
+        text-align: justify;     
+        text-justify: inter-word;
+        margin-left: 15px;
+        margin-bottom: 5px;
+        font-size: 14px;
+  }
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">SUBBAB 3 - <span style="color:var(--primary-500)">TEKNIK PADDING</span></h1>
+</div>
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-lightbulb"></i>
+    <div>Konsep Dasar <em>Padding</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada proses konvolusi muncul masalah pada piksel yang berada di tepi (<em>border</em>) citra. Hal ini 
+      terjadi karena sebagian <em>kernel</em> keluar dari area citra, sehingga tidak semua koefisien 
+      konvolusi memiliki pasangan nilai piksel. Akibatnya, piksel di tepi tidak bisa dihitung nilainya 
+      secara penuh.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/4C.png' %}" style="display:block; margin:auto; width:50%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar C.4 Masalah piksel tepi pada konvolusi
+      </figcaption>
+    </figure>
+    
+    <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
+      Masalah ini disebut juga sebagai masalah menggantung (lihat pada Gambar C.4), yaitu kondisi 
+      yang terjadi pada piksel-piksel di bagian tepi citra baik di sisi kiri, kanan, atas, maupun bawah. 
+      Solusi untuk masalah ini adalah dengan mengabaikan piksel-piksel di bagian tepi citra, 
+      sehingga area tersebut tidak dikonvolusi melainkan mempertahankan nilai piksel 
+      pada bagian tepi sebagaimana nilai aslinya.
+    </p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/5C.png' %}" style="display:block; margin:auto; width:50%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar C.5 Contoh hasil perhitungan konvolusi citra berukuran 4x4
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
+      Dengan mengabaikan piksel-piksel di bagian tepi citra, perhitungan konvolusi hanya dilakukan 
+      pada bagian tengah gambar yang memiliki data lengkap. Piksel di tepi dibiarkan 
+      seperti nilai aslinya karena tidak memiliki cukup tetangga untuk dihitung. 
+      Dengan cara ini hasil akhirnya akan tampak seperti pada Gambar C.5.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
+      Selain itu, ada cara lain agar piksel di tepi citra tetap bisa diproses saat konvolusi, yaitu dengan 
+      <strong><em>padding</em></strong>. <strong><em>Padding</em> adalah teknik menambahkan baris dan kolom 
+      tambahan di tepi citra atas, bawah, kiri, dan kanan sebelum melakukan konvolusi atau 
+      <em>filtering</em></strong>.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
+      Ukuran hasil konvolusi tidak ditentukan secara acak, tetapi bergantung pada ukuran citra, 
+      <em>kernel</em>, <em>padding</em>, dan <em>stride</em>. Hubungan antara keempat faktor tersebut 
+      dapat dituliskan dengan persamaan berikut:
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+      \[
+      O = \frac{I - K + 2P}{S} + 1
+      \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Dengan keterangan:
+    </p>
+
+    <ul style="text-align: justify; margin-left: 30px; margin-bottom:20px">
+      <li>\( O \) = ukuran citra hasil konvolusi</li>
+      <li>\( I \) = ukuran citra input</li>
+      <li>\( K \) = ukuran <em>kernel</em></li>
+      <li>\( P \) = jumlah <em>padding</em></li>
+      <li>\( S \) = <em>stride</em> (langkah pergeseran <em>kernel</em>)</li>
+    </ul>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Sebagai contoh, pada citra berukuran 4×4 pada Gambar C.4 yang diproses menggunakan 
+      <em>kernel</em> 3×3 dengan <em>stride</em> 1 dan tanpa <em>padding</em>, ukuran hasil konvolusi 
+      dapat dihitung sebagai berikut:
+    </p>
+    
+    <p style="text-align: center; font-size: 30px;">
+      \[
+      O = \frac{4 - 3 + 2(0)}{1} + 1 = 2
+      \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Dari hasil perhitungan didapatkan bahwa citra hasil konvolusi berukuran 2×2 
+      (lihat Gambar C.5). Ukuran ini lebih kecil karena sebagian <em>kernel</em> keluar 
+      dari area citra, sehingga piksel di tepi tidak ikut dihitung. Untuk mengatasinya, 
+      digunakan <em>padding</em>.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Agar ukuran hasil konvolusi tetap sama dengan ukuran citra aslinya, jumlah 
+      <em>padding</em> yang digunakan dapat dihitung dengan persamaan berikut:
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+      \[
+      P = \frac{K - 1}{2}
+      \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      di mana \( K \) adalah ukuran <em>kernel</em> yang digunakan.
+    </p>
+
+    <p>
+      Dengan menggunakan <em>kernel</em> berukuran 3×3, maka jumlah <em>padding</em> yang diperlukan adalah:
+    </p>
+
+    <p style="text-align: center; font-size: 30px;">
+      \[
+      P = \frac{3 - 1}{2} = 1
+      \]
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Artinya, perlu ditambahkan 1 piksel <em>padding</em> di setiap sisi citra agar ukuran hasil konvolusi 
+      tetap 4×4, sama seperti ukuran citra awal.
+    </p>
+
+  </div>
+</section>
+
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-diagram-3"></i> 
+    <div>Jenis-jenis <em>Padding</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Beberapa jenis padding yang umum digunakan dalam pemrosesan citra digital diantaranya:
+    </p>
+    <p style="text-align: justify;">
+      <b>1. <em>Zero Padding</em></b>
+    </p>
+    <p style="text-align: justify; text-indent:30px; margin-left: 30px">
+      <strong><em>Zero-padding</em> adalah teknik menambahkan angka nol di tepi citra digital</strong>. Tujuannya 
+      agar ukuran citra menjadi lebih besar, sehingga proses <em>konvolusi</em> dapat diterapkan 
+      hingga ke tepi citra tanpa mengubah informasi penting yang ada. Dengan menambahkan nol di 
+      sekeliling gambar, ukuran citra bertambah, tetapi citra aslinya tetap sama.
+    </p>
+    <p style="text-align: center; font-size:20px;">
+    \[
+    \begin{bmatrix}
+    \color{red}{0} & \color{red}{0} & \color{red}{0} & \color{red}{0} & \color{red}{0} & \color{red}{0} \\
+    \color{red}{0} & 84 & 86 & 80 & 89 & \color{red}{0} \\
+    \color{red}{0} & 88 & 93 & 86 & 89 & \color{red}{0} \\
+    \color{red}{0} & 83 & 56 & 41 & 24 & \color{red}{0} \\
+    \color{red}{0} & 17 & 9  & 19 & 30 & \color{red}{0} \\
+    \color{red}{0} & \color{red}{0} & \color{red}{0} & \color{red}{0} & \color{red}{0} & \color{red}{0}
+    \end{bmatrix}
+    \]
+    </p>
+    <p style="text-align: justify; margin-top:50px">
+      <b>2. <em>Constant Padding</em></b>
+    </p>
+    <p style="text-align: justify; text-indent:30px; margin-left: 30px">
+      <strong><em>Constant padding</em> adalah teknik menambahkan nilai tertentu di tepi citra digital</strong>. 
+      Nilai ini bisa bebas dipilih, <strong>misalnya angka satu atau angka lain sesuai kebutuhan</strong>. 
+      Tujuannya sama seperti <em>zero padding</em>, yaitu memperluas ukuran citra agar proses 
+      <em>konvolusi</em> bisa mencakup seluruh gambar, termasuk bagian pinggir tanpa mengubah informasi utama. 
+      Dengan <em>constant padding</em>, tepi citra diisi dengan nilai yang sama secara konsisten.
+    </p>
+    <p style="text-align: center; font-size: 20px;">
+    \[
+    \begin{bmatrix}
+    \color{red}{128} & \color{red}{128} & \color{red}{128} & \color{red}{128} & \color{red}{128} & \color{red}{128} \\
+    \color{red}{128} & 84  & 86  & 80  & 89  & \color{red}{128} \\
+    \color{red}{128} & 88  & 93  & 86  & 89  & \color{red}{128} \\
+    \color{red}{128} & 83  & 56  & 41  & 24  & \color{red}{128} \\
+    \color{red}{128} & 17  & 9   & 19  & 30  & \color{red}{128} \\
+    \color{red}{128} & \color{red}{128} & \color{red}{128} & \color{red}{128} & \color{red}{128} & \color{red}{128}
+    \end{bmatrix}
+    \]
+    </p>
+    <p style="text-align: justify; margin-top:50px">
+      <b>3. <em>Reflect Padding</em></b>
+    </p>
+    <p style="text-align: justify; text-indent:30px; margin-left: 30px">
+      <strong><em>Reflect padding</em> adalah teknik menambahkan piksel di tepi citra dengan cara 
+      menyalin piksel dari bagian dalam citra seperti memantulkan isinya</strong>. Kolom dan baris 
+      di tepi gambar mengulang nilai piksel yang ada di dekatnya, tetapi urutannya dibalik ke arah 
+      luar. Misalnya, piksel di tepi kiri meniru piksel yang ada di sebelah kanannya secara terbalik, 
+      begitu pula piksel di tepi kanan, atas, dan bawah yang memantulkan nilai dari piksel di bagian 
+      dalam citra.
+    </p>
+    <p style="text-align: center; font-size: 20px;">
+    \[
+    \begin{bmatrix}
+    \color{red}{84} & \color{red}{84} & \color{red}{86} & \color{red}{80} & \color{red}{89} & \color{red}{89} \\
+    \color{red}{84} & 84 & 86 & 80 & 89 & \color{red}{89} \\
+    \color{red}{88} & 88 & 93 & 86 & 89 & \color{red}{89} \\
+    \color{red}{83} & 83 & 56 & 41 & 24 & \color{red}{24} \\
+    \color{red}{17} & 17 & 9  & 19 & 30 & \color{red}{30} \\
+    \color{red}{17} & \color{red}{17} & \color{red}{9} & \color{red}{19} & \color{red}{30} & \color{red}{30}
+    \end{bmatrix}
+    \]
+    </p>
+    <p style="text-align: justify; margin-top:50px">
+      <b>4. <em>Replicate Padding</em></b>
+    </p>
+    <p style="text-align: justify; text-indent:30px; margin-left: 30px">
+      <strong><em>Replicate padding</em> adalah teknik menambahkan piksel di tepi citra dengan menyalin 
+      nilai piksel terdekat dari bagian dalam citra</strong>. Artinya, piksel di tepi mengikuti piksel 
+      yang paling dekat dengannya, sehingga tepi citra diperluas tanpa mengubah isi utama. Tujuannya 
+      sama seperti teknik <em>padding</em> lainnya, yaitu memperbesar citra agar proses 
+      <em>konvolusi</em> dapat diterapkan hingga ke bagian pinggir.
+    </p>
+    <p style="text-align: center; font-size: 20px;">
+    \[
+    \begin{bmatrix}
+    \color{red}{84} & \color{red}{84} & \color{red}{86} & \color{red}{80} & \color{red}{89} & \color{red}{89} \\
+    \color{red}{84} & 84 & 86 & 80 & 89 & \color{red}{89} \\
+    \color{red}{88} & 88 & 93 & 86 & 89 & \color{red}{89} \\
+    \color{red}{83} & 83 & 56 & 41 & 24 & \color{red}{24} \\
+    \color{red}{17} & 17 & 9  & 19 & 30 & \color{red}{30} \\
+    \color{red}{17} & \color{red}{17} & \color{red}{9} & \color{red}{19} & \color{red}{30} & \color{red}{30}
+    \end{bmatrix}
+    \]
+    </p>
+    <p style="text-align: justify; margin-top:50px">
+      <b>5. <em>Wrap Padding</em></b>
+    </p>
+    <p style="text-align: justify; text-indent:30px; margin-left: 30px">
+      <strong><em>Wrap padding</em> adalah teknik menambahkan piksel di tepi citra dengan cara 
+      mengulang piksel dari sisi berlawanan citra</strong>. Bagian tepi kiri akan diisi dengan 
+      piksel dari sisi kanan, sedangkan bagian tepi kanan akan diisi dengan piksel dari sisi kiri. 
+      Begitu pula tepi atas diisi dengan piksel dari sisi bawah, dan tepi bawah diisi dengan piksel 
+      dari sisi atas.
+    </p>
+    <p style="text-align: center; font-size: 20px;">
+    \[
+    \begin{bmatrix}
+    \color{red}{30} & \color{red}{17} & \color{red}{9}  & \color{red}{19} & \color{red}{30} & \color{red}{17} \\
+    \color{red}{89} & 84 & 86 & 80 & 89 & \color{red}{84} \\
+    \color{red}{89} & 88 & 93 & 86 & 89 & \color{red}{88} \\
+    \color{red}{24} & 83 & 56 & 41 & 24 & \color{red}{83} \\
+    \color{red}{30} & 17 & 9  & 19 & 30 & \color{red}{17} \\
+    \color{red}{89} & \color{red}{84} & \color{red}{86} & \color{red}{80} & \color{red}{89} & \color{red}{84}
+    \end{bmatrix}
+    \]
+    </p>
+  </div>
+</section>
+
+<section class="card-section" aria-labelledby="interactive-heading" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-images"></i>
+    <div id="interactive-heading">Contoh Proses konvolusi dengan <em>Padding</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      Dengan menggunakan citra berukuran 4×4 dan <em>kernel</em> 3×3, proses konvolusi dilakukan dengan 
+      menerapkan <em>padding</em>. Berdasarkan perhitungan <em>padding</em> yang dilakukan sebelumnya, jumlah <em>padding</em> yang 
+      diperlukan untuk <em>kernel</em> 3×3 adalah 1. Artinya, ditambahkan satu piksel di setiap sisi 
+      citra agar ukuran hasil konvolusi tetap sama dengan ukuran citra awal.
+    </p>
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/C6.png' %}" style="display:block; margin:auto; width:65%;">
+    </figure>
+
+    <div class="instruction">
+      <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
+      <ul>
+        <li>Perhatikan <strong>Input Citra (matriks)</strong> yang akan diproses.</li>
+        <li>Pilih jenis <strong>Kernel</strong> yang akan digunakan melalui menu <strong>Pilih Kernel</strong>
+            (misalnya <strong>Laplacian</strong> atau <strong>Custom</strong>).</li>
+        <li>Pilih jenis <strong>Padding</strong> melalui menu <strong>Pilih Padding</strong>
+            (<strong>Zero</strong>, <strong>Replicate</strong>, <strong>Reflect</strong>, <strong>Wrap</strong>, atau <strong>Constant</strong>).</li>
+        <li>Jika memilih <strong>Constant Padding</strong>, masukkan nilai padding pada kolom <strong>Val</strong>
+            sesuai kebutuhan.</li>
+        <li>Klik tombol <strong>Mulai</strong> untuk memulai proses konvolusi secara bertahap pada satu piksel pusat.</li>
+        <li>Area berwarna biru muda pada <strong>Input Citra</strong> menunjukkan area piksel (3×3)
+            yang sedang diproses oleh kernel.</li>
+        <li>Gunakan tombol <strong>Lanjut</strong> untuk melanjutkan ke langkah perhitungan berikutnya secara manual.</li>
+        <li>Klik <strong>Auto Play</strong> jika ingin melihat proses konvolusi berjalan secara otomatis.</li>
+        <li>Klik <strong>Pause</strong> untuk menghentikan sementara proses yang sedang berlangsung.</li>
+        <li>Angka berwarna biru pada bagian <strong>Perhitungan</strong> menunjukkan bobot kernel
+            yang sedang dikalikan dengan nilai piksel citra.</li>
+        <li>Hasil konvolusi akan ditampilkan pada bagian <strong>Hasil Konvolusi</strong>
+            sesuai dengan posisi piksel yang sedang dihitung.</li>
+        <li>Perhatikan bagian <strong>Perhitungan</strong> untuk melihat proses perkalian dan
+            penjumlahan nilai piksel dengan bobot kernel secara rinci.</li>
+        <li>Klik tombol <strong>Ulangi</strong> untuk mengembalikan kondisi awal dan mencoba kombinasi
+            kernel atau padding yang berbeda.</li>
+      </ul>
+    </div>
+   
+    
+    <div class="conv-container">
+      <div class="conv-top">
+        <div class="conv-section">
+          <h4><b>Input Citra (Matriks)</b></h4>
+          <table id="inputMatrix" class="conv-table"></table>
+        </div>
+        <div class="conv-section" style="min-width:360px;">
+          <h4><b>Kernel</b></h4>
+          <div class="select-row">
+            <div class="select-group">
+              <label class="control-label" style="text-align: center;">Pilih Kernel:</label>
+              <select id="kernelSelect" class="custom-select-box">
+                <option value="laplacian">Laplacian</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            <div class="select-group">
+              <label class="control-label" style="text-align: center;">Pilih Padding:</label>
+              <select id="paddingSelect" class="custom-select-box">
+                <option value="zero">Zero</option>
+                <option value="replicate">Replicate</option>
+                <option value="reflect">Reflect</option>
+                <option value="wrap">Wrap</option>
+                <option value="constant">Constant</option>
+              </select>
+            </div>
+            <div class="select-group" id="constInputGroup">
+              <label class="control-label">Val</label>
+              <input type="number" id="constVal" class="const-input" value="1" min="0" max="255">
+            </div>
+          </div>
+          <table id="kernelMatrix" class="conv-table"></table>
+          <div class="conv-controls">
+            <button id="startBtn">Mulai</button>
+            <button id="autoplayBtn" class="btn-outline">Auto Play</button>
+            <button id="pauseBtn" style="display:none;">Pause</button>
+            <button id="nextBtn" style="display:none;">Lanjut</button>
+            <button id="resetBtn" class="btn-outline" style="display:none;">Ulangi</button>
+        </div>
+        </div>
+        <div class="conv-section">
+          <h4><b>Hasil Konvolusi</b></h4>
+          <table id="outputMatrix" class="conv-table"></table>
+        </div>
+      </div>
+      <div class="calc-wrapper">
+        <div class="calc-title">PERHITUNGAN:</div>
+        <div class="calculation" id="calculationText">Belum ada perhitungan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section quiz-card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 2</div>
+  </div>
+  <div class="card-section-body">
+    <p>Diberikan citra <em>grayscale</em> berukuran 4x4 berikut:</p>
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/soal.png' %}" style="display:block; margin:auto; width:50%;">
+    </figure>
+    <p style="text-indent: 30px; text-align: justify">
+      Tambahkan <em>replicate padding</em> pada citra <em>grayscale</em> berukuran 4×4 agar proses 
+      <em>konvolusi</em> dapat diterapkan pada seluruh piksel. Selanjutnya, hitung dan tentukan nilai 
+      setiap elemen pada matriks hasil <em>konvolusi</em> menggunakan <em>kernel</em> 3×3 berikut:
+    </p>
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:22px 0;align-items:flex-start;">
+      <div style="text-align:center;">
+        <h5 style="font-weight:800;">Matriks Citra + Padding</h5>
+        <table id="paddedInput" class="conv-table" style="margin:auto;"></table>
+      </div>
+      <div style="text-align:center;">
+        <h5 style="font-weight:800;">Kernel</h5>
+        <table class="conv-table" style="margin:auto;">
+          <tr><td class="kernel-cell">0</td><td class="kernel-cell">-1</td><td class="kernel-cell">0</td></tr>
+          <tr><td class="kernel-cell">-1</td><td class="kernel-cell">5</td><td class="kernel-cell">-1</td></tr>
+          <tr><td class="kernel-cell">0</td><td class="kernel-cell">-1</td><td class="kernel-cell">0</td></tr>
+        </table>
+      </div>
+      <div style="text-align:center;">
+        <h5 style="font-weight:800;">Hasil Konvolusi</h5>
+        <table id="quizOutput" class="conv-table" style="margin:auto;"></table>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+      <button id="checkAnswers" style="background:#fff5e6;padding:12px 26px;border-radius:10px;border:1px solid #ddd;font-weight:800; font-family: inherit;">Cek Jawaban</button>
+      <button id="resetPaddingOnly" style="background:#f0f0f0;padding:12px 20px;border-radius:10px;border:1px solid #c2cbd6;font-weight:700;">Reset Padding</button>
+      <button id="resetOutputOnly" style="background:#d9eafd;padding:12px 20px;border-radius:10px;border:1px solid #c3d9f8;font-weight:700;">Reset Hasil</button>
+    </div>
+    <div id="quiz-feedback" style="text-align:center;font-weight:700;margin-top:12px;min-height:28px;"></div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'k_konvolusi' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nav-next-materi" href="{% url 'normalisasi_citra' %}" 
+     class="btn btn-primary {% if 't-padding' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 't-padding' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
+  const kernels = { laplacian: [[0,-1,0],[-1,4,-1],[0,-1,0]], custom: [[0,0,0],[0,0,0],[0,0,0]] };
+  let currentKernel = kernels.laplacian;
+  let paddingType = 'zero';
+  let outputData = Array.from({length:4}, ()=>Array(4).fill(''));
+  let step = 0;
+  let autoInterval = null;
+  let isPaused = false;
+
+  const inputTable = document.getElementById('inputMatrix');
+  const kernelTable = document.getElementById('kernelMatrix');
+  const outputTable = document.getElementById('outputMatrix');
+  const calcText = document.getElementById('calculationText');
+  const constGroup = document.getElementById('constInputGroup');
+  const constValInp = document.getElementById('constVal');
+  const startBtn = document.getElementById('startBtn');
+  const autoplayBtn = document.getElementById('autoplayBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  function createTable(matrix, table, cellClass='input-cell', editable=false){
+    table.innerHTML = '';
+    matrix.forEach((row,i)=>{
+      const tr = document.createElement('tr');
+      row.forEach((val,j)=>{
+        const td = document.createElement('td');
+        td.textContent = (val === '' || typeof val === 'undefined') ? '' : String(val);
+        if(table.id === 'inputMatrix'){
+          if(i===0 || j===0 || i===matrix.length-1 || j===matrix[0].length-1) td.classList.add('padding-cell');
+          else td.classList.add('input-cell');
+        } else td.classList.add(cellClass);
+        if(editable){
+          td.contentEditable = true;
+          td.addEventListener('blur', () => { let v = parseInt(td.textContent); currentKernel[i][j] = isNaN(v) ? 0 : v; });
+        }
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+  }
+
+  function getPaddedValue(x,y){
+    const rows = inputData.length, cols = inputData[0].length;
+    if(x >= 0 && x < rows && y >= 0 && y < cols) return inputData[x][y];
+    switch(paddingType) {
+      case 'replicate': return inputData[Math.min(Math.max(x,0), rows-1)][Math.min(Math.max(y,0), cols-1)];
+      case 'reflect':
+        let rx = x < 0 ? Math.abs(x) : (x >= rows ? 2 * rows - x - 2 : x);
+        let ry = y < 0 ? Math.abs(y) : (y >= cols ? 2 * cols - y - 2 : y);
+        return inputData[rx][ry];
+      case 'wrap':
+        let wx = (x % rows + rows) % rows;
+        let wy = (y % cols + cols) % cols;
+        return inputData[wx][wy];
+      case 'constant':
+        let cVal = parseInt(constValInp.value);
+        return isNaN(cVal) ? 0 : Math.min(255, Math.max(0, cVal));
+      default: return 0;
+    }
+  }
+
+  function updateInputTable(){
+    const rows = inputData.length, cols = inputData[0].length;
+    let padded = [];
+    for(let i=-1;i<rows+1;i++){
+      const r = [];
+      for(let j=-1;j<cols+1;j++) r.push(getPaddedValue(i,j));
+      padded.push(r);
+    }
+    createTable(padded, inputTable);
+  }
+
+  function processStep(){
+    if(isPaused) return;
+    const positions = [];
+    for(let i=0;i<4;i++) for(let j=0;j<4;j++) positions.push([i,j]);
+    if(step >= positions.length){
+      clearInterval(autoInterval);
+      nextBtn.style.display = 'none';
+      pauseBtn.style.display = 'none';
+      resetBtn.style.display = 'inline-block';
+      return;
+    }
+    const [ox,oy] = positions[step];
+    updateInputTable();
+    for(let i=0; i<3; i++) for(let j=0; j<3; j++) inputTable.rows[ox+i].cells[oy+j].classList.add('input-highlight');
+    let sum = 0, detail = [];
+    for(let i=-1;i<=1;i++) {
+      for(let j=-1;j<=1;j++) {
+        let val = getPaddedValue(ox+i, oy+j);
+        let kVal = currentKernel[i+1][j+1];
+        sum += val * kVal;
+        detail.push(`(<span class="eq-val">${kVal}</span>×${val})`);
+      }
+    }
+    outputData[ox][oy] = sum;
+    createTable(outputData, outputTable, 'output-cell');
+    outputTable.rows[ox].cells[oy].classList.add('output-highlight');
+    calcText.innerHTML = `${detail.join("+")} = <b>${sum}</b>`;
+    step++;
+  }
+
+  startBtn.onclick = () => {
+    step = 0; outputData = Array.from({length:4}, ()=>Array(4).fill(''));
+    createTable(outputData, outputTable, 'output-cell');
+    startBtn.style.display = 'none'; autoplayBtn.style.display = 'none';
+    nextBtn.style.display = 'inline-block'; resetBtn.style.display = 'inline-block';
+    processStep();
+  };
+
+  autoplayBtn.onclick = () => {
+    step = 0; outputData = Array.from({length:4}, ()=>Array(4).fill(''));
+    createTable(outputData, outputTable, 'output-cell');
+    startBtn.style.display = 'none'; autoplayBtn.style.display = 'none';
+    pauseBtn.style.display = 'inline-block'; resetBtn.style.display = 'inline-block';
+    nextBtn.style.display = 'none'; isPaused = false;
+    processStep(); autoInterval = setInterval(processStep, 1000);
+  };
+
+  pauseBtn.onclick = () => {
+    isPaused = !isPaused;
+    pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+    if(!isPaused && autoInterval === null) autoInterval = setInterval(processStep, 1000);
+    else if(isPaused) { clearInterval(autoInterval); autoInterval = null; }
+  };
+
+  resetBtn.onclick = () => {
+    clearInterval(autoInterval); autoInterval = null;
+    step = 0; isPaused = false;
+    outputData = Array.from({length:4}, ()=>Array(4).fill(''));
+    createTable(outputData, outputTable, 'output-cell');
+    updateInputTable();
+    calcText.textContent = 'Belum ada perhitungan';
+    startBtn.style.display = 'inline-block'; autoplayBtn.style.display = 'inline-block';
+    nextBtn.style.display = 'none'; pauseBtn.style.display = 'none'; resetBtn.style.display = 'none';
+  };
+
+  document.getElementById('kernelSelect').onchange = (e) => {
+    currentKernel = kernels[e.target.value];
+    createTable(currentKernel, kernelTable, 'kernel-cell', e.target.value === 'custom');
+  };
+
+  document.getElementById('paddingSelect').onchange = (e) => {
+    paddingType = e.target.value;
+    constGroup.style.display = (paddingType === 'constant') ? 'block' : 'none';
+    updateInputTable();
+  };
+
+  constValInp.oninput = () => {
+    if(paddingType === 'constant') {
+      updateInputTable();
+    }
+  };
+
+  nextBtn.onclick = processStep;
+  updateInputTable();
+  createTable(outputData, outputTable, 'output-cell');
+  createTable(currentKernel, kernelTable, 'kernel-cell');
+
+  (function quizLogic(){
+    const inputQuiz = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+    const kernelQuiz = [[0,-1,0],[-1,5,-1],[0,-1,0]];
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const getReplicated = (i, j) => inputQuiz[clamp(i-1, 0, 3)][clamp(j-1, 0, 3)];
+    const paddedTable = document.getElementById('paddedInput');
+    const outTable = document.getElementById('quizOutput');
+
+    function renderQuiz(){
+      paddedTable.innerHTML = '';
+      for(let i=0; i<6; i++){
+        const tr = document.createElement('tr');
+        for(let j=0; j<6; j++){
+          const td = document.createElement('td');
+          if(i >= 1 && i <= 4 && j >= 1 && j <= 4){
+            td.textContent = inputQuiz[i-1][j-1];
+            td.classList.add('input-cell');
+          } else {
+            const inp = document.createElement('input');
+            inp.className = 'quiz-input padding-input';
+            inp.style.width = '44px'; inp.style.height = '44px';
+            inp.dataset.row = i; inp.dataset.col = j;
+            td.appendChild(inp);
+            td.classList.add('padding-cell');
+          }
+          tr.appendChild(td);
+        }
+        paddedTable.appendChild(tr);
+      }
+      outTable.innerHTML = '';
+      for(let i=0; i<4; i++){
+        const tr = document.createElement('tr');
+        for(let j=0; j<4; j++){
+          const td = document.createElement('td');
+          const inp = document.createElement('input');
+          inp.className = 'quiz-input output-input';
+          inp.style.width = '60px'; inp.style.height = '44px';
+          td.appendChild(inp);
+          tr.appendChild(td);
+        }
+        outTable.appendChild(tr);
+      }
+    }
+
+    function updateProgressDatabase() {
+      fetch("/api/update-progres/", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}",
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ slug: 't-padding' })
+      })
+      .then(async response => {
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const data = isJson ? await response.json() : null;
+        if (!response.ok) throw new Error((data && data.message) || 'Terjadi kesalahan.');
+        return data;
+      })
+      .then(data => {
+        if (data.status === 'success') {
+          Swal.fire({
+            title: 'Luar Biasa!',
+            text: 'Aktivitas Selesai. Silakan lanjut ke materi berikutnya.',
+            icon: 'success',
+            confirmButtonText: 'Lanjutkan',
+            confirmButtonColor: '#3b7be3'
+          }).then(() => {
+            const nextBtnNav = document.getElementById('nav-next-materi');
+            if(nextBtnNav) {
+                nextBtnNav.classList.remove('disabled');
+                nextBtnNav.style.opacity = '1';
+                nextBtnNav.style.pointerEvents = 'auto';
+            }
+          });
+        }
+      })
+      .catch(err => {
+        Swal.fire('Gagal Simpan', err.message, 'error');
+      });
+    }
+
+    document.getElementById('checkAnswers').onclick = () => {
+      let isCorrect = true, allFilled = true;
+      document.querySelectorAll('.padding-input').forEach(inp => {
+        const correct = getReplicated(parseInt(inp.dataset.row), parseInt(inp.dataset.col));
+        const valText = inp.value.trim();
+        const val = parseInt(valText);
+        if(valText === "" || isNaN(val)) allFilled = false;
+        if(val === correct) { inp.style.background = '#4f71be'; inp.style.color = '#fff'; }
+        else { inp.style.background = '#c0392b'; inp.style.color = '#fff'; isCorrect = false; }
+      });
+      document.querySelectorAll('.output-input').forEach((inp, idx) => {
+        const r = Math.floor(idx/4), c = idx%4;
+        let sum = 0;
+        for(let ki=0; ki<3; ki++) for(let kj=0; kj<3; kj++) sum += getReplicated(r+ki, c+kj) * kernelQuiz[ki][kj];
+        const valText = inp.value.trim();
+        const val = parseInt(valText);
+        if(valText === "" || isNaN(val)) allFilled = false;
+        if(val === sum) { inp.style.background = '#4f71be'; inp.style.color = '#fff'; }
+        else { inp.style.background = '#c0392b'; inp.style.color = '#fff'; isCorrect = false; }
+      });
+      if(!allFilled) { Swal.fire('Belum Lengkap!', 'Silakan isi semua kolom jawaban.', 'warning'); return; }
+      if(isCorrect) updateProgressDatabase();
+      else Swal.fire('Coba Lagi!', 'Masih ada jawaban yang salah, periksa kembali.', 'error');
+    };
+
+    document.getElementById('resetPaddingOnly').onclick = () => {
+      document.querySelectorAll('.padding-input').forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
+    };
+
+    document.getElementById('resetOutputOnly').onclick = () => {
+      document.querySelectorAll('.output-input').forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
+    };
+
+    renderQuiz();
+  })();
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+{% endblock %}

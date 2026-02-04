@@ -1,0 +1,568 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 4 - Smoothing Nonlinear Filters{% endblock %}
+
+{% block content %}
+<style>
+.card-section {
+  border: 2px solid #bcccdc;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #ffffff;
+  margin-bottom: 22px;
+  box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+}
+  .card-section-header {
+  padding: 14px 18px;
+  font-size: 20px;
+  font-weight: 800;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background: #edf4fe;
+  border-bottom: 2px solid #bcccdc;
+}
+.card-section-header i {
+  font-size:20px;
+  color:var(--primary-500);
+  display:inline-flex;
+  width:36px;
+  height:36px;
+  align-items:center;
+  justify-content:center;
+  border-radius:8px;
+  background: rgba(59,123,227,0.12);
+}
+.card-section-body {
+  padding: 35px;
+  font-size: 19px;
+  color: #222f3a;
+  background: #fff;
+}
+.card-section-body p { margin-bottom:12px; line-height:1.6; }
+.material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; margin-bottom:34px; }
+
+.btn-locked {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  pointer-events: none;
+  filter: grayscale(20%);
+}
+
+.sim-wrapper { display:flex; flex-direction:column; gap:18px; align-items:center; }
+.sim-container { display:flex; gap:24px; justify-content:center; flex-wrap:wrap; margin-top:10px; }
+.sim-panel { background:#faf9f7; border-radius:12px; padding:18px; box-shadow: 0 4px 10px rgba(0,0,0,0.04); text-align:center; min-width:240px; }
+.sim-panel h3 { margin:0 0 12px 0; color:#003049; font-size:20px; font-weight:700; }
+.sim-table { border-collapse:collapse; margin:10px auto; }
+.sim-table td {
+  width:40px; height:36px; border:1px solid #999; text-align:center;
+  vertical-align:middle; font-weight:700; font-size:14px; transition: background-color .18s; padding:0;
+}
+.padding-cell { background-color:#bcccdc !important; }
+.input-cell, .output-cell { background-color:#fff9ee; }
+.highlight { background-color:#d9eafd !important; color:#000; font-weight:800; }
+.output-highlight { background-color:#003049 !important; color:#fff !important; font-weight:800; }
+
+.select-row {
+  display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; width: 100%; align-items: flex-end;
+}
+.select-group { flex: 0 1 auto; }
+.control-label {
+  display: block; text-align: center; font-weight: 800; font-size: 10px; margin-bottom: 2px; color: #666; text-transform: uppercase;
+}
+.custom-select-box {
+  display: inline-block !important; width: auto !important; padding: 6px 8px !important; font-size: 13px !important; font-weight: 700 !important;
+  color: #444 !important; background-color: #fff !important; border: 2px solid #3b7dd8 !important; border-radius: 8px !important;
+}
+
+.conv-controls {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .conv-controls button {
+    padding:8px 14px;
+    border-radius:8px;
+    border:none; 
+    cursor:pointer;
+    background:#3b7dd8; 
+    color:#fff;
+    font-weight:700;
+    font-family: inherit;
+    transition: opacity 0.2s;
+  }
+  .conv-controls button.btn-outline {
+    background:#fff;
+    color:#3b7dd8;
+    border:1px solid rgba(16,32,58,0.15);
+  }
+
+.calc-wrapper { width: 100%; max-width: 950px; margin: 15px auto; text-align: center; }
+.calc-title { font-weight: 800; font-size: 14px; color: #0b2540; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+.calculation {
+  background-color: #faf9f7; border-radius: 10px; border: 1px solid #edf4fe;
+  padding: 16px 20px; text-align:center; font-family: 'Courier New', monospace; color:#333; 
+  min-height:45px; line-height: 1.8; word-break: normal; overflow-wrap: anywhere;
+  font-size: 18px; font-weight: 800;
+}
+
+.quiz-card { min-width:420px; background:#fff; border-radius:12px; padding:12px 14px; box-shadow:0 4px 12px rgba(0,0,0,0.04); text-align:center; }
+.table-grid { border-collapse:collapse; margin:8px auto; }
+.table-grid td { width:44px; height:42px; border:1px solid #bfcad6; text-align:center; font-weight:700; font-size:14px; background:#e7f4ff; padding:0; }
+.center-cell { background:#d9eafd !important; color:#052236; font-weight:800; }
+.static-pad-cell { background:#bcccdc !important; color:#052236; font-weight:800; border: 1px solid #8fa2b3 !important; }
+.result-input { width:100%; height:100%; border:0; background:transparent; text-align:center; font-weight:800; font-size:14px; color:#052236; }
+.result-correct { background:#4f71be !important; color:#fff !important; }
+.result-wrong { background:#c0392b !important; color:#fff !important; }
+.controls-row { display:flex; gap:12px; justify-content:center; margin-top:16px; }
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+#quiz-card {
+  border: 2.5px solid #4d7bdc !important;
+  box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .card-section-header {
+  background: #4d7bdc !important;
+  border-bottom: 2px solid #4d7bdc; 
+  color: white !important;
+}
+
+#quiz-card .card-section-header i {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+</style>
+
+<div class="mb-3">
+  <h1 class="title-main">SUBBAB 4 - <span style="color:var(--primary-500)"><em>SMOOTHING NONLINEAR FILTERS</em></span></h1>
+</div>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-lightbulb"></i>
+    <div><em>Order-Statistic (Nonlinear) Filters</em></div>
+  </div>
+  <div class="card-section-body">
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong><em>Smoothing nonlinier</em></strong> merupakan metode penghalusan citra yang bertujuan untuk 
+      <strong>mengurangi <em>noise</em> tanpa terlalu menghilangkan detail penting pada gambar</strong>. 
+      Berbeda dengan <em>smoothing linier</em> yang menggunakan <em>kernel</em> berbobot dan operasi konvolusi, 
+      <strong><em>smoothing nonlinier</em> tidak menggunakan <em>kernel</em> berbobot, melainkan memanfaatkan nilai-nilai piksel tetangga dalam suatu area berdasarkan aturan tertentu</strong>.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pendekatan ini dikenal sebagai <strong><em>order-statistic filtering</em></strong>, yaitu teknik penyaringan yang 
+      <strong>menentukan nilai piksel baru berdasarkan urutan nilai intensitas piksel di dalam area filter</strong>. 
+      Salah satu filter nonlinier yang paling umum digunakan adalah <em>median filter</em> yang mengganti nilai piksel pusat dengan nilai tengah (<em>median</em>) dari piksel-piksel di sekitarnya, termasuk piksel pusat itu sendiri, seperti yang ditunjukkan pada Gambar D.3. 
+      Metode ini efektif dalam mengurangi <em>noise</em> tanpa menyebabkan pengaburan tepi yang signifikan.
+    </p>
+
+    <figure style="margin:20px 0; margin-top: 30px">
+      <img src="{% static 'assets/img/konten/3D.png' %}" style="display:block; margin:auto; width:85%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar D.3 Ilustrasi proses perhitungan <em>median filter</em>
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Proses <strong><em>median filter</em></strong> dilakukan dengan mengurutkan nilai piksel dalam area filter, kemudian memilih nilai tengah (<em>median</em>) sebagai nilai pengganti piksel pusat. 
+      Cara ini efektif untuk <strong>mengurangi <em>noise</em> acak, khususnya <em>salt and pepper noise</em></strong>, tanpa menyebabkan pengaburan citra karena nilai <em>median</em> tidak dipengaruhi oleh nilai ekstrem.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Selain <em>median filter</em>, terdapat jenis <em>order-statistic filter</em> lain seperti 
+      <strong><em>max filter</em></strong> dan <strong><em>min filter</em></strong>. 
+      <strong><em>Max filter</em> memilih nilai terbesar</strong> pada area filter sehingga berguna untuk 
+      <strong>menghilangkan bintik gelap kecil</strong>, sedangkan 
+      <strong><em>min filter</em> memilih nilai terkecil</strong> untuk 
+      <strong>menghilangkan bintik terang kecil</strong>. 
+      Pemilihan jenis <em>filter</em> ini memungkinkan proses penyaringan disesuaikan dengan jenis <em>noise</em> yang terdapat pada citra.
+    </p>
+
+    <figure style="margin:20px 0; margin-top: 30px">
+      <img src="{% static 'assets/img/konten/4D.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar D.4 Citra <em>grayscale</em> dan hasil setelah diterapkan <em>median filter</em>
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada Gambar D.4 ditunjukkan citra <em>grayscale</em> dan hasil penerapan <em>median filter</em>. 
+      Penerapan filter ini menghasilkan citra yang lebih halus, sementara tepi dan detail objek tetap terjaga tanpa mengalami pengaburan yang berlebihan.
+    </p>
+
+    <figure style="margin:20px 0; margin-top: 30px">
+      <img src="{% static 'assets/img/konten/5D.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar D.5 Citra dengan gangguan <em>pepper noise</em> dan hasil setelah diterapkan <em>max filter</em>
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Gambar D.5 memperlihatkan citra yang mengandung <em>pepper noise</em> (bintik-bintik hitam) serta hasil setelah diterapkan <em>max filter</em>. 
+      Hasil penerapan filter menunjukkan bahwa bintik-bintik hitam pada citra berkurang secara signifikan sehingga tampilan citra menjadi lebih bersih.
+    </p>
+
+    <figure style="margin:20px 0; margin-top: 30px">
+      <img src="{% static 'assets/img/konten/6D.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar D.6 Citra dengan gangguan <em>salt noise</em> dan hasil setelah diterapkan <em>min filter</em>
+      </figcaption>
+    </figure>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada Gambar D.6 ditampilkan citra yang mengandung <em>salt noise</em> (bintik-bintik putih) serta hasil setelah diterapkan <em>min filter</em>. 
+      Hasil penerapan filter menunjukkan bahwa bintik-bintik putih pada citra berkurang sehingga tampilan citra menjadi lebih stabil.
+    </p>
+
+
+  </div>
+</section>
+
+<section class="card-section">
+  <div class="card-section-header">
+    <i class="bi bi-images"></i>
+    <div>Proses <em>Smoothing Nonlinear Filter</em></div>
+  </div>
+  <div class="card-section-body">
+    <p>
+      Contoh <em>smoothing nonlinear filter</em> menggunakan citra 4×4 dan area <em>filter</em> 3×3.
+    </p>
+
+    <figure style="margin:20px 0; margin-bottom: 70px">
+      <img src="{% static 'assets/img/konten/c6.png' %}" style="display:block; margin:auto; width:50%;">
+    </figure>
+    <div class="sim-wrapper">
+      <div class="sim-container">
+        <div class="sim-panel">
+          <h3>Input Citra (Matriks)</h3>
+          <div class="select-row">
+            <div class="select-group">
+              <label class="control-label">Pilih Padding:</label>
+              <select id="paddingSelect" class="custom-select-box">
+                <option value="zero">Zero</option>
+                <option value="reflect">Reflect</option>
+                <option value="replicate">Replicate</option>
+                <option value="wrap">Wrap</option>
+              </select>
+            </div>
+          </div>
+          <table id="inputMatrix" class="sim-table"></table>
+        </div>
+        <div class="sim-panel">
+          <h3>Hasil Filter</h3>
+          <div class="select-row">
+            <div class="select-group">
+              <label class="control-label">Pilih Filter:</label>
+              <select id="filterSelect" class="custom-select-box">
+                <option value="median">Median</option>
+                <option value="max">Max</option>
+                <option value="min">Min</option>
+              </select>
+            </div>
+          </div>
+          <table id="outputMatrix" class="sim-table"></table>
+          
+          <div class="conv-controls">
+            <button id="startBtn">Mulai</button>
+            <button id="autoplayBtn" class="btn-outline">Autoplay</button>
+            <button id="nextBtn" style="display:none;">Lanjut</button>
+            <button id="pauseBtn" style="display:none;" >Pause</button>
+            <button id="resumeBtn" style="display:none;" >Resume</button>
+            <button id="resetBtn" style="display:none;" class="btn-outline">Ulangi</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="calc-wrapper">
+        <div class="calc-title">PERHITUNGAN</div>
+        <div class="calculation" id="calculationText">
+          Belum ada perhitungan
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 2</div>
+  </div>
+  <div class="card-section-body">
+    <p>Diberikan citra <em>grayscale</em> berukuran 4x4 berikut:</p>
+
+    <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/soal.png' %}" style="display:block; margin:auto; width:50%;">
+    </figure>
+
+    <p style="text-align: justify;margin-bottom: 30px;"> 
+      Dengan menggunakan <em>padding constant</em> 90, lengkapilah hasil <em>filter</em> berikut!
+    </p>
+
+
+    <div style="display:flex;justify-content:center;margin-top:10px;">
+      <div class="quiz-card" style="max-width:520px;">
+        <h4><b>Matriks Citra + <em>Padding Constant</em></b></h4>
+        <table id="paddedTable" class="table-grid"></table>
+      </div>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:12px;">
+      <div class="quiz-card" style="min-width:260px;"><h4><b>Hasil Min</b></h4><table id="minTable" class="table-grid"></table></div>
+      <div class="quiz-card" style="min-width:260px;"><h4><b>Hasil Max</b></h4><table id="maxTable" class="table-grid"></table></div>
+      <div class="quiz-card" style="min-width:260px;"><h4><b>Hasil Median</b></h4><table id="medianTable" class="table-grid"></table></div>
+    </div>
+    <div class="controls-row">
+      <button id="checkQuizBtn" style="background:#d9eafd;padding:10px 22px;border-radius:10px;border:1px solid #c3d9f8;font-weight:800; cursor:pointer;">Cek Jawaban</button>
+      <button id="resetResultsBtn" style="background:#f0f0f0;padding:10px 22px;border-radius:10px;border:1px solid #c2cbd6;font-weight:700; cursor:pointer;">Reset Jawaban</button>
+    </div>
+  </div>
+</section>
+
+<div class="material-nav">
+  <a href="{% url 'sl_filters' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a href="{% url 'ringkasan4' %}" id="nextMaterialBtn" 
+     class="btn btn-primary {% if 'sn-filters' not in selesai_slugs %}btn-locked{% endif %}"
+     {% if 'sn-filters' not in selesai_slugs %}style="opacity: 0.5; pointer-events: none;"{% endif %}>
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(function(){
+  const data = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
+  let step = 0, intervalId = null;
+  const inTbl = document.getElementById("inputMatrix"), outTbl = document.getElementById("outputMatrix");
+  const pSel = document.getElementById("paddingSelect"), fSel = document.getElementById("filterSelect");
+  const sBtn = document.getElementById("startBtn"), aBtn = document.getElementById("autoplayBtn");
+  const nBtn = document.getElementById("nextBtn"), rBtn = document.getElementById("resetBtn");
+  const pauseBtn = document.getElementById("pauseBtn"), resumeBtn = document.getElementById("resumeBtn");
+  const calcText = document.getElementById("calculationText");
+
+  function getPaddedVal(r, c, mode) {
+    if (r >= 0 && r < 4 && c >= 0 && c < 4) return data[r][c];
+    if (mode === "zero") return 0;
+    if (mode === "replicate") return data[Math.max(0, Math.min(3, r))][Math.max(0, Math.min(3, c))];
+    if (mode === "reflect") {
+      let nr = r < 0 ? -r : (r >= 4 ? 6-r : r);
+      let nc = c < 0 ? -c : (c >= 4 ? 6-c : c);
+      return data[nr][nc];
+    }
+    if (mode === "wrap") return data[(r % 4 + 4) % 4][(c % 4 + 4) % 4];
+    return 0;
+  }
+
+  function renderSim() {
+    inTbl.innerHTML = "";
+    for(let i=-1; i<=4; i++) {
+      let tr = document.createElement("tr");
+      for(let j=-1; j<=4; j++) {
+        let td = document.createElement("td");
+        td.textContent = getPaddedVal(i, j, pSel.value);
+        td.className = (i<0 || i>3 || j<0 || j>3) ? "padding-cell" : "input-cell";
+        tr.appendChild(td);
+      }
+      inTbl.appendChild(tr);
+    }
+    outTbl.innerHTML = "";
+    for(let i=0; i<4; i++) {
+      let tr = document.createElement("tr");
+      for(let j=0; j<4; j++) {
+        let td = document.createElement("td");
+        td.className = "output-cell";
+        tr.appendChild(td);
+      }
+      outTbl.appendChild(tr);
+    }
+  }
+
+  function runStep() {
+    let r = Math.floor(step/4), c = step%4;
+    let vals = [];
+    Array.from(inTbl.querySelectorAll("td")).forEach(td => td.classList.remove("highlight"));
+    for(let i=r; i<r+3; i++) {
+      for(let j=c; j<c+3; j++) {
+        inTbl.rows[i].cells[j].classList.add("highlight");
+        vals.push(parseInt(inTbl.rows[i].cells[j].textContent));
+      }
+    }
+    let sorted = [...vals].sort((a,b)=>a-b);
+    let filterType = fSel.value;
+    let res = filterType === "median" ? sorted[4] : (filterType === "max" ? sorted[8] : sorted[0]);
+    
+    outTbl.rows[r].cells[c].textContent = res;
+    Array.from(outTbl.querySelectorAll("td")).forEach(td => td.classList.remove("output-highlight"));
+    outTbl.rows[r].cells[c].classList.add("output-highlight");
+    
+    calcText.innerHTML = `
+      [${vals.join(", ")}] &rarr; Urut: [${sorted.join(", ")}] <br>
+      <span style="color:#0b2540;"><b>${filterType.toUpperCase()}: ${res}</b></span>
+    `;
+    
+    step++;
+    if(step >= 16) { 
+      clearInterval(intervalId); 
+      nBtn.style.display = "none";
+      pauseBtn.style.display = "none";
+      resumeBtn.style.display = "none";
+      return; 
+    }
+  }
+
+  sBtn.onclick = () => {
+    step = 0; renderSim();
+    sBtn.style.display = "none"; aBtn.style.display = "none";
+    nBtn.style.display = "inline-block"; rBtn.style.display = "inline-block";
+    pSel.disabled = fSel.disabled = true;
+    runStep();
+  };
+  aBtn.onclick = () => {
+    step = 0; renderSim();
+    sBtn.style.display = "none"; aBtn.style.display = "none";
+    pauseBtn.style.display = "inline-block"; rBtn.style.display = "inline-block";
+    pSel.disabled = fSel.disabled = true;
+    intervalId = setInterval(runStep, 1000);
+  };
+  pauseBtn.onclick = () => { clearInterval(intervalId); pauseBtn.style.display = "none"; resumeBtn.style.display = "inline-block"; };
+  resumeBtn.onclick = () => { resumeBtn.style.display = "none"; pauseBtn.style.display = "inline-block"; intervalId = setInterval(runStep, 1000); };
+  rBtn.onclick = () => { 
+    clearInterval(intervalId); step = 0; renderSim(); 
+    sBtn.style.display = "inline-block"; aBtn.style.display = "inline-block";
+    nBtn.style.display = "none"; pauseBtn.style.display = "none";
+    resumeBtn.style.display = "none"; rBtn.style.display = "none"; 
+    pSel.disabled = fSel.disabled = false;
+    calcText.textContent = "Belum ada perhitungan"; 
+  };
+  nBtn.onclick = runStep;
+  pSel.onchange = renderSim;
+  renderSim();
+})();
+
+(function(){
+  const center=[[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+  const paddedTable=document.getElementById("paddedTable");
+  const minTable=document.getElementById("minTable");
+  const maxTable=document.getElementById("maxTable");
+  const medianTable=document.getElementById("medianTable");
+  const checkQuizBtn=document.getElementById("checkQuizBtn");
+  const resetResultsBtn=document.getElementById("resetResultsBtn");
+  const nextMaterialBtn = document.getElementById("nextMaterialBtn");
+
+  function getConstantPadMatrix(){
+    const P=Array.from({length:6},()=>Array(6).fill(90));
+    for(let i=0;i<4;i++) for(let j=0;j<4;j++) P[i+1][j+1]=center[i][j];
+    return P;
+  }
+
+  function calculateAnswers(mode){
+    const P = getConstantPadMatrix();
+    const result = [];
+    for(let i=0; i<4; i++){
+      const row = [];
+      for(let j=0; j<4; j++){
+        let window = [];
+        for(let r=i; r<i+3; r++) for(let c=j; c<j+3; c++) window.push(P[r][c]);
+        window.sort((a,b)=>a-b);
+        if(mode==='min') row.push(window[0]);
+        else if(mode==='max') row.push(window[8]);
+        else row.push(window[4]);
+      }
+      result.push(row);
+    }
+    return result;
+  }
+
+  function renderPaddedTable(){
+    const P = getConstantPadMatrix();
+    paddedTable.innerHTML="";
+    for(let i=0;i<6;i++){
+      const tr=document.createElement("tr");
+      for(let j=0;j<6;j++){
+        const td=document.createElement("td");
+        td.textContent = P[i][j];
+        if(i>=1&&i<=4&&j>=1&&j<=4) td.className = "center-cell";
+        else td.className = "static-pad-cell";
+        tr.appendChild(td);
+      }
+      paddedTable.appendChild(tr);
+    }
+  }
+
+  function renderResultTable(tbl, mode){
+    const ansKey = calculateAnswers(mode);
+    tbl.innerHTML="";
+    for(let r=0;r<4;r++){
+      const tr=document.createElement("tr");
+      for(let c=0;c<4;c++){
+        const td=document.createElement("td");
+        let isInput = false;
+        if(mode === 'min' && ((r===1 && c===1) || (r===2 && c===2))) isInput = true;
+        if(mode === 'max' && ((r===3 && c===0) || (r===0 && c===3))) isInput = true;
+        if(mode === 'median' && ((r===2 && c===1) || (r===0 && c===1))) isInput = true;
+        if(isInput){
+          const inp=document.createElement("input");
+          inp.type="number"; inp.className="result-input";
+          inp.dataset.row = r; inp.dataset.col = c;
+          td.appendChild(inp);
+        } else {
+          td.textContent = ansKey[r][c];
+        }
+        tr.appendChild(td);
+      }
+      tbl.appendChild(tr);
+    }
+  }
+
+  checkQuizBtn.onclick = () => {
+    const minAns = calculateAnswers('min'), maxAns = calculateAnswers('max'), medAns = calculateAnswers('median');
+    let isAllCorrect = true, anyEmpty = false;
+    const validateTable = (tbl, ansKey) => {
+      tbl.querySelectorAll("input").forEach((inp) => {
+        const r = parseInt(inp.dataset.row), c = parseInt(inp.dataset.col);
+        if(inp.value.trim() === "") anyEmpty = true;
+        if(parseInt(inp.value) === ansKey[r][c]){
+          inp.classList.add("result-correct"); inp.classList.remove("result-wrong");
+        } else {
+          inp.classList.add("result-wrong"); inp.classList.remove("result-correct");
+          isAllCorrect = false;
+        }
+      });
+    };
+    validateTable(minTable, minAns); validateTable(maxTable, maxAns); validateTable(medianTable, medAns);
+    if(anyEmpty) { Swal.fire('Belum Lengkap!', 'Silakan isi semua kolom jawaban.', 'warning'); return; }
+    if(isAllCorrect){
+      fetch("/api/update-progres/", {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: 'sn-filters' })
+      }).then(() => {
+        Swal.fire({ title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.', icon: 'success', confirmButtonColor: '#3b7dd8' });
+        if(nextMaterialBtn) { nextMaterialBtn.classList.remove('btn-locked'); nextMaterialBtn.style.opacity = "1"; nextMaterialBtn.style.pointerEvents = "auto"; }
+      });
+    } else { Swal.fire('Coba Lagi!', 'Masih ada jawaban yang salah, periksa kembali.', 'error'); }
+  };
+
+  resetResultsBtn.onclick = () => {
+    [minTable, maxTable, medianTable].forEach(t => {
+      t.querySelectorAll("input").forEach(inp => { inp.value = ""; inp.classList.remove("result-correct", "result-wrong"); });
+    });
+  };
+
+  renderPaddedTable(); renderResultTable(minTable, 'min'); renderResultTable(maxTable, 'max'); renderResultTable(medianTable, 'median');
+})();
+</script>
+{% endblock %}

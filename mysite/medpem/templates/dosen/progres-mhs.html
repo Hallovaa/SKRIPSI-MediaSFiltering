@@ -1,0 +1,427 @@
+{% extends "dosen/base.html" %}
+{% load static %}
+
+{% block title %}Progres Mahasiswa — Dashboard Dosen{% endblock %}
+
+{% block content %}
+
+<style>
+.hero {
+  background: linear-gradient(135deg, #eff6ff, #eef2ff);
+  padding: 26px;
+  border-radius: 18px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.hero h1 { font-size: 30px; font-weight: 800; }
+
+.card-section {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 22px;
+}
+
+.filter-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 260px;
+}
+
+.search-wrapper i {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.search-box {
+  padding-left: 36px;
+}
+
+.table thead th {
+  background: #f8fafc;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  color: #475569;
+}
+
+.table tbody td {
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.progress-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.progress-wrapper {
+  width: 140px;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+}
+
+.progress-percent {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  min-width: 36px;
+  text-align: right;
+}
+
+.detail-link {
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 18px;
+  background: none;
+  border: none;
+}
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.pagination-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-page {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
+  text-decoration: none;
+}
+
+.btn-page-nav:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.page-current {
+  padding: 6px 14px;
+  border: 2px solid #9ca3af;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #1e293b;
+  min-width: 40px;
+  text-align: center;
+}
+
+.btn-page.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f1f5f9;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-box {
+  background: #ffffff;
+  width: 900px;
+  max-width: 95%;
+  border-radius: 16px;
+  padding: 24px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.modal-title { font-size: 20px; font-weight: 800; }
+.modal-close { cursor: pointer; font-size: 20px; color: #6b7280; }
+
+.material-section { margin-top: 18px; }
+.material-title {
+  font-weight: 800;
+  margin-bottom: 6px;
+  color: #1e293b;
+  border-left: 4px solid #2563eb;
+  padding-left: 10px;
+}
+
+.material-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e7eb;
+  font-size: 14px;
+}
+
+.status-done { color: #16a34a; }
+.status-active { color: #f59e0b; }
+.status-lock { color: #9ca3af; }
+.status-icon { font-size: 16px; }
+</style>
+
+<div class="hero">
+  <h1>Progres <span class="text-primary">Mahasiswa</span></h1>
+  <p class="text-muted">Rekap progres penyelesaian materi, kuis, dan evaluasi pembelajaran</p>
+</div>
+
+<div class="card-section">
+  <form method="GET" action="{% url 'progres_mhs' %}" id="filterForm">
+    <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+      <div class="filter-left">
+        <div class="filter-group">
+          <span>Tampilkan</span>
+          <select name="per_page" class="form-select" style="width:85px;" onchange="this.form.submit()">
+            <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+            <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+            <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+          </select>
+          <span>data</span>
+        </div>
+
+        <div class="filter-group">
+          <span>Pilih Kelas:</span>
+          <select name="kelas" class="form-select" style="min-width:220px;" onchange="this.form.submit()">
+            <option value="">Semua Kelas</option>
+            {% for k in daftar_kelas %}
+              <option value="{{ k.id }}" {% if request.GET.kelas == k.id|stringformat:"s" %}selected{% endif %}>
+                {{ k.nama_kelas }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="search-wrapper">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" id="searchInput" class="form-control search-box" placeholder="Cari nama / NIM..." value="{{ request.GET.q|default:'' }}" autocomplete="off">
+      </div>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th style="width:60px;">No</th>
+          <th style="text-align: center;">Nama Mahasiswa</th>
+          <th style="width:180px;">NIM</th>
+          <th style="width:150px;">Kelas</th>
+          <th style="width:220px;">Progres</th>
+          <th style="width:80px;">Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mhs in daftar_mahasiswa %}
+        <tr>
+          <td class="text-center">{{ daftar_mahasiswa.start_index|add:forloop.counter0 }}</td>
+          <td style="text-align: left; font-size: 15px; font-weight: 500;">{{ mhs.nama_lengkap }}</td>
+          <td class="text-center">{{ mhs.nim }}</td>
+          <td class="text-center">
+            {% if mhs.kelas %}
+              {{ mhs.kelas.nama_kelas }}
+            {% else %}
+              <span class="text-muted">Tanpa Kelas</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            <div class="progress-cell">
+              <div class="progress-wrapper">
+                <div class="progress-fill" style="width:{{ mhs.progres_belajar|default:0 }}%"></div>
+              </div>
+              <div class="progress-percent">{{ mhs.progres_belajar|default:0 }}%</div>
+            </div>
+          </td>
+          <td class="text-center">
+            <button class="detail-link" onclick='openDetail("{{ mhs.nama_lengkap }}", "{{ mhs.nim }}", "{{ mhs.progres_belajar|default:0 }}", {{ mhs.detail_progres_json|safe|default:"{}" }})' title="Lihat Detail">
+              <i class="bi bi-search"></i>
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center py-4 text-muted">Belum ada data mahasiswa</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-wrapper">
+    <div class="page-info">
+      Menampilkan <strong>{{ daftar_mahasiswa.start_index }}</strong> sampai <strong>{{ daftar_mahasiswa.end_index }}</strong> dari <strong>{{ total_data }}</strong> data
+    </div>
+
+    <div class="pagination-btns">
+      {% if daftar_mahasiswa.has_previous %}
+        <a href="?page={{ daftar_mahasiswa.previous_page_number }}&q={{ request.GET.q }}&kelas={{ request.GET.kelas }}&per_page={{ per_page }}" class="btn-page btn-page-nav">
+          Sebelumnya
+        </a>
+      {% else %}
+        <span class="btn-page disabled">Sebelumnya</span>
+      {% endif %}
+
+      <div class="page-current">{{ daftar_mahasiswa.number }}</div>
+
+      {% if daftar_mahasiswa.has_next %}
+        <a href="?page={{ daftar_mahasiswa.next_page_number }}&q={{ request.GET.q }}&kelas={{ request.GET.kelas }}&per_page={{ per_page }}" class="btn-page btn-page-nav">
+          Berikutnya
+        </a>
+      {% else %}
+        <span class="btn-page disabled">Berikutnya</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="detailModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Detail Progres Mahasiswa</div>
+      <div class="modal-close" onclick="closeDetail()"><i class="bi bi-x-lg"></i></div>
+    </div>
+    <div class="mb-3 p-3 bg-light rounded-3" style="font-size: 15px;">
+      <strong>Nama:</strong> <span id="modalNama" class="me-3"></span>
+      <strong>NIM:</strong> <span id="modalNim" class="me-3"></span>
+      <strong>Progres:</strong> <span id="modalProgres" class="text-primary fw-bold"></span>%
+    </div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+const strukturMenu = [
+    { title: "PENDAHULUAN", items: ["Pengertian Citra Digital", "Jenis Citra Digital", "Kuis 1"] },
+    { title: "PENGANTAR SPATIAL FILTERING", items: ["Pengertian Spatial Filtering", "Domain Spasial vs Frekuensi", "Kuis 2"] },
+    { title: "KONVOLUSI", items: ["Konsep Konvolusi", "Teknik Padding", "Normalisasi Citra", "Kuis 3"] },
+    { title: "SMOOTHING SPATIAL FILTERS", items: ["Smoothing Linear Filters", "Order-Statistic Filters", "Kuis 4"] },
+    { title: "SHARPENING SPATIAL FILTERS", items: ["Sharpening Citra Digital", "Unsharp Masking & Highboost", "Kuis 5"] },
+    { title: "PRAKTIKUM", items: ["Grayscale & Biner", "Konvolusi & Padding", "Smoothing Linear", "Nonlinear Filters", "Sharpening Citra", "Unsharp Masking", "Kuis 6"] },
+    { title: "EVALUASI", items: ["Evaluasi Akhir"] }
+];
+
+let timeout = null;
+const searchInput = document.getElementById('searchInput');
+const filterForm = document.getElementById('filterForm');
+
+searchInput.addEventListener('keyup', function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+        filterForm.submit();
+    }, 600);
+});
+
+function openDetail(nama, nim, progres, dataStatus) {
+    document.getElementById("modalNama").innerText = nama;
+    document.getElementById("modalNim").innerText = nim;
+    document.getElementById("modalProgres").innerText = progres;
+    
+    let totalItems = 0;
+    strukturMenu.forEach(bab => totalItems += bab.items.length);
+
+    let itemsCompleted = Math.floor((progres / 100) * totalItems);
+    if (progres >= 100) itemsCompleted = totalItems;
+
+    let html = "";
+    let globalIndex = 0;
+
+    strukturMenu.forEach(bab => {
+        html += `<div class="material-section"><div class="material-title">${bab.title}</div>`;
+        bab.items.forEach((item, index) => {
+            let status = "lock";
+            
+            if (globalIndex < itemsCompleted) {
+                status = "done";
+            } else if (globalIndex === itemsCompleted) {
+                status = dataStatus[item] === "done" ? "done" : "active";
+            } else {
+                status = "lock";
+            }
+
+            if (dataStatus[item] === "done") status = "done";
+
+            let statusClass = "status-lock", icon = "bi-lock-fill";
+            
+            if(status === "done") { 
+                statusClass = "status-done"; 
+                icon = "bi-check-circle-fill"; 
+            } else if(status === "active") { 
+                statusClass = "status-active"; 
+                icon = "bi bi-x-circle-fill"; 
+            }
+            
+            html += `
+                <div class="material-item ${statusClass}">
+                    <span>${index + 1}. ${item}</span>
+                    <i class="bi ${icon} status-icon"></i>
+                </div>`;
+            
+            globalIndex++;
+        });
+        html += `</div>`;
+    });
+    
+    document.getElementById("modalContent").innerHTML = html;
+    document.getElementById("detailModal").style.display = "flex";
+}
+
+function closeDetail() { document.getElementById("detailModal").style.display = "none"; }
+
+window.onclick = function(event) {
+    const modal = document.getElementById("detailModal");
+    if (event.target == modal) { closeDetail(); }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,645 @@
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+  .card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+  }
+
+  .card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+  }
+
+  .card-section-body p { margin-bottom:12px; line-height:1.6; }
+  .card-section-body ol { margin-top:8px; padding-left:35px; }
+  .card-section-body li { 
+    margin-bottom:12px; 
+    font-size:19px; 
+  }
+
+
+.editor-instruction ul { margin: 0; padding-left: 20px; }
+.card-section-body .editor-instruction li {
+  margin-bottom: 5px;
+  font-size: 14px; 
+}
+
+
+  #quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+  }
+
+  #quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+  }
+
+  #quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+
+  .summary-box {
+    background: #fbfdff;
+    border: 1px solid #bcccdc;
+    border-radius: 10px;
+    padding: 35px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.02);
+    margin-bottom: 18px;
+  }
+
+
+  #quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    border-bottom: 2px solid #4d7bdc; 
+    color: white !important;
+  }
+
+  #quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    color: white !important;
+  }
+
+  #quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+  }
+ 
+  /*  */
+<div class="aktivitas-isian-container" id="quiz-card">
+            <div class="aktivitas-header">
+                <div class="aktivitas-icon"><i class="bi bi-pencil-square"></i></div>
+                <h6>Aktivitas</h6>
+            </div>
+
+#quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .aktivitas-header {
+    background: #4d7bdc !important;
+    color: white !important;
+}
+
+#quiz-card .aktivitas-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+
+    <section class="card-section quiz-card-section">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 1</div>
+
+     <section class="card-section" id="quiz-card">
+  <div class="card-section-header">
+    <i class="bi bi-question-circle"></i>
+    <div>Aktivitas 2</div>
+
+  .card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16,32,58,0.03);
+  }
+
+  
+                <div class="sub-card">
+                  <div class="sub-card-body">
+                    
+                  </div>
+                </div>
+  
+  <figure style="margin:20px 0;">
+      <img src="{% static 'assets/img/konten/A-1.png' %}" style="display:block; margin:auto; width:80%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar A.1 Citra <em>grayscale</em> (6×6) beserta nilai pikselnya
+      </figcaption>
+  </figure>
+
+        <div id="hasil" class="result-box hidden">
+            <h2 id="statusText" class="fw-bold"></h2>
+            <p>Nilai kamu:</p>
+            <div class="score" id="nilaiAkhir">0</div>
+            <div id="loadingHasil" class="mt-3">Menghitung nilai secara aman...</div>
+            
+            <div id="lulusBox" class="hidden mt-4">
+                <p class="text-success fw-bold">Selamat! Kamu telah lulus dan dapat melanjutkan ke materi selanjutnya.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a id="btnNextBab" href="{% url 'pengertian_spatial' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
+                </div>
+            </div>
+            
+            <div id="tidakLulusBox" class="hidden mt-4">
+                <p class="text-danger fw-bold">Nilai belum memenuhi KKM</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="btn btn-warning px-4" onclick="ulangKuis()">Ulangi Kuis</button>
+                    <a href="{% url 'pengertian_citra' %}" class="btn btn-outline-secondary px-4">Pelajari Kembali</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="conv-controls">
+            <button id="startBtn">Mulai</button>
+            <button id="autoplayBtn" class="btn-outline">Auto Play</button>
+            <button id="pauseBtn" style="display:none;">Pause</button>
+            <button id="nextBtn" style="display:none;">Lanjut</button>
+            <button id="resetBtn" class="btn-outline" style="display:none;">Ulangi</button>
+        </div>
+
+  .conv-controls {
+    display:flex;
+    gap:8px;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  
+  .conv-controls button {
+    padding:8px 14px;
+    border-radius:8px;
+    border:none; 
+    cursor:pointer;
+    background:var(--primary-500); 
+    color:#fff;
+    font-weight:700;
+    font-family: inherit;
+  }
+
+  .conv-controls button.btn-outline {
+    background:#fff;
+    color:var(--primary-500);
+    border:1px solid rgba(16,32,58,0.15);
+  }
+
+
+
+
+    <div class="instruction">
+      <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
+      <ul>
+        <li>Perhatikan <strong>Input Citra</strong>, <strong>Kernel (Laplacian)</strong>, dan <strong>Hasil</strong> yang ditampilkan.</li>
+        <li>Klik tombol <strong>Mulai</strong> untuk memulai proses konvolusi secara bertahap pada satu piksel pusat.</li>
+        <li>Area berwarna biru muda pada <strong>Input Citra</strong> menunjukkan area piksel (3×3) yang sedang diproses oleh kernel.</li>
+        <li>Gunakan tombol <strong>Lanjut</strong> untuk melanjutkan ke langkah perhitungan berikutnya.</li>
+        <li>Klik <strong>Auto Play</strong> jika ingin melihat proses konvolusi berjalan secara otomatis.</li>
+        <li>Tekan <strong>Pause</strong> untuk menghentikan sementara proses yang sedang berlangsung.</li>
+        <li>Angka berwarna biru pada bagian <strong>Perhitungan</strong> menunjukkan bobot kernel yang sedang dikalikan dengan nilai piksel citra.</li>
+        <li>Hasil konvolusi akan ditampilkan pada bagian <strong>Hasil</strong> sesuai dengan posisi piksel yang sedang dihitung.</li>
+        <li>Perhatikan bagian <strong>Perhitungan</strong> untuk melihat proses perkalian dan penjumlahan nilai piksel dengan bobot kernel secara rinci.</li>
+        <li>Klik tombol <strong>Ulangi</strong> untuk mengulang proses konvolusi dari kondisi awal.</li>
+      </ul>
+    </div>
+
+.instruction {
+    background: #fdfcfe;
+    border: 1px solid #e1e8f0;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+}
+
+.instruction ul {
+      margin-bottom: 0;
+      padding-left: 20px;
+}
+
+.instruction li {
+      text-align: justify;     
+      text-justify: inter-word;
+      margin-left: 15px;
+      margin-bottom: 5px;
+      font-size: 14px;
+}
+
+
+   Aktivitas
+
+  'Coba Lagi', 'Masih ada jawaban yang salah, periksa kembali.',
+  Masih ada jawaban yang belum tepat. Periksa kembali.
+  Jawaban belum tepat. Silakan periksa kembali dan coba lagi
+
+  'Belum Lengkap!', 'Silakan isi semua kolom jawaban.'
+
+  title: 'Luar Biasa!',
+          Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.
+
+
+.step-title {
+    font-size: 17pt;
+    font-weight: 700;
+    margin: 24px 0 10px;
+}
+
+.code-box-import {
+    background: #eaf3ff;
+    border: 2px dashed #b7cff5;
+    border-radius: 20px;
+    padding: 18px 26px;
+    max-width: 520px;
+    margin: 26px auto;
+    font-family: "Courier New", monospace;
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 600
+}
+
+.code-box-code {
+    max-width: 800px;
+    margin: 14px auto 26px;
+    padding: 14px 22px;
+    background: #ffffff;
+    border: 2px solid #3b82f6;
+    border-radius: 14px;
+    font-family: "Courier New", monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #1e293b;
+    font-weight: 600
+}
+
+.keyword { color: #af32bf; }
+.module { color: #2b93a3; }
+.string { color: #b12121; }
+.function { color: #926a39; }
+.number { color: #1a8a5f; }
+
+  
+
+
+JIKA MENGGANTI KUIS 
+
+const soal = [
+    {q: "Pertanyaan Kuis 2 Nomor 1...", o: ["Opsi A", "Opsi B", "Opsi C", "Opsi D", "Opsi E"]},
+    // ... susun sampai 10 soal
+];
+
+// Cari baris ini di fungsi submitKuis()
+const response = await fetch("{% url 'cek_nilai_kuis_2' %}", { // Ubah kuis_1 menjadi kuis_2
+
+<a id="btnNextBab" href="{% url 'nama_materi_berikutnya' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
+
+<a href="{% url 'materi_bab_2' %}" class="btn btn-danger px-4">Batal</a>
+
+<a href="{% url 'materi_bab_2' %}" class="btn btn-outline-secondary px-4">Pelajari Kembali</a>
+
+<title>Kuis [Nama Materi 2]</title>
+<h2 class="fw-bold text-primary">Petunjuk Pengerjaan Kuis [Materi 2]</h2>
+
+
+
+
+
+.code-box-import {
+    background: #eaf3ff;
+    border: 2px dashed #b7cff5;
+    border-radius: 20px;
+    padding: 18px 26px;
+    max-width: 520px;
+    margin: 26px auto;
+    font-family: "Courier New", monospace;
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.code-box-code {
+    max-width: 800px;
+    margin: 14px auto 26px;
+    padding: 14px 22px;
+    background: #ffffff;
+    border: 2px solid #3b82f6;
+    border-radius: 14px;
+    font-family: "Courier New", monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.keyword { color: #af32bf; }
+.module { color: #2b93a3; }
+.string { color: #b12121; }
+.function { color: #926a39; }
+.number { color: #1a8a5f; }
+
+.editor-layout {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.notebook-container {
+    flex: 3;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-container {
+    flex: 1;
+    min-width: 280px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: fit-content;
+}
+
+.cell-container {
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.cell-input-area {
+    display: flex;
+    background: #f8fafc;
+    padding: 10px;
+    gap: 10px;
+}
+
+.cell-info {
+    font-family: monospace;
+    font-size: 13px;
+    color: #1d4ed8;
+    min-width: 45px;
+    padding-top: 8px;
+    text-align: justify;
+}
+
+.editor-wrapper {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.CodeMirror {
+    height: auto;
+    min-height: 40px;
+    font-size: 14px;
+    background: #282a36 !important;
+}
+
+.cell-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+}
+
+.btn-run {
+    background: #22c55e;
+}
+
+.btn-delete {
+    background: #ef4444;
+}
+
+.cell-output {
+    padding: 10px 10px 10px 65px;
+    border-top: 1px solid #f1f5f9;
+    background: #fff;
+}
+
+.output-log {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.output-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    margin-top: 5px;
+}
+
+.btn-download-manual {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.widget-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    background: #f8fafc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.widget-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.file-list {
+    max-height: 150px;
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+.file-item {
+    background: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 4px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.file-item.active {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.input-preview {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.btn-add-cell-mid {
+    height: 12px;
+    background: transparent;
+    margin: 2px 0;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-add-cell-mid:hover {
+    background: #3b82f6;
+    border-radius: 2px;
+}
+
+.btn-add-cell-mid i {
+    opacity: 0;
+    color: white;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-add-cell-mid:hover i {
+    opacity: 1;
+}
+
+#engine-status {
+    font-size: 11px;
+    color: #64748b;
+    font-family: monospace;
+    padding: 5px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+
+
+<section class="card-section">
+    <div class="card-section-header">
+        <i class="bi bi-journal-code"></i> SFiltering CitraLab
+    </div>
+    <div class="card-section-body">
+        <div class="editor-instruction">
+            <strong><i class="bi bi-info-circle text-primary"></i> Langkah-langkah Penggunaan Editor:</strong>
+            <ul>
+                <li>Pastikan status editor pada sidebar kanan bawah menunjukkan <span class="text-success fw-bold">“Editor Siap”</span> sebelum mulai menggunakan editor.</li>
+                <li>Unggah gambar melalui tombol <strong>Unggah</strong> <i class="bi bi-upload ms-1"></i> pada sidebar.</li>
+                <li>Gambar yang diunggah atau dipilih dari Galeri Citra SFiltering akan otomatis ditampilkan pada <strong>pratinjau gambar</strong> <i class="bi bi-image ms-1"></i>.</li>
+                <li>Klik nama file pada Galeri Citra <i class="bi bi-files"></i>, dan nama file akan otomatis digunakan pada <strong>sel pertama</strong>.</li>
+                <li>Klik ikon <strong>Jalankan</strong> <i class="bi bi-play-fill text-success ms-1"></i> di sebelah kanan sel untuk memproses gambar.</li>
+                <li>Arahkan kursor ke bagian bawah sel, lalu klik ikon <i class="bi bi-plus-circle text-primary ms-1"></i> untuk menambahkan sel baru.</li>
+                <li>Klik ikon <i class="bi bi-trash text-danger ms-1"></i> pada sel yang tidak diperlukan.</li>
+                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel</i>.</li>
+                <li>Klik tombol <strong>Unduh Gambar</strong> <i class="bi bi-download ms-1"></i> untuk menyimpan hasil pemrosesan.</li>
+            </ul>
+        </div>
+
+        <div class="editor-layout">
+            <div class="notebook-container" id="notebook"></div>
+            <div class="sidebar-container">
+                <div class="widget-box">
+                    <div class="widget-title"><i class="bi bi-image"></i> Pratinjau Gambar</div>
+                    <img id="input-display" class="input-preview" src="https://via.placeholder.com/300x200?text=Pilih+Gambar">
+                </div>
+                <div class="widget-box">
+                    <div class="widget-title"><i class="bi bi-files"></i> Galeri Citra SFiltering</div>
+                    <label for="image-upload" class="btn btn-primary btn-sm w-100 mb-2">
+                        <i class="bi bi-upload"></i> Upload
+                    </label>
+                    <input type="file" id="image-upload" style="display: none;" accept="image/*" multiple>
+                    <div id="file-list-names" class="file-list"></div>
+                    <button class="btn btn-sm btn-link text-danger p-0" onclick="clearFiles()">Hapus Semua</button>
+                </div>
+                <div id="engine-status">Memuat Editor...</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+.card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16, 32, 58, 0.03);
+}
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    initPyodide();
+});
+
+
+.btn-check-answer {
+    padding: 10px 24px;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-check-answer:hover {
+    background-color: #2563eb;
+    color: white;
+    transform: translateY(-1px);
+}

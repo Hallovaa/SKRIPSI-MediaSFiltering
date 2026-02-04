@@ -1,0 +1,586 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Evaluasi Akhir</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static 'assets/css/bootstrap-5.0.0-beta1.min.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        padding: 0;
+    }
+
+    .quiz-wrapper {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
+
+    .petunjuk-box {
+        max-width: 700px;
+        margin: auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .08);
+    }
+
+    .quiz-layout {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 24px;
+        align-items: start;
+        position: relative;
+    }
+
+    .question-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, .06);
+        min-height: 400px;
+    }
+
+    .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .timer {
+        color: #ef4444;
+        font-weight: 700;
+    }
+
+    .option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .option:hover {
+        border-color: #2563eb;
+        background: #f1f5ff;
+    }
+
+    .option.selected {
+        border-color: #2563eb;
+        background: #eff6ff;
+        box-shadow: 0 0 0 1px #2563eb;
+    }
+
+    .option.ragu-selected {
+        border-color: #fbbf24;
+        background: #fffbeb;
+        box-shadow: 0 0 0 1px #fbbf24;
+    }
+
+    .option::before {
+        content: attr(data-label);
+        width: 30px;
+        height: 30px;
+        background: #f1f5f9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+        color: #475569;
+        flex-shrink: 0;
+    }
+
+    .img-option {
+        max-height: 80px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+    }
+
+    .nav-btn {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        gap: 10px;
+    }
+
+    .btn-nav-prev {
+        background-color: #64748b;
+        color: white;
+        border: none;
+    }
+
+    .btn-nav-prev:hover {
+        background-color: #475569;
+        color: white;
+    }
+
+    .btn-nav-prev:disabled {
+        background-color: #cbd5e1;
+        cursor: not-allowed;
+    }
+
+    .btn-nav-next {
+        background-color: #2563eb;
+        color: white;
+        border: none;
+    }
+
+    .btn-nav-next:hover {
+        background-color: #1d4ed8;
+        color: white;
+    }
+
+    .quiz-sidebar {
+        background: #fff;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, .06);
+        position: sticky;
+        top: 20px;
+    }
+
+    .number-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .number-grid button {
+        height: 38px;
+        border-radius: 8px;
+        border: none;
+        background: #e5e7eb;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .number-grid .done {
+        background: #22c55e;
+        color: #fff;
+    }
+
+    .number-grid .ragu {
+        background: #fbbf24;
+        color: #000;
+    }
+
+    .number-grid .active-num {
+        outline: 3px solid #2563eb;
+        outline-offset: -3px;
+    }
+
+    .result-box {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, .08);
+    }
+
+    .score {
+        font-size: 56px;
+        font-weight: 800;
+        color: #2563eb;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    @media(max-width: 991px) {
+        .quiz-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .quiz-sidebar {
+            position: static;
+            margin-top: 24px;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="quiz-wrapper">
+        <div id="petunjuk" class="petunjuk-box">
+            <h2 class="fw-bold text-primary" style="text-align: center;">Petunjuk Pengerjaan Evaluasi Akhir</h2>
+            <ul class="mt-3" style="text-align: justify; list-style-position: outside; padding-left: 20px;">
+                <li class="mb-2"><strong>Evaluasi terdiri</strong> dari 20 soal pilihan ganda, setiap soal memiliki satu jawaban yang benar.</li>
+                <li class="mb-2"><strong>Waktu pengerjaan</strong> evaluasi adalah 40 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Navigasi soal</strong> tersedia di sisi kanan layar. Nomor soal yang sedang dikerjakan ditandai dengan border berwarna biru.</li>
+                <li class="mb-2"><strong>Status pengerjaan</strong> soal ditunjukkan dengan warna: <span class="badge bg-success">Hijau</span> (Sudah Dijawab), <span class="badge bg-warning text-dark">Kuning</span> (Ragu-ragu), dan <span class="badge bg-secondary">Abu-abu</span> (Belum Dijawab).</li>
+                <li class="mb-2"><strong>Tombol Ragu-ragu</strong> dapat digunakan jika peserta belum yakin dengan jawabannya.</li>
+                <li class="mb-2">Gunakan tombol <strong>Sebelumnya</strong> dan <strong>Selanjutnya</strong> untuk berpindah antar soal.</li>
+                <li class="mb-2">Setelah semua soal dijawab dan sudah yakin, klik tombol <strong>Selesai</strong> untuk mengakhiri evaluasi.</li>
+            </ul>
+            <div class="d-flex gap-2 mt-4">
+                <button class="btn btn-primary px-4 fw-bold" onclick="mulaiKuis()">Mulai Evaluasi</button>
+                <a href="{% url 'ringkasan5' %}" class="btn btn-danger px-4 fw-bold">Batal</a>
+            </div>
+        </div>
+
+        <div id="kuis" class="quiz-layout hidden">
+            <div class="question-card">
+                <div class="question-header">
+                    <strong>Soal <span id="noSoal">1</span> / 20</strong>
+                    <div class="timer">⏱ <span id="timer">40:00</span></div>
+                </div>
+                <h5 class="mb-4" id="teksSoal">Loading...</h5>
+                
+                <div id="gambarSoal" class="mb-4 hidden text-center">
+                    <img id="imgSoal" class="img-fluid rounded border shadow-sm" style="max-height: 250px;">
+                </div>
+
+                <div id="optionsContainer">
+                    <div class="option" data-index="0" data-label="a"><span class="teksOpsi"></span></div>
+                    <div class="option" data-index="1" data-label="b"><span class="teksOpsi"></span></div>
+                    <div class="option" data-index="2" data-label="c"><span class="teksOpsi"></span></div>
+                    <div class="option" data-index="3" data-label="d"><span class="teksOpsi"></span></div>
+                    <div class="option" data-index="4" data-label="e"><span class="teksOpsi"></span></div>
+                </div>
+                <div class="nav-btn">
+                    <button class="btn btn-nav-prev px-4 py-2 fw-bold" id="btnPrev" onclick="navigasi(-1)">Sebelumnya</button>
+                    <button class="btn btn-warning px-4 py-2 fw-bold" onclick="toggleRagu()">Ragu-ragu</button>
+                    <button class="btn btn-nav-next px-4 py-2 fw-bold" id="btnNext" onclick="navigasi(1)">Selanjutnya</button>
+                </div>
+            </div>
+
+            <div class="quiz-sidebar">
+                <h6 class="fw-bold mb-3">Nomor Soal</h6>
+                <div class="number-grid" id="gridNomor"></div>
+                <div class="mt-3 small">
+                    <div>🟢 Sudah dijawab</div>
+                    <div>🟡 Ragu-ragu</div>
+                    <div>⚪ Belum dijawab</div>
+                </div>
+                <button class="btn btn-danger w-100 mt-4 fw-bold" onclick="bukaPeringatanSelesai()">Selesai</button>
+            </div>
+        </div>
+
+        <div id="hasil" class="result-box hidden">
+            <h2 id="statusText" class="fw-bold"></h2>
+            <p><b>Nilai Akhir Evaluasi:</b></p>
+            <div class="score" id="nilaiAkhir">0</div>
+            <div id="loadingHasil" class="mt-3">Menghitung skor...</div>
+            <div id="lulusBox" class="hidden mt-4">
+                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM.</p>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'dash_mhs' %}" class="btn btn-primary px-4">Kembali ke Dashboard</a>
+                </div>
+            </div>
+            <div id="tidakLulusBox" class="hidden mt-4">
+                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM.</p>
+                <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi evaluasi untuk menyelesaikan pembelajaran.</p>
+                <div class="d-flex justify-content-center gap-2 mt-3">
+                    <a href="{% url 'pengertian_citra' %}" class="btn btn-nav-prev px-4 py-2 fw-bold">Pelajari Kembali</a>
+                    <button class="btn btn-warning px-4 fw-bold" onclick="ulangKuis()">Ulangi Evaluasi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STATIC_URL = "{% static '' %}";
+        const soal = [
+            {
+                q: "Citra digital direpresentasikan dalam bentuk matriks karena .…",
+                o: ["memudahkan penyimpanan file", "setiap elemen matriks mewakili satu piksel", "warna hanya bisa disimpan dalam array", "ukuran citra selalu berbentuk persegi", "citra tidak memiliki dimensi"]
+            },
+            {
+                q: "Faktor utama yang memengaruhi ketajaman detail visual pada citra digital adalah .…",
+                o: ["format file", "jumlah channel warna", "ukuran kernel", "jenis padding", "resolusi (jumlah piksel)"]
+            },
+            {
+                q: "Neighbourhood operation pada Spatial Filtering dilakukan dengan cara .…",
+                o: ["mengubah satu piksel saja", "memproses seluruh citra sekaligus", "menghilangkan piksel tepi", "menggunakan piksel pusat dan tetangganya", "memproses citra di domain frekuensi"]
+            },
+            {
+                q: "Kernel dalam Spatial Filtering berfungsi sebagai .…",
+                o: ["penentu format file", "matriks bobot pemrosesan piksel", "penyimpan citra", "penentu resolusi", "pembagi warna"]
+            },
+            {
+                q: "Pada konvolusi citra 5×5 dengan kernel 3×3 tanpa padding dan stride 1, ukuran hasil konvolusi adalah ….",
+                o: ["1x1", "2x2", "3x3", "4x4", "5x5"]
+            },
+            {
+                q: "Nilai piksel pusat pertama hasil konvolusi matriks 4x4 dengan kernel mean 3x3 adalah ….",
+                o: ["20", "30", "40", "50", "60"],
+                img: STATIC_URL + "assets/img/kuis/eval-6.png"
+            },
+            {
+                q: "Sebuah citra 5×5 dikonvolusi menggunakan kernel 3×3 dan ingin menghasilkan citra output dengan ukuran sama. Maka padding yang dibutuhkan adalah ….",
+                o: ["1", "2", "3", "4", "5"]
+            },
+            {
+                q: "Berdasarkan area piksel 3×3 yang diberikan, nilai piksel pusat setelah median filtering adalah ....",
+                o: ["4", "5", "6", "7", "8"],
+                img: STATIC_URL + "assets/img/kuis/eval-8.png"
+            },
+            {
+                q: "Kernel sharpening memenuhi syarat penajaman jika memenuhi kondisi ....",
+                o: ["semua elemennya positif", "kernel simetris", "jumlah seluruh elemen bernilai nol", "ukuran kernel kecil", "tidak membutuhkan padding"]
+            },
+            {
+                q: "Jika hasil konvolusi dilakukan normalisasi ke rentang 0–255, nilai hasil normalisasi untuk piksel −20 dan 100 adalah ….",
+                o: ["0 dan 128", "0 dan 140", "0 dan 153", "20 dan 153", "20 dan 180"],
+                img: STATIC_URL + "assets/img/kuis/eval-10.png"
+            },
+            {
+                q: "Kernel Smoothing berikut yang memberikan bobot terbesar pada piksel pusat dan mengecil ke arah tepi adalah ....",
+                o: [STATIC_URL + "assets/img/kuis/eval-11a.png", STATIC_URL + "assets/img/kuis/eval-11b.png", STATIC_URL + "assets/img/kuis/eval-11c.png", STATIC_URL + "assets/img/kuis/eval-11d.png", STATIC_URL + "assets/img/kuis/eval-11e.png"]
+            },
+            {
+                q: "Dampak yang paling mungkin terjadi jika resolusi citra diperkecil dari 256×256 menjadi 64×64 adalah ….",
+                o: ["citra menjadi lebih tajam", "detail citra meningkat", "kontras citra bertambah", "warna citra menjadi lebih cerah", "citra tampak lebih buram"]
+            },
+            {
+                q: "Nilai grayscale menggunakan metode rata-rata untuk piksel RGB (R=120, G=150, B=90) adalah ….",
+                o: ["110", "120", "130", "140", "150"]
+            },
+            {
+                q: "Berdasarkan matriks 3x3 yang diberikan, jika threshold = 125, maka nilai piksel pusat pada citra biner adalah ….",
+                o: ["0", "1", "120", "125", "255"],
+                img: STATIC_URL + "assets/img/kuis/eval-14.png"
+            },
+            {
+                q: "Jika matriks citra diberikan replicate padding sebanyak 1 piksel, maka hasil matriks yang benar adalah ….",
+                o: [STATIC_URL + "assets/img/kuis/eval-15a.png", STATIC_URL + "assets/img/kuis/eval-15b.png", STATIC_URL + "assets/img/kuis/eval-15c.png", STATIC_URL + "assets/img/kuis/eval-15d.png", STATIC_URL + "assets/img/kuis/eval-15e.png"],
+                img: STATIC_URL + "assets/img/kuis/eval-15.png"
+            },
+            {
+                q: "Mask pada unsharp masking diperoleh dari operasi ….",
+                o: ["citra blur − citra asli", "citra asli − citra blur", "citra asli + citra blur", "citra median − citra asli", "citra asli ÷ citra blur"]
+            },
+            {
+                q: "Perbedaan utama antara highboost filtering dan unsharp masking adalah ….",
+                o: ["highboost tidak menggunakan blur", "unsharp masking bekerja di domain frekuensi", "unsharp masking tidak menggunakan mask", "highboost menggunakan faktor penguatan k > 1", "highboost hanya untuk citra warna"]
+            },
+            {
+                q: "Berdasarkan matriks citra asli dan blur yang diberikan, jika dilakukan highboost filtering dengan k=2, nilai piksel pusatnya adalah ....",
+                o: ["50", "55", "60", "65", "70"],
+                img: STATIC_URL + "assets/img/kuis/eval-18.png"
+            },
+            {
+                q: "Proses mengubah citra grayscale menjadi hitam-putih agar objek dan latar belakang mudah dipisahkan disebut ….",
+                o: ["Smoothing", "sharpening", "normalisasi", "thresholding", "padding"]
+            },
+            {
+                q: "Proses memperbaiki foto lama bintik hitam putih dengan memanfaatkan nilai piksel tetangga secara langsung disebut ….",
+                o: ["histogram equalization", "frequency filtering", "image compression", "image resizing", "Spatial Filtering"]
+            }
+        ];
+
+        let idx = 0;
+        let jawaban = Array(soal.length).fill(null);
+        let ragu = Array(soal.length).fill(false);
+        let sisaWaktu = 40 * 60;
+        let timer;
+        let waktuMulaiKuis;
+        let waktuSelesaiKuis;
+
+        function formatWaktuSekarang() {
+            const sekarang = new Date();
+            const utc = sekarang.getTime() + (sekarang.getTimezoneOffset() * 60000);
+            const wita = new Date(utc + (3600000 * 8));
+            const pad = (n) => n.toString().padStart(2, '0');
+            return `${wita.getFullYear()}-${pad(wita.getMonth() + 1)}-${pad(wita.getDate())} ${pad(wita.getHours())}:${pad(wita.getMinutes())}:${pad(wita.getSeconds())}`;
+        }
+
+        function mulaiKuis(){
+            waktuMulaiKuis = formatWaktuSekarang();
+            document.getElementById('petunjuk').classList.add('hidden');
+            document.getElementById('kuis').classList.remove('hidden');
+            renderGrid();
+            renderSoal();
+            timer = setInterval(() => {
+                sisaWaktu--;
+                let m = Math.floor(sisaWaktu/60), d = sisaWaktu%60;
+                document.getElementById('timer').innerText = `${String(m).padStart(2,'0')}:${String(d).padStart(2,'0')}`;
+                if(sisaWaktu<=0){ 
+                    clearInterval(timer); 
+                    Swal.fire({
+                        title: 'Waktu Habis!',
+                        text: 'Waktu pengerjaan telah berakhir.',
+                        icon: 'warning',
+                        confirmButtonText: 'Lihat Hasil',
+                        allowOutsideClick: false
+                    }).then(() => { konfirmasiSelesai(); });
+                }
+            }, 1000);
+        }
+
+        function renderSoal(){
+            document.getElementById('noSoal').innerText = idx + 1;
+            document.getElementById('teksSoal').innerText = soal[idx].q;
+            const containerGambar = document.getElementById('gambarSoal');
+            const imgElement = document.getElementById('imgSoal');
+            if(soal[idx].img) {
+                imgElement.src = soal[idx].img;
+                containerGambar.classList.remove('hidden');
+            } else {
+                containerGambar.classList.add('hidden');
+            }
+            const opts = document.querySelectorAll('.option');
+            opts.forEach((opt, i) => {
+                opt.classList.remove('selected', 'ragu-selected');
+                const teksSpan = opt.querySelector('.teksOpsi');
+                const content = soal[idx].o[i];
+                if (content.toLowerCase().endsWith('.png') || content.toLowerCase().endsWith('.jpg')) {
+                    teksSpan.innerHTML = `<img src="${content}" class="img-option">`;
+                } else {
+                    teksSpan.innerText = content;
+                }
+                if(jawaban[idx] === i) {
+                    if(ragu[idx]) opt.classList.add('ragu-selected');
+                    else opt.classList.add('selected');
+                }
+            });
+            document.getElementById('btnPrev').disabled = (idx === 0);
+            document.getElementById('btnNext').innerText = (idx === soal.length - 1) ? "Selesai" : "Selanjutnya";
+            updateGridUI();
+        }
+
+        function navigasi(step){
+            if(step === 1 && idx === soal.length - 1){ 
+                bukaPeringatanSelesai(); 
+                return; 
+            }
+            idx += step;
+            renderSoal();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.onclick = function(){
+                jawaban[idx] = parseInt(this.getAttribute('data-index'));
+                ragu[idx] = false;
+                renderSoal();
+            }
+        });
+
+        function toggleRagu(){ 
+            if(jawaban[idx] !== null){ 
+                ragu[idx] = !ragu[idx]; 
+                renderSoal(); 
+                updateGridUI(); 
+            } else {
+                Swal.fire({ icon: 'info', text: 'Pilih jawaban terlebih dahulu.', timer: 1200, showConfirmButton: false });
+            }
+        }
+
+        function renderGrid(){
+            const grid = document.getElementById('gridNomor');
+            grid.innerHTML = '';
+            soal.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.innerText = i + 1;
+                btn.onclick = () => { idx = i; renderSoal(); };
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateGridUI(){
+            const btns = document.querySelectorAll('#gridNomor button');
+            btns.forEach((btn, i) => {
+                btn.classList.remove('done', 'ragu', 'active-num');
+                if(i === idx) btn.classList.add('active-num');
+                if(ragu[i]) btn.classList.add('ragu');
+                else if(jawaban[i] !== null) btn.classList.add('done');
+            });
+        }
+
+        function bukaPeringatanSelesai() {
+            const jumlahRagu = ragu.filter(v => v === true).length;
+            const belumDijawab = jawaban.filter(v => v === null).length;
+
+            if (jumlahRagu > 0 || belumDijawab > 0) {
+                let pesan = "";
+                if (belumDijawab > 0 && jumlahRagu > 0) {
+                    pesan = `Masih ada <b>${belumDijawab} soal belum dijawab</b> dan <b>${jumlahRagu} soal ragu-ragu</b>. Silakan lengkapi semua jawaban dan pastikan tidak ada yang ragu-ragu untuk menyelesaikan evaluasi.`;
+                } else if (belumDijawab > 0) {
+                    pesan = `Masih ada <b>${belumDijawab} soal yang belum dijawab</b>. Silakan jawab semua soal terlebih dahulu.`;
+                } else {
+                    pesan = `Masih ada <b>${jumlahRagu} soal yang ditandai ragu-ragu</b>. Silakan pastikan semua jawaban sudah yakin (tidak ragu-ragu).`;
+                }
+
+                Swal.fire({
+                    title: 'Perhatian',
+                    html: pesan,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonColor: '#6b7280',
+                    cancelButtonText: 'Kembali Mengerjakan'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Konfirmasi Selesai',
+                    text: 'Apakah kamu yakin ingin mengakhiri evaluasi? Jawaban yang sudah dikirim tidak dapat diubah.',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#2563eb',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Selesai',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        konfirmasiSelesai();
+                    }
+                });
+            }
+        }
+
+        function konfirmasiSelesai(){
+            clearInterval(timer);
+            waktuSelesaiKuis = formatWaktuSekarang();
+            document.getElementById('kuis').classList.add('hidden');
+            document.getElementById('hasil').classList.remove('hidden');
+            submitKuis();
+        }
+
+        async function submitKuis(){
+            try {
+                const response = await fetch("{% url 'cek_nilai_evaluasi' %}", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify({ "jawaban_siswa": jawaban, "waktu_mulai": waktuMulaiKuis, "waktu_selesai": waktuSelesaiKuis })
+                });
+                const data = await response.json();
+                document.getElementById('loadingHasil').classList.add('hidden');
+                document.getElementById('nilaiAkhir').innerText = data.skor;
+                if(data.lulus){
+                    document.getElementById('statusText').innerText = 'LULUS';
+                    document.getElementById('statusText').className = 'text-success fw-bold';
+                    document.getElementById('lulusBox').classList.remove('hidden');
+                } else {
+                    document.getElementById('statusText').innerText = 'TIDAK LULUS';
+                    document.getElementById('statusText').className = 'text-danger fw-bold';
+                    document.getElementById('tidakLulusBox').classList.remove('hidden');
+                }
+            } catch (e) {
+                document.getElementById('loadingHasil').innerText = "Terjadi kesalahan saat memproses nilai.";
+            }
+        }
+
+        function ulangKuis(){ location.reload(); }
+    </script>
+</body>
+</html>

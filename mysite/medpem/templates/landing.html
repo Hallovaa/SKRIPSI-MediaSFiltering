@@ -1,0 +1,163 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>SFiltering</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-5.0.0-beta1.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/lindy-uikit.css' %}"/>
+
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .hero-section-wrapper-5 {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .hero-section {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        min-height: 0;
+      }
+
+      .hero-image img {
+        max-height: 80vh;
+        width: auto;
+        object-fit: contain;
+      }
+
+      @media (max-width: 991px) {
+        body { overflow-y: auto; }
+        .hero-section-wrapper-5 { height: auto; min-height: 100vh; }
+        
+        .navbar-collapse.show {
+          display: block !important;
+          background: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0px 10px 30px rgba(0,0,0,0.1);
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="preloader">
+      <div class="loader">
+        <div class="spinner">
+          <div class="spinner-container">
+            <div class="spinner-rotator">
+              <div class="spinner-left">
+                <div class="spinner-circle"></div>
+              </div>
+              <div class="spinner-right">
+                <div class="spinner-circle"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section id="home" class="hero-section-wrapper-5">
+
+      <header class="header header-6">
+        <div class="navbar-area">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-lg-12">
+                <nav class="navbar navbar-expand-lg">
+                  <a class="navbar-brand" href="{% url 'landing' %}">
+                    <img src="{% static 'assets/img/icon/lanfav.png' %}" alt="Logo" style="max-width: 180px;">
+                  </a> 
+                  <button class="navbar-toggler" type="button" id="menu-trigger">
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                    <span class="toggler-icon"></span>
+                  </button>
+
+                  <div class="collapse navbar-collapse sub-menu-bar" id="navbar-menu">
+                    <ul id="nav6" class="navbar-nav ms-auto">
+                      <li class="nav-item">
+                        <a class="page-scroll {% if active_page == 'landing' %}active{% endif %}" href="{% url 'landing' %}">Beranda</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="page-scroll {% if active_page == 'materi' %}active{% endif %}" href="{% url 'materi' %}">Materi</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="page-scroll {% if active_page == 'petunjuk' %}active{% endif %}" href="{% url 'petunjuk' %}">Petunjuk Penggunaan</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="page-scroll {% if active_page == 'tentang' %}active{% endif %}" href="{% url 'tentang' %}">Tentang</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="btn-daftar {% if active_page == 'daftar' %}active{% endif %}" href="{% url 'reg_mahasiswa' %}">Daftar</a>
+                      </li>
+                      <li class="nav-item ms-lg-2">
+                        <a class="btn-masuk {% if active_page == 'login' %}active{% endif %}" href="{% url 'login' %}">Masuk</a>
+                      </li>
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="hero-section hero-style-5 img-bg" style="background-image: url('{% static 'assets/img/hero/hero-5/hero-bg.svg' %}')">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6">
+              <div class="hero-content-wrapper">
+                <h2 class="mb-30 wow fadeInUp" data-wow-delay=".2s">MEDIA PEMBELAJARAN INTERAKTIF <em>SPATIAL FILTERING</em></h2>
+                <p style="text-align: justify;" class="mb-30 wow fadeInUp" data-wow-delay=".4s">Media ini dirancang untuk membantu kamu memahami konsep dan penerapan <em>spatial filtering</em> dengan lebih mudah melalui fitur interaktif dan kode editor yang dapat digunakan secara langsung.</p>
+                <a href="{% url 'login' %}" class="button button-lg radius-50 wow fadeInUp fw-bold" data-wow-delay=".6s">Mulai Belajar <i class="bi bi-chevron-right"></i></a>
+              </div>
+            </div>
+            <div class="col-lg-6 align-self-end text-center">
+              <div class="hero-image wow fadeInUp" data-wow-delay=".5s">
+                <img style="height: 560px; margin-top: 80px" src="{% static 'assets/img/hero/hero-5/fkipA.png' %}" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/wow.min.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const menuTrigger = document.getElementById('menu-trigger');
+        const navbarMenu = document.getElementById('navbar-menu');
+
+        if (menuTrigger && navbarMenu) {
+          menuTrigger.addEventListener('click', function () {
+            this.classList.toggle('active');
+            navbarMenu.classList.toggle('show');
+          });
+        }
+      });
+    </script>
+
+  </body>
+</html>

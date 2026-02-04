@@ -1,0 +1,971 @@
+{% extends "mhs/base.html" %}
+{% load static %}
+
+{% block title %}Subbab 6 - Grayscale & Biner{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<style>
+.card-section {
+    border: 2px solid #bcccdc;
+    border-radius: 12px;
+    background: #ffffff;
+    margin-bottom: 22px;
+    box-shadow: 0 6px 18px rgba(16, 32, 58, 0.03);
+}
+
+.card-section-header {
+    padding: 14px 18px;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #edf4fe;
+    border-bottom: 2px solid #bcccdc;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card-section-header i {
+    font-size: 20px;
+    color: var(--primary-500);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(59, 123, 227, 0.12);
+}
+
+.card-section-body {
+    padding: 35px;
+    font-size: 19px;
+    color: #222f3a;
+    background: #fff;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.card-section-body p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.card-section-body ol {
+    margin-top: 8px;
+    padding-left: 35px;
+}
+
+.card-section-body li {
+    margin-bottom: 12px;
+    font-size: 19px;
+}
+
+.step-title {
+    font-size: 17pt;
+    font-weight: 700;
+    margin: 24px 0 10px;
+}
+
+.code-box-import {
+    background: #eaf3ff;
+    border: 2px dashed #b7cff5;
+    border-radius: 20px;
+    padding: 18px 26px;
+    max-width: 520px;
+    margin: 26px auto;
+    font-family: "Courier New", monospace;
+    font-size: 20px;
+    text-align: center;
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.code-box-code {
+    max-width: 800px;
+    margin: 14px auto 26px;
+    padding: 14px 22px;
+    background: #ffffff;
+    border: 2px solid #3b82f6;
+    border-radius: 14px;
+    font-family: "Courier New", monospace;
+    font-size: 18px;
+    line-height: 1.6;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.keyword { color: #af32bf; }
+.module { color: #2b93a3; }
+.string { color: #b12121; }
+.function { color: #926a39; }
+.number { color: #1a8a5f; }
+
+.editor-layout {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+    position: relative;
+}
+
+.notebook-container {
+    flex: 3;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-container {
+    flex: 1;
+    min-width: 280px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: fit-content;
+}
+
+.cell-container {
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+}
+
+.cell-input-area {
+    display: flex;
+    background: #f8fafc;
+    padding: 10px;
+    gap: 10px;
+}
+
+.cell-info {
+    font-family: monospace;
+    font-size: 13px;
+    color: #1d4ed8;
+    min-width: 45px;
+    padding-top: 8px;
+    text-align: justify;
+}
+
+.editor-wrapper {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.CodeMirror {
+    height: auto;
+    min-height: 40px;
+    font-size: 14px;
+    background: #282a36 !important;
+}
+
+.cell-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    transition: 0.2s;
+}
+
+.btn-run {
+    background: #22c55e;
+}
+
+.btn-delete {
+    background: #ef4444;
+}
+
+.cell-output {
+    padding: 10px 10px 10px 65px;
+    border-top: 1px solid #f1f5f9;
+    background: #fff;
+}
+
+.output-log {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.output-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    margin-top: 5px;
+}
+
+.btn-download-manual {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.widget-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 15px;
+    background: #f8fafc;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.widget-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.file-list {
+    max-height: 150px;
+    overflow-y: auto;
+    margin: 10px 0;
+}
+
+.file-item {
+    background: #fff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 4px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.file-item.active {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+.input-preview {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.btn-add-cell-mid {
+    height: 12px;
+    background: transparent;
+    margin: 2px 0;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-add-cell-mid:hover {
+    background: #3b82f6;
+    border-radius: 2px;
+}
+
+.btn-add-cell-mid i {
+    opacity: 0;
+    color: white;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-add-cell-mid:hover i {
+    opacity: 1;
+}
+
+#engine-status {
+    font-size: 11px;
+    color: #64748b;
+    font-family: monospace;
+    padding: 5px;
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.quiz-container {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 25px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.quiz-question {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.quiz-question.active {
+    display: block;
+}
+
+.code-snippet { 
+    background: #ffffff; 
+    padding: 15px; 
+    border-radius: 14px; 
+    font-family: 'Courier New', monospace; 
+    margin: 15px 0; 
+    line-height: 1.6; 
+    border: 2px solid #3b82f6; 
+    font-weight: 600; 
+    font-size: 18px; 
+    color: #1e293b; 
+}
+
+.quiz-input { 
+    border: 2px solid #cbd5e1; 
+    border-radius: 4px; 
+    padding: 2px 8px; 
+    font-family: 'Courier New', monospace; 
+    color: #0f172a; 
+    font-weight: 600; 
+    outline: none; 
+    transition: 0.2s; 
+}
+
+.quiz-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 123, 227, 0.1);
+}
+
+.feedback-msg {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 14px;
+    display: none;
+}
+
+.feedback-success {
+    color: #16a34a;
+}
+
+.feedback-error {
+    color: #dc2626;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nav-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.editor-instruction {
+    background: #fdfdfd;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.editor-instruction ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.card-section-body .editor-instruction li {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.btn-cek {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-cek:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-selanjutnya {
+    background: #10b981;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-selanjutnya:hover {
+    background: #059669;
+    color: white;
+}
+
+.btn-kembali {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-kembali:hover {
+    background: #e2e8f0;
+}
+
+#quiz-card {
+    border: 2.5px solid #4d7bdc !important;
+    box-shadow: 0 10px 25px rgba(59, 123, 227, 0.15) !important;
+}
+
+#quiz-card .card-section-header {
+    background: #4d7bdc !important;
+    color: white !important;
+}
+
+#quiz-card .card-section-header i {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+}
+
+.input-correct {
+    border-color: #3b82f6 !important;
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+}
+
+.input-error {
+    border-color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+}
+</style>
+
+<h1 class="title-main mb-3">
+    SUBBAB 6 – <span style="color:var(--primary-500)"><em>GRAYSCALE</em> DAN <em>BINER</em></span>
+</h1>
+
+<section class="card-section" aria-labelledby="tujuan-heading" style="margin-bottom:18px;">
+    <div class="card-section-header">
+      <i class="bi bi-journal-bookmark"></i>
+      <div id="tujuan-heading">Tujuan Pembelajaran</div>
+    </div>
+    <div class="card-section-body">
+      <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
+      <ol>
+        <li>Memahami dasar penggunaan library Python untuk pemrosesan citra digital.</li>
+        <li>Menerapkan operasi konversi citra (grayscale dan citra biner) menggunakan kode Python.</li>
+        <li>Menerapkan operasi konvolusi dengan padding dan normalisasi pada citra digital menggunakan kode Python.</li>
+        <li>Menerapkan teknik smoothing dan sharpening pada citra digital menggunakan kode Python.</li>
+      </ol>
+    </div>
+</section>
+
+<section class="card-section">
+    <div class="card-section-header">
+        <i class="bi bi-lightbulb"></i> Citra <em>Grayscale</em> dan Citra Biner
+    </div>
+    <div class="card-section-body">
+        <p style="text-align:justify;text-indent:30px;">
+            <strong>Pemrosesan citra digital adalah proses memanipulasi dan memperbaiki citra menggunakan komputer agar tampilannya lebih jelas atau sesuai dengan kebutuhan tertentu</strong>. 
+            Salah satu bahasa pemrograman yang banyak digunakan dalam pemrosesan citra digital adalah <strong><em>Python</em></strong>. 
+            Selain mudah dipelajari, <em>Python</em> didukung oleh berbagai pustaka (<em>library</em>) yang memudahkan proses pemrosesan citra. 
+            Pada materi ini digunakan pustaka <strong><em>Pillow</em></strong> yaitu <em>library</em> <em>Python</em> yang sederhana dan mudah digunakan untuk membaca, menampilkan, dan memodifikasi citra, termasuk menerapkan berbagai proses seperti <em>smoothing</em> (penghalusan) dan <em>sharpening</em> (penajaman).
+        </p>
+
+        <div class="code-box-import">
+            <span class="keyword">from</span> <span class="module">PIL</span> <span class="keyword">import</span> <span class="module">Image</span><br>
+            <span class="keyword">from</span> <span class="module">PIL</span> <span class="keyword">import</span> <span class="module">ImageFilter</span>
+        </div>         
+        
+
+        <p style="text-align:justify;text-indent:30px;">
+            Dua modul utama yang digunakan dalam pustaka <em>Pillow</em> adalah 
+            <strong><em>Image</em></strong> dan <strong><em>ImageFilter</em></strong>. 
+            Modul <strong><em>Image</em></strong> berfungsi sebagai 
+            <strong>modul dasar untuk bekerja dengan citra</strong>, 
+            seperti membuka gambar menggunakan <em>Image.open()</em>, mengubah mode warna, 
+            mengubah ukuran, memutar gambar, serta menyimpan kembali citra yang telah diproses. 
+            Sementara itu, modul <strong><em>ImageFilter</em></strong> menyediakan berbagai 
+            <strong>filter siap pakai</strong>, seperti 
+            <strong><em>SMOOTH</em></strong>, 
+            <strong><em>BLUR</em></strong>, 
+            <strong><em>GaussianBlur</em></strong>, dan 
+            <strong><em>SHARPEN</em></strong>. 
+            Filter-filter ini dapat diterapkan pada citra melalui fungsi <em>image.filter()</em>, 
+            sehingga proses pemrosesan citra seperti penghalusan dan penajaman dapat dilakukan dengan mudah.
+        </p>
+
+        <div class="step-title">1) Mengubah gambar berwarna (RGB) menjadi gambar <em>grayscale</em></div>
+        <p style="text-align:justify;text-indent:30px; margin-left:25px;">
+            Pada pustaka <strong><em>Pillow</em></strong>, konversi citra berwarna (<em>RGB</em>) menjadi 
+            <strong>citra grayscale</strong> dapat dilakukan menggunakan 
+            <strong><em>mode "L"</em></strong>. 
+            Mode ini mengubah citra berwarna menjadi citra keabuan berdasarkan 
+            <strong>nilai luminansi (<em>luminance</em>)</strong>, yaitu tingkat kecerahan yang dirasakan oleh mata manusia.
+        </p>
+
+        <div class="code-box-code">
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>)<br>
+            gray = img.<span class="function">convert</span>(<span class="string">"L"</span>)
+        </div>
+
+        <p style="text-align:justify;text-indent:30px; margin-left:25px;">
+            Pada kode di atas, citra berwarna dibuka oleh komputer menggunakan fungsi <em>Image.open</em>( ), sehingga isi citra dapat dibaca dan diproses oleh program. 
+            Selanjutnya, citra tersebut dikonversi menjadi citra <em>grayscale</em> dengan metode <em>convert("L")</em>.
+        </p>
+
+        <div class="step-title">2) Mengubah gambar <em>grayscale</em> menjadi gambar <em>biner</em></div>
+
+        <p style="text-align:justify;text-indent:30px; margin-left:25px;">
+            Mengubah citra <em>grayscale</em> menjadi <strong>citra biner</strong> dapat dilakukan dengan menggunakan 
+            <strong>nilai ambang (<em>threshold</em>)</strong>. Pada metode ini, nilai <em>threshold</em> diperoleh dari 
+            <strong>rata-rata seluruh nilai piksel</strong> pada citra <em>grayscale</em>. 
+            Nilai rata-rata tersebut digunakan sebagai batas untuk menentukan apakah suatu piksel akan diubah menjadi hitam atau putih.
+        </p>
+
+        <p style="text-align:justify;text-indent:30px; margin-left:25px;">
+            Piksel yang memiliki nilai <strong>lebih besar dari <em>threshold</em></strong> akan diubah menjadi 
+            <strong>putih (255)</strong>, sedangkan piksel yang memiliki nilai <strong>lebih kecil atau sama dengan <em>threshold</em></strong> akan diubah menjadi 
+            <strong>hitam (0)</strong>. Dengan cara ini, citra <em>grayscale</em> disederhanakan menjadi citra <em>biner</em> yang hanya memiliki dua nilai intensitas.
+        </p>
+
+        <div class="code-box-code">
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            threshold = <span class="function">int</span>(<span class="function">sum</span>(img.<span class="function">getdata</span>()) / <span class="function">len</span>(img.<span class="function">getdata</span>()))<br>
+            binary_img = img.<span class="function">point</span>(<span class="keyword">lambda</span> x: <span class="number">255</span> <span class="keyword">if</span> x > threshold <span class="keyword">else</span> <span class="number">0</span>)
+        </div>
+
+        <p style="text-align:justify;text-indent:30px; margin-left:25px;">
+            Pada kode di atas, citra terlebih dahulu dikonversi ke <em>grayscale</em> menggunakan <em>convert("L")</em>. 
+            Selanjutnya, nilai <em>threshold</em> dihitung sebagai rata-rata dari seluruh nilai piksel <em>grayscale</em>. 
+            Fungsi <em>point()</em> kemudian digunakan untuk menerapkan aturan ambang tersebut pada setiap piksel sehingga dihasilkan citra <em>biner</em> dengan nilai hitam dan putih.
+        </p>
+    </div>
+</section>
+
+<section class="card-section">
+    <div class="card-section-header">
+        <i class="bi bi-journal-code"></i> SFiltering CitraLab
+    </div>
+    <div class="card-section-body">
+        <div class="editor-instruction">
+            <strong><i class="bi bi-info-circle text-primary"></i> Langkah-langkah Penggunaan Editor:</strong>
+            <ul>
+                <li>Pastikan status editor pada sidebar kanan bawah menunjukkan <span class="text-success fw-bold">“Editor Siap”</span> sebelum mulai menggunakan editor.</li>
+                <li>Unggah gambar melalui tombol <strong>Unggah</strong> <i class="bi bi-upload ms-1"></i> pada sidebar.</li>
+                <li>Gambar yang diunggah atau dipilih dari Galeri Citra SFiltering akan otomatis ditampilkan pada <strong>pratinjau gambar</strong> <i class="bi bi-image ms-1"></i>.</li>
+                <li>Klik nama file pada Galeri Citra <i class="bi bi-files"></i>, dan nama file akan otomatis digunakan pada <strong>sel pertama</strong>.</li>
+                <li>Klik ikon <strong>Jalankan</strong> <i class="bi bi-play-fill text-success ms-1"></i> di sebelah kanan sel untuk memproses gambar.</li>
+                <li>Arahkan kursor ke bagian bawah sel, lalu klik ikon <i class="bi bi-plus-circle text-primary ms-1"></i> untuk menambahkan sel baru.</li>
+                <li>Klik ikon <i class="bi bi-trash text-danger ms-1"></i> pada sel yang tidak diperlukan.</li>
+                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel</i>.</li>
+                <li>Klik tombol <strong>Unduh Gambar</strong> <i class="bi bi-download ms-1"></i> untuk menyimpan hasil pemrosesan.</li>
+            </ul>
+        </div>
+
+        <div class="editor-layout">
+            <div class="notebook-container" id="notebook"></div>
+            <div class="sidebar-container">
+                <div class="widget-box">
+                    <div class="widget-title"><i class="bi bi-image"></i> Pratinjau Gambar</div>
+                    <img id="input-display" class="input-preview" src="https://via.placeholder.com/300x200?text=Pilih+Gambar">
+                </div>
+                <div class="widget-box">
+                    <div class="widget-title"><i class="bi bi-files"></i> Galeri Citra SFiltering</div>
+                    <label for="image-upload" class="btn btn-primary btn-sm w-100 mb-2">
+                        <i class="bi bi-upload"></i> Upload
+                    </label>
+                    <input type="file" id="image-upload" style="display: none;" accept="image/*" multiple>
+                    <div id="file-list-names" class="file-list"></div>
+                    <button class="btn btn-sm btn-link text-danger p-0" onclick="clearFiles()">Hapus Semua</button>
+                </div>
+                <div id="engine-status">Memuat Editor...</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="card-section" id="quiz-card">
+    <div class="card-section-header">
+        <i class="bi bi-pencil-square"></i> Aktivitas 1
+    </div>
+    <div class="card-section-body">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <span id="quiz-progress" class="badge bg-primary">Soal 1 / 2</span>
+                <span id="quiz-instruction" class="text-muted small">Selesaikan semua soal untuk melanjutkan materi</span>
+            </div>
+
+            <div id="q1" class="quiz-question active">
+                <p>1. Perhatikan potongan kode Python berikut:</p>
+                <div class="code-snippet">
+                    img = Image.open(<span class="string">"gambar.jpg"</span>)<br>
+                    gray = img.<input type="text" id="ans1" class="quiz-input" style="width: 100px;" placeholder="..." oninput="resetStyle(this)">("L")
+                </div>
+                <p style="text-align:justify;">
+                    Lengkapilah bagian kode yang kosong agar citra RGB dapat dikonversi menjadi citra grayscale menggunakan library PIL (Pillow)!
+                </p>
+                <div id="feedback1" class="feedback-msg"></div>
+                <div class="mt-3">
+                    <button id="btn-check1" class="btn-cek" onclick="checkStep1()">Cek Jawaban</button>
+                    <button id="btn-next-q" class="btn-selanjutnya" style="display: none;" onclick="showQuestion(2)">Selanjutnya</button>
+                </div>
+            </div>
+
+            <div id="q2" class="quiz-question">
+                <p>2. Perhatikan potongan kode Python berikut:</p>
+                <div class="code-snippet">
+                    img = Image.open(<span class="string">"gambar.jpg"</span>).convert(<span class="string">"L"</span>)<br>
+                    binary_img = img.<input type="text" id="ans2c" class="quiz-input" style="width: 80px;" placeholder="..." oninput="resetStyle(this)">(<span class="keyword">lambda</span> x: <input type="text" id="ans2a" class="quiz-input" style="width: 60px;" placeholder="..." oninput="resetStyle(this)"> <span class="keyword">if</span> x > threshold <span class="keyword">else</span> <input type="text" id="ans2b" class="quiz-input" style="width: 60px;" placeholder="..." oninput="resetStyle(this)">)
+                </div>
+                <p class="small">Lengkapilah bagian kode yang kosong agar citra grayscale dapat dikonversi menjadi citra biner menggunakan metode thresholding!</p>
+                <div id="feedback2" class="feedback-msg"></div>
+                <div class="d-flex gap-2 mt-3">
+                    <button class="btn-kembali" onclick="showQuestion(1)">Kembali</button>
+                    <button id="btn-finish-quiz" class="btn-cek" onclick="checkStep2()">Cek Jawaban</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="nav-container">
+    <a href="{% url 'normalisasi_citra' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-chevron-left"></i> Sebelumnya
+    </a>
+    <a id="nextBtnMaterial" href="{% url 'prak_konvolusi' %}" 
+       class="btn btn-primary {% if 'gray-biner' not in selesai_slugs %}disabled{% endif %}" 
+       style="{% if 'gray-biner' not in selesai_slugs %}opacity:0.5; pointer-events:none;{% endif %}">
+        Selanjutnya <i class="bi bi-chevron-right"></i>
+    </a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function showQuestion(num) {
+    document.querySelectorAll('.quiz-question').forEach(q => q.classList.remove('active'));
+    document.getElementById('q' + num).classList.add('active');
+    document.getElementById('quiz-progress').innerText = `Soal ${num} / 2`;
+}
+
+function resetStyle(element) {
+    element.classList.remove('input-correct', 'input-error');
+    const feedbackId = element.id.startsWith('ans2') ? 'feedback2' : 'feedback1';
+    document.getElementById(feedbackId).style.display = "none";
+}
+
+function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ slug: 'gray-biner' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const navBtn = document.getElementById('nextBtnMaterial');
+            navBtn.classList.remove('disabled');
+            navBtn.style.opacity = '1';
+            navBtn.style.pointerEvents = 'auto';
+            const progress = document.getElementById('quiz-progress');
+            progress.innerText = 'Selesai';
+            progress.classList.replace('bg-primary', 'bg-success');
+        }
+    });
+}
+
+function checkStep1() {
+    const input = document.getElementById('ans1');
+    const val = input.value.trim().toLowerCase();
+    const feedback = document.getElementById('feedback1');
+    if (val === 'convert') {
+        input.classList.add('input-correct');
+        feedback.innerText = "Benar - Citra RGB diubah menjadi citra grayscale menggunakan img.convert(\"L\")";
+        feedback.className = "feedback-msg feedback-success";
+        feedback.style.display = "block";
+        document.getElementById('btn-check1').style.display = "none";
+        document.getElementById('btn-next-q').style.display = "inline-block";
+        input.disabled = true;
+    } else {
+        input.classList.add('input-error');
+        feedback.innerText = "Jawaban belum tepat. Silakan periksa kembali dan coba lagi";
+        feedback.className = "feedback-msg feedback-error";
+        feedback.style.display = "block";
+    }
+}
+
+function checkStep2() {
+    const inputA = document.getElementById('ans2a');
+    const inputB = document.getElementById('ans2b');
+    const inputC = document.getElementById('ans2c');
+    const valA = inputA.value.trim();
+    const valB = inputB.value.trim();
+    const valC = inputC.value.trim().toLowerCase();
+    const feedback = document.getElementById('feedback2');
+    let isCorrect = true;
+    if (valA === '255') { inputA.classList.add('input-correct'); } else { inputA.classList.add('input-error'); isCorrect = false; }
+    if (valB === '0') { inputB.classList.add('input-correct'); } else { inputB.classList.add('input-error'); isCorrect = false; }
+    if (valC === 'point') { inputC.classList.add('input-correct'); } else { inputC.classList.add('input-error'); isCorrect = false; }
+    if (isCorrect) {
+        feedback.innerText = "Benar - Metode point() digunakan untuk mengubah piksel berdasarkan nilai threshold.";
+        feedback.className = "feedback-msg feedback-success";
+        feedback.style.display = "block";
+        Swal.fire({
+            icon: 'success', title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.', confirmButtonText: 'OK', confirmButtonColor: '#3b82f6'
+        }).then(() => {
+            inputA.disabled = true; inputB.disabled = true; inputC.disabled = true;
+            document.getElementById('btn-finish-quiz').disabled = true;
+            updateProgressDatabase();
+        });
+    } else {
+        feedback.innerText = "Masih ada jawaban yang belum tepat. Periksa kembali.";
+        feedback.className = "feedback-msg feedback-error";
+        feedback.style.display = "block";
+    }
+}
+
+let pyodideInstance;
+let fileStore = {};
+let notebookCells = [
+    { id: 'c1', content: 'from PIL import Image\n\nimg = Image.open("pilih_gambar.jpg")\ngray = img.convert("L")\ngray.save("Hasil_grayscale.png")\ngray', output: null, log: null, fileName: "" },
+    { id: 'c2', content: "binary = gray.point(lambda x: 255 if x > 128 else 0, '1')\nbinary.save(\"hasil_biner.png\")\nbinary", output: null, log: null, fileName: "" }
+];
+let editors = {};
+
+async function initPyodide() {
+    try {
+        pyodideInstance = await loadPyodide();
+        await pyodideInstance.loadPackage(["micropip"]);
+        const micropip = pyodideInstance.pyimport("micropip");
+        await micropip.install(["pillow", "numpy"]);
+        await pyodideInstance.runPythonAsync(`
+import io, base64
+from PIL import Image
+import __main__
+def get_image_as_base64(var_name):
+    try:
+        obj = getattr(__main__, var_name, None)
+        if obj and isinstance(obj, Image.Image):
+            buf = io.BytesIO()
+            obj.save(buf, format='PNG')
+            return base64.b64encode(buf.getvalue()).decode('utf-8')
+    except: pass
+    return None
+        `);
+        document.getElementById("engine-status").innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Editor Siap';
+        renderNotebook();
+    } catch (e) {
+        document.getElementById("engine-status").innerText = "Editor Error";
+    }
+}
+
+function renderNotebook() {
+    const container = document.getElementById("notebook");
+    const scrollPos = window.scrollY;
+    container.innerHTML = "";
+    notebookCells.forEach((cell, index) => {
+        const cellDiv = document.createElement("div");
+        const hasOutput = cell.output || cell.log;
+        cellDiv.innerHTML = `
+            <div class="cell-container" id="cell-${cell.id}">
+                <div class="cell-input-area">
+                    <div class="cell-info">In [${index + 1}]</div>
+                    <div class="editor-wrapper"><textarea id="edit-ctrl-${cell.id}">${cell.content}</textarea></div>
+                    <div class="cell-actions">
+                        <button class="btn-action btn-run" onclick="runCell('${cell.id}')"><i class="bi bi-play-fill"></i></button>
+                        <button class="btn-action btn-delete" onclick="deleteCell('${cell.id}')"><i class="bi bi-trash"></i></button>
+                    </div>
+                </div>
+                <div class="cell-output" id="out-${cell.id}" style="${hasOutput ? 'display: block;' : 'display: none;'}">
+                    <div class="output-log" id="log-${cell.id}" style="${cell.log && !cell.log.includes('Error') ? 'color: #22c55e;' : 'color: #ef4444;'}">${cell.log || ''}</div>
+                    <img class="output-image" id="img-${cell.id}" src="${cell.output || ''}" style="${cell.output ? 'display: block;' : 'display: none;'}">
+                    <a id="dl-${cell.id}" class="btn-download-manual" href="${cell.output || ''}" download="${cell.fileName || 'hasil.png'}" style="${cell.output ? 'display: inline-flex;' : 'display: none;'}"><i class="bi bi-download"></i> Unduh Gambar</a>
+                </div>
+            </div>
+            <div class="btn-add-cell-mid" onclick="addNewCellAt(${index + 1})"><i class="bi bi-plus-circle"></i></div>
+        `;
+        container.appendChild(cellDiv);
+        const editor = CodeMirror.fromTextArea(document.getElementById(`edit-ctrl-${cell.id}`), {
+            mode: "python", theme: "dracula", lineNumbers: true, indentUnit: 4, viewportMargin: Infinity
+        });
+        editor.on("change", (cm) => {
+            const cellObj = notebookCells.find(c => c.id === cell.id);
+            if(cellObj) cellObj.content = cm.getValue();
+        });
+        editors[cell.id] = editor;
+    });
+    window.scrollTo(0, scrollPos);
+}
+
+function addNewCellAt(index) {
+    const newId = 'c' + Date.now();
+    notebookCells.splice(index, 0, { id: newId, content: "", output: null, log: null, fileName: "" });
+    renderNotebook();
+}
+
+function deleteCell(id) {
+    if (notebookCells.length === 1) return;
+    notebookCells = notebookCells.filter(c => c.id !== id);
+    delete editors[id];
+    renderNotebook();
+}
+
+async function runCell(id) {
+    const code = editors[id].getValue();
+    const cellObj = notebookCells.find(c => c.id === id);
+    const logLabel = document.getElementById(`log-${id}`);
+    const imgElement = document.getElementById(`img-${id}`);
+    const dlBtn = document.getElementById(`dl-${id}`);
+    const outArea = document.getElementById(`out-${id}`);
+    outArea.style.display = "block";
+    logLabel.innerText = "Memproses...";
+    try {
+        await pyodideInstance.runPythonAsync(code);
+        const lines = code.trim().split('\n');
+        const lastLine = lines[lines.length - 1].trim();
+        let targetFileName = "hasil_praktikum.png";
+        const saveMatch = code.match(/\.save\(\s*["']([^"']+)["']\s*\)/);
+        if (saveMatch) targetFileName = saveMatch[1];
+        const base64Data = await pyodideInstance.runPythonAsync(`get_image_as_base64("${lastLine}")`);
+        if (base64Data) {
+            const url = `data:image/png;base64,${base64Data}`;
+            cellObj.output = url;
+            cellObj.log = "Berhasil diproses";
+            cellObj.fileName = targetFileName;
+            imgElement.src = url;
+            imgElement.style.display = "block";
+            dlBtn.href = url;
+            dlBtn.download = targetFileName;
+            dlBtn.style.display = "inline-flex";
+        } else {
+            cellObj.log = "Selesai dijalankan.";
+            imgElement.style.display = "none";
+        }
+        logLabel.innerText = cellObj.log;
+        logLabel.style.color = "#22c55e";
+    } catch (err) {
+        logLabel.innerText = "Error:\n" + err;
+        logLabel.style.color = "#ef4444";
+    }
+}
+
+document.getElementById("image-upload").addEventListener("change", (e) => {
+    const files = e.target.files;
+    const list = document.getElementById("file-list-names");
+    for (const file of files) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const data = new Uint8Array(ev.target.result);
+            pyodideInstance.FS.writeFile(file.name, data);
+            const url = URL.createObjectURL(new Blob([data], {type: file.type}));
+            fileStore[file.name] = url;
+            const item = document.createElement("div");
+            item.className = "file-item";
+            item.innerHTML = `<span>${file.name}</span><i class="bi bi-check2 text-success"></i>`;
+            item.onclick = () => {
+                document.querySelectorAll(".file-item").forEach(el => el.classList.remove("active"));
+                item.classList.add("active");
+                document.getElementById("input-display").src = url;
+                if (notebookCells.length > 0) {
+                    let first = editors[notebookCells[0].id].getValue();
+                    const updated = first.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
+                    editors[notebookCells[0].id].setValue(updated);
+                }
+            };
+            list.appendChild(item);
+            item.click();
+        };
+        reader.readAsArrayBuffer(file);
+    }
+});
+
+function clearFiles() {
+    Object.keys(fileStore).forEach(f => {
+        try { pyodideInstance.FS.unlink(f); } catch(e) {}
+        URL.revokeObjectURL(fileStore[f]);
+    });
+    fileStore = {};
+    document.getElementById("file-list-names").innerHTML = "";
+    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    initPyodide();
+});
+</script>
+
+{% endblock %}

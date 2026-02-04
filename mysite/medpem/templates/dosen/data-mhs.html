@@ -1,0 +1,359 @@
+{% extends "dosen/base.html" %}
+{% load static %}
+
+{% block title %}Data Mahasiswa — Citra Digital{% endblock %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+.hero {
+  background: linear-gradient(135deg, #eff6ff, #eef2ff);
+  padding: 26px;
+  border-radius: 18px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.hero h1 { font-size: 30px; font-weight: 800; }
+
+.card-section {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 22px;
+}
+
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.filter-left, .filter-right {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.search-wrapper {
+  position: relative;
+  width: 260px;
+}
+
+.search-wrapper i {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  color: #9ca3af;
+}
+
+.search-box {
+  padding-left: 36px;
+}
+
+.table thead th {
+  background: #f8fafc;
+  font-weight: 700;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  color: #475569;
+}
+
+.table tbody td {
+  border: 1px solid #e5e7eb;
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+
+.action-icon {
+  font-size: 18px;
+  margin: 0 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+.action-edit { color: #2563eb; }
+.action-delete { color: #dc2626; }
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.pagination-btns {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-page {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #475569;
+  text-decoration: none;
+}
+
+.btn-page-nav:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.page-current {
+  padding: 6px 14px;
+  border: 2px solid #9ca3af;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #1e293b;
+  min-width: 40px;
+  text-align: center;
+}
+
+.btn-page.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f1f5f9;
+}
+</style>
+
+<div class="hero">
+  <h1>Data <span class="text-primary">Mahasiswa</span></h1>
+  <p class="text-muted">Kelola identitas mahasiswa dan filter data berdasarkan kelas</p>
+</div>
+
+<div class="card-section">
+  <form method="GET" action="{% url 'data_mhs' %}" id="filterForm">
+    <div class="filter-bar">
+      <div class="filter-left">
+        <div class="filter-group">
+          <span>Tampilkan</span>
+          <select name="per_page" class="form-select" style="width:85px;" onchange="this.form.submit()">
+            <option value="10" {% if per_page == 10 %}selected{% endif %}>10</option>
+            <option value="25" {% if per_page == 25 %}selected{% endif %}>25</option>
+            <option value="50" {% if per_page == 50 %}selected{% endif %}>50</option>
+          </select>
+          <span>data</span>
+        </div>
+
+        <div class="filter-group">
+          <span>Pilih Kelas:</span>
+          <select name="kelas" class="form-select" style="min-width:220px;" onchange="this.form.submit()">
+            <option value="">Semua Kelas</option>
+            {% for k in daftar_kelas %}
+              <option value="{{ k.id }}" {% if request.GET.kelas == k.id|stringformat:"s" %}selected{% endif %}>
+                {{ k.nama_kelas }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-right align-items-end">
+        <a href="{% url 'export_mhs_excel' %}?kelas={{ request.GET.kelas }}&q={{ request.GET.q }}" class="btn btn-success" style="width: fit-content;">
+            <i class="bi bi-file-earmark-excel"></i> Export Excel
+        </a>
+        <div class="search-wrapper">
+          <i class="bi bi-search"></i>
+          <input type="text" 
+                 name="q" 
+                 id="searchInput"
+                 class="form-control search-box" 
+                 placeholder="Cari nama / NIM..." 
+                 value="{{ request.GET.q|default:'' }}"
+                 autocomplete="off">
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th style="width:60px;">No</th>
+          <th class="text-center">Nama Mahasiswa</th>
+          <th>NIM</th>
+          <th style="width:250px;">Kelas</th>
+          <th style="width:120px;">Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for mhs in daftar_mahasiswa %}
+        <tr>
+          <td class="text-center">{{ daftar_mahasiswa.start_index|add:forloop.counter0 }}</td>
+          <td class="text-left">{{ mhs.nama_lengkap }}</td>
+          <td class="text-center">{{ mhs.nim }}</td>
+          <td class="text-center">
+            {% if mhs.kelas %}
+              {{ mhs.kelas.nama_kelas }}
+            {% else %}
+              <span class="text-muted">Tanpa Kelas</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            <button class="action-icon action-edit" 
+                    onclick="openEditModal('{{ mhs.id }}', '{{ mhs.nama_lengkap }}', '{{ mhs.nim }}')" 
+                    title="Edit">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="action-icon action-delete" 
+                    onclick="confirmDelete('{{ mhs.id }}', '{{ mhs.nama_lengkap }}')" 
+                    title="Hapus">
+                <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center py-4 text-muted">Belum ada data mahasiswa</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-wrapper">
+    <div class="page-info">
+      Menampilkan <strong>{{ daftar_mahasiswa.start_index }}</strong> sampai <strong>{{ daftar_mahasiswa.end_index }}</strong> dari <strong>{{ total_data }}</strong> data
+    </div>
+
+    <div class="pagination-btns">
+      {% if daftar_mahasiswa.has_previous %}
+        <a href="?page={{ daftar_mahasiswa.previous_page_number }}&q={{ request.GET.q }}&kelas={{ request.GET.kelas }}&per_page={{ per_page }}" class="btn-page btn-page-nav">
+          Sebelumnya
+        </a>
+      {% else %}
+        <span class="btn-page disabled">Sebelumnya</span>
+      {% endif %}
+
+      <div class="page-current">{{ daftar_mahasiswa.number }}</div>
+
+      {% if daftar_mahasiswa.has_next %}
+        <a href="?page={{ daftar_mahasiswa.next_page_number }}&q={{ request.GET.q }}&kelas={{ request.GET.kelas }}&per_page={{ per_page }}" class="btn-page btn-page-nav">
+          Berikutnya
+        </a>
+      {% else %}
+        <span class="btn-page disabled">Berikutnya</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px;">
+      <form id="editForm" method="POST">
+        {% csrf_token %}
+        <div class="modal-header border-0 pt-4 px-4">
+          <h5 class="fw-bold">Edit Data Mahasiswa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body px-4">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nama Lengkap</label>
+            <input type="text" name="nama_lengkap" id="edit_nama" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">NIM</label>
+            <input type="text" name="nim" id="edit_nim" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Password Baru</label>
+            <input type="password" name="password" id="edit_password" class="form-control" placeholder="Kosongkan jika tidak ingin mengubah">
+            <small class="text-muted" style="font-size: 12px;">Isi hanya jika mahasiswa ingin mereset password.</small>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pb-4 px-4">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary px-4">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  let timeout = null;
+  const searchInput = document.getElementById('searchInput');
+  const filterForm = document.getElementById('filterForm');
+
+  searchInput.addEventListener('keyup', function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(function() {
+      filterForm.submit();
+    }, 600);
+  });
+
+  const val = searchInput.value;
+  searchInput.value = '';
+  searchInput.value = val;
+  searchInput.focus();
+
+  function openEditModal(id, nama, nim) {
+    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    document.getElementById('edit_nama').value = nama;
+    document.getElementById('edit_nim').value = nim;
+    document.getElementById('edit_password').value = ''; 
+    document.getElementById('editForm').action = `/dosen/mahasiswa/edit/${id}/`; 
+    modal.show();
+  }
+
+  function confirmDelete(id, nama) {
+    Swal.fire({
+      title: 'Hapus Mahasiswa?',
+      text: `Data ${nama} akan dihapus secara permanen.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Ya, Hapus!',
+      cancelButtonText: 'Batal'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/dosen/mahasiswa/hapus/${id}/`;
+      }
+    });
+  }
+
+  {% if messages %}
+    {% for message in messages %}
+      Swal.fire({
+        icon: '{% if message.tags == "error" %}error{% else %}success{% endif %}',
+        title: '{% if message.tags == "error" %}Gagal!{% else %}Berhasil!{% endif %}',
+        text: '{{ message }}',
+        timer: 3000,
+        showConfirmButton: false
+      });
+    {% endfor %}
+  {% endif %}
+</script>
+
+{% endblock %}
