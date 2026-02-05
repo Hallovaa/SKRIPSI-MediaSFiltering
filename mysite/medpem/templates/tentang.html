@@ -1,57 +1,154 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="no-js" lang="id">
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tentang</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    
     <link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/bootstrap-5.0.0-beta1.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="{% static 'assets/css/animate.css' %}"/>
-    <link rel="stylesheet" href="{% static 'assets/css/lindy-uikit.css' %}"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        .info-table tr {
-            display: flex;
-            margin-bottom: 10px;
+        :root {
+            --primary-blue: #2F80ED;
+            --dark-blue: #323450;
+            --text-muted: #585978;
+            --light-blue: #bbd1f7;
+            --border-color: #bbd1f7;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .label-col {
-            flex: 0 0 185px;
-            font-weight: bold;
-            color: #323450;
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffffff;
+            color: var(--dark-blue);
         }
-        .value-col {
-            flex: 1;
-            color: #585978;
+
+        .header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
-        .email-link {
-            color: #2F80ED !important;
-            text-decoration: underline !important;
-            cursor: pointer !important;
+
+        .navbar-brand img {
+            max-width: 180px;
+        }
+
+        .nav-link-custom {
+            font-weight: 500;
+            color: var(--text-muted);
+            text-decoration: none;
+            margin: 0 12px;
             position: relative;
-            z-index: 5;
+            padding: 5px 0;
+            transition: var(--transition);
+            display: inline-block;
         }
-        .email-link:hover {
-            color: #1a5ab3 !important;
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: var(--primary-blue);
+        }
+
+        .nav-link-custom::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-blue);
+            transition: var(--transition);
+        }
+
+        .nav-link-custom:hover::after, 
+        .nav-link-custom.active::after {
+            width: 100%;
+        }
+
+        .btn-masuk {
+            background-color: var(--primary-blue);
+            color: white !important;
+            padding: 8px 25px;
+            border-radius: 50px;
+            border: 2px solid #eeecec;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-masuk:hover {
+            background-color:#eeecec;
+            color: var(--primary-blue) !important;
+        }
+
+        .btn-daftar {
+            background-color: transparent;
+            color: var(--primary-blue) !important;
+            padding: 8px 25px;
+            border-radius: 50px;
+            border: 2px solid var(--primary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-daftar:hover {
+            background-color: var(--primary-blue);
+            color: white !important;
+        }
+
+        .main-content {
+            padding-top: 120px;
+            padding-bottom: 50px;
         }
 
         .about-card {
             border-radius: 15px;
             overflow: hidden;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             background: #fff;
         }
 
         .card-header-colored {
-            background-color: #bbd1f7 !important;
-            color: #323450 !important;
+            background-color: var(--light-blue) !important;
+            color: var(--dark-blue) !important;
             padding: 15px 20px;
-            border: none;
+            border-bottom: 1px solid var(--border-color);
             font-weight: bold;
+        }
+
+        .info-table tr {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .label-col {
+            flex: 0 0 185px;
+            font-weight: bold;
+            color: var(--dark-blue);
+        }
+
+        .value-col {
+            flex: 1;
+            color: var(--text-muted);
+        }
+
+        .email-link {
+            color: var(--primary-blue) !important;
+            text-decoration: underline !important;
         }
 
         .custom-tabs {
@@ -64,16 +161,15 @@
         .custom-tabs .nav-link {
             background: none !important;
             border: none !important;
-            color: #585978;
+            color: var(--text-muted);
             font-weight: 600;
             padding: 10px 5px;
             position: relative;
-            transition: color 0.3s ease;
             cursor: pointer;
         }
 
         .custom-tabs .nav-link.active {
-            color: #2F80ED !important;
+            color: var(--primary-blue) !important;
         }
 
         .custom-tabs .nav-link.active::after {
@@ -83,7 +179,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background-color: #2F80ED;
+            background-color: var(--primary-blue);
             border-radius: 10px;
         }
 
@@ -96,7 +192,7 @@
             position: relative;
             padding-left: 30px;
             margin-bottom: 15px;
-            color: #585978;
+            color: var(--text-muted);
             line-height: 1.6;
         }
 
@@ -105,212 +201,155 @@
             font-family: "bootstrap-icons";
             position: absolute;
             left: 0;
-            color: #2F80ED;
+            color: var(--primary-blue);
             font-weight: bold;
         }
 
         @media (max-width: 991px) {
             .navbar-collapse {
-                background: #fff;
+                background: white;
                 padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                border-radius: 15px;
                 margin-top: 15px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             }
-            .toggler-icon {
-                width: 30px;
-                height: 2px;
-                background-color: #2F80ED;
-                display: block;
-                margin: 5px 0;
-                position: relative;
-                transition: all 0.3s ease-out 0s;
-            }
-            .navbar-toggler.active .toggler-icon:nth-of-type(1) {
-                transform: rotate(45deg);
-                top: 7px;
-            }
-            .navbar-toggler.active .toggler-icon:nth-of-type(2) {
-                opacity: 0;
-            }
-            .navbar-toggler.active .toggler-icon:nth-of-type(3) {
-                transform: rotate(-45deg);
-                top: -7px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .label-col {
-                flex: 0 0 140px;
-            }
+            .nav-item { margin: 10px 0; text-align: center; }
+            .nav-link-custom::after { display: none; }
+            .btn-daftar { margin-right: 0 !important; margin-bottom: 10px; }
+            .label-col { flex: 0 0 140px; }
         }
     </style>
 </head>
 
 <body>
-    <section id="home" class="hero-section-wrapper-5">
-        <header class="header header-6 sticky">
-            <div class="navbar-area">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-12">
-                            <nav class="navbar navbar-expand-lg">
-                                <a class="navbar-brand" href="{% url 'landing' %}">
-                                    <img src="{% static 'assets/img/icon/image.png' %}" alt="Logo" style="max-width: 180px;">
-                                </a>
-                                <button class="navbar-toggler" type="button" id="menu-trigger">
-                                    <span class="toggler-icon"></span>
-                                    <span class="toggler-icon"></span>
-                                    <span class="toggler-icon"></span>
-                                </button>
+    <header class="header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg p-0">
+                <a class="navbar-brand" href="{% url 'landing' %}">
+                    <img src="{% static 'assets/img/icon/image.png' %}" alt="Logo">
+                </a>
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                                <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent6">
-                                    <ul id="nav6" class="navbar-nav ms-auto">
-                                        <li class="nav-item">
-                                            <a class="page-scroll {% if active_page == 'landing' %}active{% endif %}" href="{% url 'landing' %}">Beranda</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll {% if active_page == 'materi' %}active{% endif %}" href="{% url 'materi' %}">Materi</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll {% if active_page == 'petunjuk' %}active{% endif %}" href="{% url 'petunjuk' %}">Petunjuk Penggunaan</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="page-scroll {% if active_page == 'tentang' %}active{% endif %}" href="{% url 'tentang' %}">Tentang</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="btn-daftar {% if active_page == 'daftar' %}active{% endif %}" href="{% url 'reg_mahasiswa' %}">Daftar</a>
-                                        </li>
-                                        <li class="nav-item ms-lg-2">
-                                            <a class="btn-masuk {% if active_page == 'login' %}active{% endif %}" href="{% url 'login' %}">Masuk</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </nav>
+                <div class="collapse navbar-collapse" id="navbar-menu">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link-custom {% if active_page == 'landing' %}active{% endif %}" href="{% url 'landing' %}">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom {% if active_page == 'materi' %}active{% endif %}" href="{% url 'materi' %}">Materi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom {% if active_page == 'petunjuk' %}active{% endif %}" href="{% url 'petunjuk' %}">Petunjuk Penggunaan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link-custom active" href="{% url 'tentang' %}">Tentang</a>
+                        </li>
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn-daftar w-100" href="{% url 'reg_mahasiswa' %}">Daftar</a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <a class="btn-masuk w-100" href="{% url 'login' %}">Masuk</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="mb-4">
+                <div class="card about-card">
+                    <div class="card-header card-header-colored">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Informasi Pengembangan</strong>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <p class="text-center mb-4 text-muted">
+                            Media pembelajaran ini dibuat untuk memenuhi persyaratan penyelesaian studi Program Strata-1 Pendidikan Komputer.
+                        </p>
+
+                        <h5 class="fw-bold text-center mb-4" style="color: var(--dark-blue);">
+                            MEDIA PEMBELAJARAN INTERAKTIF BERBASIS WEB PADA MATERI <em>SPATIAL FILTERING</em> DALAM PEMROSESAN CITRA DIGITAL DENGAN MODEL TUTORIAL
+                        </h5>
+
+                        <div class="table-responsive">
+                            <table class="table table-borderless info-table">
+                                <tbody>
+                                    <tr>
+                                        <td class="label-col">Nama</td>
+                                        <td class="value-col">: Nova Nor Alizhafya</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">Email</td>
+                                        <td class="value-col">: <a href="mailto:novanralizhafya@gmail.com" class="email-link">novanralizhafya@gmail.com</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">Dosen Pembimbing 1</td>
+                                        <td class="value-col">: Drs. Harja Santana Purba, M.Kom., Ph.D.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">Dosen Pembimbing 2</td>
+                                        <td class="value-col">: Novan Alkaf Bahraini Saputra, S.Kom., M.T.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">Jurusan</td>
+                                        <td class="value-col">: S-1 Pendidikan Komputer</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label-col">Instansi</td>
+                                        <td class="value-col">: Universitas Lambung Mangkurat</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
-        </header>
-    </section>
+            </section>
 
-    <div class="main-content" style="padding-top: 120px;">
-        <section class="container mb-4">
-            <div class="card about-card">
-                <div class="card-header card-header-colored">
-                    <i class="bi bi-info-circle me-2"></i>
-                    <strong>Informasi Pengembangan</strong>
-                </div>
+            <section class="mb-5">
+                <div class="card about-card">
+                    <div class="card-header card-header-colored">
+                        <i class="bi bi-journal-bookmark me-2"></i>
+                        <strong>Daftar Pustaka & Atribusi</strong>
+                    </div>
 
-                <div class="card-body">
-                    <p class="text-center mb-3">
-                        Media pembelajaran ini dibuat untuk memenuhi persyaratan penyelesaian studi Program Strata-1 Pendidikan Komputer.
-                    </p>
+                    <div class="card-body p-4">
+                        <ul class="nav custom-tabs" id="pustakaTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="pustaka-list-tab" data-bs-toggle="tab" data-bs-target="#pustaka-content" type="button" role="tab">Daftar Pustaka</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="atribusi-list-tab" data-bs-toggle="tab" data-bs-target="#atribusi-content" type="button" role="tab">Atribusi</button>
+                            </li>
+                        </ul>
 
-                    <h5 class="fw-bold text-center mb-4">
-                        MEDIA PEMBELAJARAN INTERAKTIF BERBASIS WEB PADA MATERI <em>SPATIAL FILTERING</em> DALAM PEMROSESAN CITRA DIGITAL DENGAN MODEL TUTORIAL
-                    </h5>
-
-                    <div class="row g-4">
-                        <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table table-borderless info-table">
-                                    <tbody>
-                                        <tr>
-                                            <td class="label-col">Nama</td>
-                                            <td class="value-col">: Nova Nor Alizhafya</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label-col">Email</td>
-                                            <td class="value-col">: <a href="mailto:novanralizhafya@gmail.com" class="email-link">novanralizhafya@gmail.com</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label-col">Dosen Pembimbing 1</td>
-                                            <td class="value-col">: Drs. Harja Santana Purba, M.Kom., Ph.D.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label-col">Dosen Pembimbing 2</td>
-                                            <td class="value-col">: Novan Alkaf Bahraini Saputra, S.Kom., M.T.</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label-col">Jurusan</td>
-                                            <td class="value-col">: S-1 Pendidikan Komputer</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label-col">Fakultas</td>
-                                            <td class="value-col">: Keguruan dan Ilmu Pendidikan</td>
-                                        </tr>
-                                        <tr>
-                                            <td class="label-col">Instansi</td>
-                                            <td class="value-col">: Universitas Lambung Mangkurat</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div class="tab-content" id="pustakaTabContent">
+                            <div class="tab-pane fade show active" id="pustaka-content" role="tabpanel">
+                                <ul class="bibliography-list">
+                                    <li>Arnita, A., Marpaung, F., Aulia, F., Suryani, N., & Nabila, R. C. (2022). <i>Computer vision dan pengolahan citra digital</i>. Pustaka Aksara.</li>
+                                    <li>Baskar, A., Rajappa, M., Vasudevan, S. K., & Murugesh, T. S. (2023). <i>Digital image processing</i>. CRC Press.</li>
+                                    <li>Gonzalez, R. C., & Woods, R. E. (2008). <i>Digital image processing (3rd ed.)</i>. Pearson Prentice Hall.</li>
+                                    <li>Priyanto, H. (2017). <i>Pengolahan Citra Digital Teori dan Aplikasi Nyata</i>. Bandung: Informatika.</li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="atribusi-content" role="tabpanel">
+                                <ul class="bibliography-list">
+                                    <li>Aset ilustrasi disediakan oleh <a href="https://storyset.com/" target="_blank" class="email-link">Storyset</a></li>
+                                    <li>Visualisasi Kernel Interaktif oleh <a href="https://setosa.io/ev/image-kernels/" target="_blank" class="email-link">Setosa.io</a></li>
+                                    <li>Ikon antarmuka oleh <a href="https://icons.getbootstrap.com/" target="_blank" class="email-link">Bootstrap Icons</a></li>
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <section class="container mb-5">
-            <div class="card about-card">
-                <div class="card-header card-header-colored">
-                    <i class="bi bi-journal-bookmark me-2"></i>
-                    <strong>Daftar Pustaka & Atribusi</strong>
-                </div>
-
-                <div class="card-body">
-                    <ul class="nav custom-tabs" id="pustakaTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pustaka-list-tab" data-bs-toggle="tab" data-bs-target="#pustaka-content" type="button" role="tab" aria-controls="pustaka-content" aria-selected="true">Daftar Pustaka</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="atribusi-list-tab" data-bs-toggle="tab" data-bs-target="#atribusi-content" type="button" role="tab" aria-controls="atribusi-content" aria-selected="false">Atribusi</button>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content" id="pustakaTabContent">
-                        <div class="tab-pane fade show active" id="pustaka-content" role="tabpanel" aria-labelledby="pustaka-list-tab">
-                            <ul class="bibliography-list">
-                                <li>Arnita, A., Marpaung, F., Aulia, F., Suryani, N., & Nabila, R. C. (2022). <i>Computer vision dan pengolahan citra digital</i>. Pustaka Aksara.</li>
-                                <li>Baskar, A., Rajappa, M., Vasudevan, S. K., & Murugesh, T. S. (2023). <i>Digital image processing</i>. CRC Press.</li>
-                                <li>Clark, J. A., & Pillow contributors. (2025). <i>Pillow: Python imaging library (Version 11.3.0)</i>. https://python-pillow.github.io</li>
-                                <li>Driscoll, M. (2021). <i>Pillow: Image processing with Python</i>. Leanpub.</li>
-                                <li>Gonzalez, R. C., & Woods, R. E. (2008). <i>Digital image processing (3rd ed.)</i>. Pearson Prentice Hall.</li>
-                                <li>Priyanto, H. (2017). <i>Pengolahan Citra Digital Teori dan Aplikasi Nyata</i>. Bandung: Informatika.</li>
-                                <li>Purba, H. S., & Saputra, N. A. B. (2023). <i>Pemrosesan citra digital [Catatan kuliah]</i>. Universitas Lambung Mangkurat.</li>
-                            </ul>
-                        </div>
-                        <div class="tab-pane fade" id="atribusi-content" role="tabpanel" aria-labelledby="atribusi-list-tab">
-                            <ul class="bibliography-list">
-                                <li>Aset ilustrasi disediakan oleh <a href="https://storyset.com/" target="_blank" rel="noopener noreferrer" class="email-link">Storyset</a></li>
-                                <li>Visualisasi Kernel Interaktif oleh <a href="https://setosa.io/ev/image-kernels/" target="_blank" rel="noopener noreferrer" class="email-link">Setosa.io</a></li>
-                                <li>Konversi RGB ke Grayscale oleh <a href="https://brandonrohrer.com/convert_rgb_to_grayscale.html" target="_blank" rel="noopener noreferrer" class="email-link">Brandon Rohrer</a></li>
-                                <li>Ikon antarmuka oleh <a href="https://icons.getbootstrap.com/" target="_blank" rel="noopener noreferrer" class="email-link">Bootstrap Icons</a></li>
-                                <li>Koleksi ikon oleh <a href="https://lineicons.com/" target="_blank" rel="noopener noreferrer" class="email-link">LineIcons</a></li>
-                                <li>Framework CSS menggunakan <a href="https://getbootstrap.com/" target="_blank" rel="noopener noreferrer" class="email-link">Bootstrap 5</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const menuTrigger = document.getElementById('menu-trigger');
-            const navbarCollapse = document.getElementById('navbarSupportedContent6');
-
-            if (menuTrigger && navbarCollapse) {
-                menuTrigger.addEventListener('click', function () {
-                    this.classList.toggle('active');
-                    navbarCollapse.classList.toggle('show');
-                });
-            }
-        });
-    </script>
 </body>
 </html>

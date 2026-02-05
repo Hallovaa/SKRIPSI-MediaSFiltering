@@ -1,7 +1,7 @@
 {% extends "dosen/base.html" %}
 {% load static %}
 
-{% block title %}Data Mahasiswa — Citra Digital{% endblock %}
+{% block title %}Data Mahasiswa{% endblock %}
 
 {% block content %}
 
@@ -146,7 +146,7 @@
 
 <div class="hero">
   <h1>Data <span class="text-primary">Mahasiswa</span></h1>
-  <p class="text-muted">Kelola identitas mahasiswa dan filter data berdasarkan kelas</p>
+  <p class="text-muted">Kelola identitas mahasiswa dan filter data berdasarkan kelas.</p>
 </div>
 
 <div class="card-section">
@@ -178,7 +178,7 @@
 
       <div class="filter-right align-items-end">
         <a href="{% url 'export_mhs_excel' %}?kelas={{ request.GET.kelas }}&q={{ request.GET.q }}" class="btn btn-success" style="width: fit-content;">
-            <i class="bi bi-file-earmark-excel"></i> Export Excel
+            <i class="bi bi-filetype-xlsx fs-5"></i> Export Excel
         </a>
         <div class="search-wrapper">
           <i class="bi bi-search"></i>

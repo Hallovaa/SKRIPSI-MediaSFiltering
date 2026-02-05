@@ -1,7 +1,7 @@
 {% extends "dosen/base.html" %}
 {% load static %}
 
-{% block title %}Data Kelas — Citra Digital{% endblock %}
+{% block title %}Data Kelas{% endblock %}
 
 {% block content %}
 
@@ -122,17 +122,17 @@
 
 <div class="hero">
   <h1>Data <span class="text-primary">Kelas</span></h1>
-  <p>Kelola kelas dan token akses mahasiswa</p>
+  <p>Kelola kelas dan token akses mahasiswa otomatis.</p>
 </div>
 
 <div class="main-box">
   <div class="box-header">
     <h4>Daftar Kelas</h4>
-    <button class="btn btn-primary d-flex align-items-center gap-2"
+    <button class="btn btn-primary d-flex align-items-center gap-2 fw-bold"
         data-bs-toggle="modal" 
         data-bs-target="#modalTambahKelas">
       Tambah Kelas
-      <i class="bi bi-plus-circle"></i>
+      <i class="bi bi-plus-circle-fill"></i>
     </button>
   </div>
 
@@ -230,7 +230,7 @@ function salinToken(id){
 function confirmDelete(id, nama) {
   Swal.fire({
     title: 'Hapus Kelas?',
-    text: `Apakah Anda yakin ingin menghapus kelas "${nama}"? Semua data mahasiswa di kelas ini akan terhapus.`,
+    text: `Apakah kamu yakin ingin menghapus kelas "${nama}"? Semua data mahasiswa di kelas ini akan terhapus.`,
     icon: 'warning',
     showCancelButton: true,
     confirmButtonColor: '#ef4444',

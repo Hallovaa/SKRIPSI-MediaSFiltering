@@ -1,7 +1,7 @@
 {% extends "dosen/base.html" %}
 {% load static %}
 
-{% block title %}Dashboard Dosen — Citra Digital{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
@@ -89,14 +89,13 @@
 
 <div class="hero">
   <span class="badge bg-primary-subtle text-primary mb-2">
-    Dashboard Pengajar
+    Pemrosesan Citra Digital
   </span>
   <h1 class="title mt-2">
     Dashboard <span class="text-primary">Dosen</span>
   </h1>
   <p class="text-muted mb-0">
-    Ringkasan pengelolaan kelas dan evaluasi pembelajaran 
-    <strong>Pengolahan Citra Digital</strong>.
+    Ringkasan informasi kelas dan pembelajaran mahasiswa. 
   </p>
 </div>
 
@@ -118,7 +117,7 @@
   <div class="col-md-3">
     <div class="stat-card">
       <div class="value">{{ total_kelas|default:0 }}</div>
-      <div class="label">Kelas Aktif</div>
+      <div class="label">Kelas Terdaftar</div>
     </div>
   </div>
 
@@ -136,7 +135,7 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <div>
           <strong class="d-block">Progres Terbanyak (5 Mahasiswa)</strong>
-          <small class="text-muted">Berdasarkan penyelesaian aktivitas kuis dan evaluasi.</small>
+          <small class="text-muted">Berdasarkan penyelesaian tahapan pembelajaran.</small>
         </div>
         
         <form method="GET" id="filterForm">
@@ -172,9 +171,9 @@
 
   <div class="col-md-5">
     <div class="card-section kkm-card">
-      <strong>Pengaturan Nilai KKM (Global)</strong>
+      <strong>Pengaturan Nilai KKM</strong>
       <p class="text-muted mb-3">
-        Nilai minimum kelulusan kuis dan evaluasi secara global.
+        Nilai minimum kelulusan kuis dan evaluasi.
       </p>
 
       <form method="POST">
