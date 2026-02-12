@@ -234,6 +234,14 @@
 }
 
 
+Pilih jawaban yang paling tepat. Jika jawaban belum tepat, silakan coba lagi sampai benar.
+
+—
+
+Silakan lengkapi seluruh kolom jawaban terlebih dahulu. #f39c12
+
+Masih ada jawaban yang belum tepat, silakan periksa kembali. #c0392b
+
    Aktivitas
 
   'Coba Lagi', 'Masih ada jawaban yang salah, periksa kembali.',
@@ -243,7 +251,7 @@
   'Belum Lengkap!', 'Silakan isi semua kolom jawaban.'
 
   title: 'Luar Biasa!',
-          Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.
+          Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.
 
 
 .step-title {

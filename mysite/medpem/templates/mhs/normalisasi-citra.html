@@ -13,7 +13,7 @@
     margin-bottom: 22px;
     box-shadow: 0 6px 18px rgba(16,32,58,0.03);
 }
-  .card-section-header {
+.card-section-header {
     padding: 14px 18px;
     font-size: 20px;
     font-weight: 800;
@@ -58,7 +58,6 @@
   font-size: 16px;
 }
 .input-cell, .output-cell { background:#fff9ee !important; }
-
 
 .active-highlight { 
   background: #d9eafd !important; 
@@ -263,17 +262,17 @@
       <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
       <ul>
         <li>Perhatikan tabel <strong>Hasil Konvolusi</strong> yang berisi nilai piksel sebelum dilakukan normalisasi.</li>
-      <li>Pilih <strong>Mode Input</strong> melalui menu yang tersedia, yaitu <strong>Default</strong> untuk menggunakan data contoh
+        <li>Pilih <strong>Mode Input</strong> melalui menu yang tersedia, yaitu <strong>Default</strong> untuk menggunakan data contoh
           atau <strong>Custom</strong> untuk memasukkan nilai piksel secara manual.</li>
-      <li>Perhatikan bahwa <strong>hanya nilai piksel yang berada di luar rentang 0–255</strong> yang akan diproses pada tahap normalisasi.</li>
-      <li>Klik tombol <strong>Mulai</strong> untuk memulai proses normalisasi secara bertahap pada setiap piksel.</li>
-      <li>Gunakan tombol <strong>Lanjut</strong> untuk melihat proses normalisasi pada piksel berikutnya secara manual.</li>
-      <li>Klik <strong>Auto Play</strong> jika ingin melihat seluruh proses normalisasi berjalan secara otomatis.</li>
-      <li>Tekan <strong>Pause</strong> untuk menghentikan sementara proses normalisasi yang sedang berlangsung.</li>
-      <li>Hasil normalisasi akan ditampilkan pada tabel <strong>Hasil Normalisasi</strong> sesuai dengan posisi piksel yang sedang diproses.</li>
-      <li>Perhatikan bagian <strong>Perhitungan</strong> untuk melihat langkah perhitungan normalisasi, termasuk nilai minimum, maksimum,
-        hasil normalisasi, dan proses pembulatan.</li>
-      <li>Klik tombol <strong>Ulangi</strong> untuk mengembalikan kondisi awal dan mencoba kembali proses normalisasi dengan data yang berbeda.</li>
+        <li>Perhatikan bahwa <strong>hanya nilai piksel yang berada di luar rentang 0–255</strong> yang akan diproses pada tahap normalisasi.</li>
+        <li>Klik tombol <strong>Mulai</strong> untuk memulai proses normalisasi secara bertahap pada setiap piksel.</li>
+        <li>Gunakan tombol <strong>Lanjut</strong> untuk melihat proses normalisasi pada piksel berikutnya secara manual.</li>
+        <li>Klik <strong>Auto Play</strong> jika ingin melihat seluruh proses normalisasi berjalan secara otomatis.</li>
+        <li>Tekan <strong>Pause</strong> untuk menghentikan sementara proses normalisasi yang sedang berlangsung.</li>
+        <li>Hasil normalisasi akan ditampilkan pada tabel <strong>Hasil Normalisasi</strong> sesuai dengan posisi piksel yang sedang diproses.</li>
+        <li>Perhatikan bagian <strong>Perhitungan</strong> untuk melihat langkah perhitungan normalisasi, termasuk nilai minimum, maksimum,
+          hasil normalisasi, dan proses pembulatan.</li>
+        <li>Klik tombol <strong>Ulangi</strong> untuk mengembalikan kondisi awal dan mencoba kembali proses normalisasi dengan data yang berbeda.</li>
       </ul>
     </div>
     
@@ -323,7 +322,7 @@
     </div>
     <div style="max-width:800px;margin:20px auto; border:1px solid #c7d3e8;padding:20px;border-radius:12px;background:#fff;">
       <p style="text-align:center;margin:0 0 14px 0;">
-        Dari hasil konvolusi di atas, nilai <input id="fillOriginal" class="quiz-input" /> merupakan nilai yang perlu dinormalisasi. <br>
+        Dari hasil konvolusi tersebut, nilai <input id="fillOriginal" class="quiz-input" /> merupakan nilai yang perlu dinormalisasi. <br>
         Setelah dilakukan normalisasi, nilai tersebut menjadi <input id="fillNormalized" class="quiz-input" />.
       </p>
       <div class="conv-controls">
@@ -379,23 +378,26 @@
 
   function runStep() {
     const pos = []; for(let i=0;i<4;i++) for(let j=0;j<4;j++) pos.push([i,j]);
-    
     const [r,c] = pos[stepSim];
     const flat = inputDataSim.flat().filter(v => v !== null);
+    
     if(flat.length === 0) {
       clearInterval(intervalId);
       Swal.fire('Peringatan', 'Silakan isi nilai pada tabel input terlebih dahulu!', 'warning');
       return;
     }
-    const pMin = Math.min(...flat), pMax = Math.max(...flat);
+
+    const pMin = Math.min(...flat);
+    const pMax = Math.max(...flat);
     const P = inputDataSim[r][c];
+
     Array.from(inTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
     Array.from(outTable.querySelectorAll('td')).forEach(td => td.classList.remove('output-highlight'));
     inTable.rows[r].cells[c].classList.add('active-highlight');
-    
+
     if (P === null) {
-        outTable.rows[r].cells[c].textContent = '-';
-        calcText.innerHTML = `Piksel kosong, dilewati.`;
+      outTable.rows[r].cells[c].textContent = '-';
+      calcText.innerHTML = `Piksel kosong, dilewati.`;
     } else if (P < 0 || P > 255) {
       const pembilang = P - pMin;
       const penyebut = pMax - pMin || 1;
@@ -416,9 +418,10 @@
       outTable.rows[r].cells[c].textContent = P;
       calcText.innerHTML = `Nilai <b>&nbsp;${P}&nbsp;</b> tetap karena sudah berada dalam rentang 0-255.`;
     }
+
     outTable.rows[r].cells[c].classList.add('output-highlight');
-    
     stepSim++;
+
     if(stepSim >= pos.length) {
       clearInterval(intervalId);
       nextBtn.style.display = pauseBtn.style.display = 'none';
@@ -429,7 +432,6 @@
   function startProcess(auto) {
     stepSim = 0; isAutoplay = auto; isPaused = false;
     renderTable(Array.from({length:4},()=>Array(4).fill('')), outTable);
-    
     startBtn.style.display = 'none';
     autoBtn.style.display = 'none';
     resetBtn.style.display = 'inline-block';
@@ -507,7 +509,7 @@
       if (data.status === 'success') {
         Swal.fire({
           title: 'Luar Biasa!',
-          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
           icon: 'success',
           confirmButtonText: 'Lanjutkan',
           confirmButtonColor: '#3b7be3'
@@ -522,41 +524,61 @@
       }
     })
     .catch(err => {
-        console.error(err);
         Swal.fire('Progres Gagal', err.message, 'error');
     });
   }
 
   document.getElementById('checkActBtn').onclick = () => {
     const elO = document.getElementById('fillOriginal'), elN = document.getElementById('fillNormalized');
-    const uO = parseInt(elO.value), uN = parseInt(elN.value);
+    const uO = elO.value.trim(), uN = elN.value.trim();
+
+    if(uO === "" || uN === "") {
+        Swal.fire({
+            title: 'Belum Lengkap!',
+            text: 'Silakan isi kedua kolom jawaban terlebih dahulu.',
+            icon: 'warning',
+            confirmButtonColor: '#f39c12'
+        });
+        return;
+    }
+
     let isCorrect = true;
-    if(uO === eO) {
-      elO.style.backgroundColor = '#4f71be';
-      elO.style.color = 'white';
+    const numO = parseInt(uO), numN = parseInt(uN);
+
+    if(numO === eO) {
+        elO.style.backgroundColor = '#4f71be';
+        elO.style.color = 'white';
     } else {
-      elO.style.backgroundColor = '#c0392b';
-      elO.style.color = 'white';
-      isCorrect = false;
+        elO.style.backgroundColor = '#c0392b';
+        elO.style.color = 'white';
+        isCorrect = false;
     }
-    if(uN === eN) {
-      elN.style.backgroundColor = '#4f71be';
-      elN.style.color = 'white';
+
+    if(numN === eN) {
+        elN.style.backgroundColor = '#4f71be';
+        elN.style.color = 'white';
     } else {
-      elN.style.backgroundColor = '#c0392b';
-      elN.style.color = 'white';
-      isCorrect = false;
+        elN.style.backgroundColor = '#c0392b';
+        elN.style.color = 'white';
+        isCorrect = false;
     }
+
     if(isCorrect) {
-      updateProgressDatabase();
+        updateProgressDatabase();
     } else {
-      Swal.fire({ icon: 'error', title: 'Coba Lagi!', text: 'Masih ada jawaban yang salah, periksa kembali.', confirmButtonColor: '#c0392b' });
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Coba Lagi!', 
+            text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', 
+            confirmButtonColor: '#c0392b' 
+        });
     }
   };
 
   document.getElementById('resetActBtn').onclick = () => {
     const elO = document.getElementById('fillOriginal'), elN = document.getElementById('fillNormalized');
-    elO.value = ''; elN.value = '';
+    elO.value = ''; 
+    elN.value = '';
     elO.removeAttribute('style');
     elN.removeAttribute('style');
   };

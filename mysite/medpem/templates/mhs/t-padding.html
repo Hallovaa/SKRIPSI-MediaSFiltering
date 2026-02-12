@@ -513,13 +513,11 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Dengan menggunakan citra berukuran 4×4 dan <em>kernel</em> 3×3, proses konvolusi dilakukan dengan 
-      menerapkan <em>padding</em>. Berdasarkan perhitungan <em>padding</em> yang dilakukan sebelumnya, jumlah <em>padding</em> yang 
-      diperlukan untuk <em>kernel</em> 3×3 adalah 1. Artinya, ditambahkan satu piksel di setiap sisi 
-      citra agar ukuran hasil konvolusi tetap sama dengan ukuran citra awal.
+      Pada proses konvolusi dengan citra berukuran 4×4 dan <em>kernel</em> 3×3, digunakan <em>padding</em> sebanyak 1 piksel.
+      Artinya, satu piksel ditambahkan pada setiap sisi citra agar ukuran hasil konvolusi tetap sama dengan ukuran citra awal.
     </p>
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/C6.png' %}" style="display:block; margin:auto; width:65%;">
+      <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:65%;">
     </figure>
 
     <div class="instruction">
@@ -578,7 +576,7 @@
             </div>
             <div class="select-group" id="constInputGroup">
               <label class="control-label">Val</label>
-              <input type="number" id="constVal" class="const-input" value="1" min="0" max="255">
+              <input type="number" id="constVal" class="const-input" value="1" min="1" max="255">
             </div>
           </div>
           <table id="kernelMatrix" class="conv-table"></table>
@@ -609,14 +607,14 @@
     <div>Aktivitas 2</div>
   </div>
   <div class="card-section-body">
-    <p>Diberikan citra <em>grayscale</em> berukuran 4x4 berikut:</p>
+    <p>Diberikan sebuah citra grayscale berukuran 4×4 seperti pada gambar berikut.</p>
     <figure style="margin:20px 0;">
       <img src="{% static 'assets/img/konten/soal.png' %}" style="display:block; margin:auto; width:50%;">
     </figure>
     <p style="text-indent: 30px; text-align: justify">
-      Tambahkan <em>replicate padding</em> pada citra <em>grayscale</em> berukuran 4×4 agar proses 
-      <em>konvolusi</em> dapat diterapkan pada seluruh piksel. Selanjutnya, hitung dan tentukan nilai 
-      setiap elemen pada matriks hasil <em>konvolusi</em> menggunakan <em>kernel</em> 3×3 berikut:
+      Terapkan <em>replicate padding</em> pada citra tersebut agar proses konvolusi
+      dapat dilakukan pada seluruh piksel. Setelah itu, hitung dan tentukan nilai
+      setiap elemen pada matriks hasil konvolusi menggunakan <em>kernel</em> 3×3 berikut.
     </p>
     <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin:22px 0;align-items:flex-start;">
       <div style="text-align:center;">
@@ -655,6 +653,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
@@ -679,6 +678,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const resetBtn = document.getElementById('resetBtn');
 
   function createTable(matrix, table, cellClass='input-cell', editable=false){
+    if(!table) return;
     table.innerHTML = '';
     matrix.forEach((row,i)=>{
       const tr = document.createElement('tr');
@@ -736,23 +736,32 @@ document.addEventListener('DOMContentLoaded', function () {
     for(let i=0;i<4;i++) for(let j=0;j<4;j++) positions.push([i,j]);
     if(step >= positions.length){
       clearInterval(autoInterval);
-      nextBtn.style.display = 'none';
-      pauseBtn.style.display = 'none';
-      resetBtn.style.display = 'inline-block';
+      if(nextBtn) nextBtn.style.display = 'none';
+      if(pauseBtn) pauseBtn.style.display = 'none';
+      if(resetBtn) resetBtn.style.display = 'inline-block';
       return;
     }
     const [ox,oy] = positions[step];
     updateInputTable();
-    for(let i=0; i<3; i++) for(let j=0; j<3; j++) inputTable.rows[ox+i].cells[oy+j].classList.add('input-highlight');
+    
+    for(let i=0; i<3; i++) {
+        for(let j=0; j<3; j++) {
+            if(inputTable.rows[ox+i] && inputTable.rows[ox+i].cells[oy+j]) {
+                inputTable.rows[ox+i].cells[oy+j].classList.add('input-highlight');
+            }
+        }
+    }
+
     let sum = 0, detail = [];
     for(let i=-1;i<=1;i++) {
       for(let j=-1;j<=1;j++) {
         let val = getPaddedValue(ox+i, oy+j);
         let kVal = currentKernel[i+1][j+1];
         sum += val * kVal;
-        detail.push(`(<span class="eq-val">${kVal}</span>×${val})`);
+        detail.push(`(${kVal}×${val})`);
       }
     }
+    
     outputData[ox][oy] = sum;
     createTable(outputData, outputTable, 'output-cell');
     outputTable.rows[ox].cells[oy].classList.add('output-highlight');
@@ -760,7 +769,7 @@ document.addEventListener('DOMContentLoaded', function () {
     step++;
   }
 
-  startBtn.onclick = () => {
+  if(startBtn) startBtn.onclick = () => {
     step = 0; outputData = Array.from({length:4}, ()=>Array(4).fill(''));
     createTable(outputData, outputTable, 'output-cell');
     startBtn.style.display = 'none'; autoplayBtn.style.display = 'none';
@@ -768,7 +777,7 @@ document.addEventListener('DOMContentLoaded', function () {
     processStep();
   };
 
-  autoplayBtn.onclick = () => {
+  if(autoplayBtn) autoplayBtn.onclick = () => {
     step = 0; outputData = Array.from({length:4}, ()=>Array(4).fill(''));
     createTable(outputData, outputTable, 'output-cell');
     startBtn.style.display = 'none'; autoplayBtn.style.display = 'none';
@@ -777,14 +786,14 @@ document.addEventListener('DOMContentLoaded', function () {
     processStep(); autoInterval = setInterval(processStep, 1000);
   };
 
-  pauseBtn.onclick = () => {
+  if(pauseBtn) pauseBtn.onclick = () => {
     isPaused = !isPaused;
     pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
     if(!isPaused && autoInterval === null) autoInterval = setInterval(processStep, 1000);
     else if(isPaused) { clearInterval(autoInterval); autoInterval = null; }
   };
 
-  resetBtn.onclick = () => {
+  if(resetBtn) resetBtn.onclick = () => {
     clearInterval(autoInterval); autoInterval = null;
     step = 0; isPaused = false;
     outputData = Array.from({length:4}, ()=>Array(4).fill(''));
@@ -795,147 +804,148 @@ document.addEventListener('DOMContentLoaded', function () {
     nextBtn.style.display = 'none'; pauseBtn.style.display = 'none'; resetBtn.style.display = 'none';
   };
 
-  document.getElementById('kernelSelect').onchange = (e) => {
+  const kSelect = document.getElementById('kernelSelect');
+  if(kSelect) kSelect.onchange = (e) => {
     currentKernel = kernels[e.target.value];
     createTable(currentKernel, kernelTable, 'kernel-cell', e.target.value === 'custom');
   };
 
-  document.getElementById('paddingSelect').onchange = (e) => {
+  const pSelect = document.getElementById('paddingSelect');
+  if(pSelect) pSelect.onchange = (e) => {
     paddingType = e.target.value;
-    constGroup.style.display = (paddingType === 'constant') ? 'block' : 'none';
+    if(constGroup) constGroup.style.display = (paddingType === 'constant') ? 'block' : 'none';
     updateInputTable();
   };
 
-  constValInp.oninput = () => {
-    if(paddingType === 'constant') {
-      updateInputTable();
-    }
-  };
+  if(constValInp) {
+    constValInp.oninput = () => { 
+        if(paddingType === 'constant') {
+            let val = parseInt(constValInp.value);
+            if(val < 0) constValInp.value = 0;
+            if(val > 255) constValInp.value = 255;
+            updateInputTable(); 
+        }
+    };
+  }
 
-  nextBtn.onclick = processStep;
+  if(nextBtn) nextBtn.onclick = processStep;
+
   updateInputTable();
   createTable(outputData, outputTable, 'output-cell');
   createTable(currentKernel, kernelTable, 'kernel-cell');
 
-  (function quizLogic(){
-    const inputQuiz = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
-    const kernelQuiz = [[0,-1,0],[-1,5,-1],[0,-1,0]];
-    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-    const getReplicated = (i, j) => inputQuiz[clamp(i-1, 0, 3)][clamp(j-1, 0, 3)];
-    const paddedTable = document.getElementById('paddedInput');
-    const outTable = document.getElementById('quizOutput');
+  const inputQuiz = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+  const kernelQuiz = [[0,-1,0],[-1,5,-1],[0,-1,0]];
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const getReplicated = (i, j) => inputQuiz[clamp(i-1, 0, 3)][clamp(j-1, 0, 3)];
+  const paddedTable = document.getElementById('paddedInput');
+  const outTable = document.getElementById('quizOutput');
 
-    function renderQuiz(){
-      paddedTable.innerHTML = '';
-      for(let i=0; i<6; i++){
-        const tr = document.createElement('tr');
-        for(let j=0; j<6; j++){
-          const td = document.createElement('td');
-          if(i >= 1 && i <= 4 && j >= 1 && j <= 4){
-            td.textContent = inputQuiz[i-1][j-1];
-            td.classList.add('input-cell');
-          } else {
-            const inp = document.createElement('input');
-            inp.className = 'quiz-input padding-input';
-            inp.style.width = '44px'; inp.style.height = '44px';
-            inp.dataset.row = i; inp.dataset.col = j;
-            td.appendChild(inp);
-            td.classList.add('padding-cell');
-          }
-          tr.appendChild(td);
-        }
-        paddedTable.appendChild(tr);
-      }
-      outTable.innerHTML = '';
-      for(let i=0; i<4; i++){
-        const tr = document.createElement('tr');
-        for(let j=0; j<4; j++){
-          const td = document.createElement('td');
+  function renderQuiz(){
+    if(!paddedTable || !outTable) return;
+    paddedTable.innerHTML = '';
+    for(let i=0; i<6; i++){
+      const tr = document.createElement('tr');
+      for(let j=0; j<6; j++){
+        const td = document.createElement('td');
+        if(i >= 1 && i <= 4 && j >= 1 && j <= 4){
+          td.textContent = inputQuiz[i-1][j-1];
+          td.classList.add('input-cell');
+        } else {
           const inp = document.createElement('input');
-          inp.className = 'quiz-input output-input';
-          inp.style.width = '60px'; inp.style.height = '44px';
+          inp.className = 'quiz-input padding-input';
+          inp.style.width = '44px'; inp.style.height = '44px';
+          inp.dataset.row = i; inp.dataset.col = j;
           td.appendChild(inp);
-          tr.appendChild(td);
+          td.classList.add('padding-cell');
         }
-        outTable.appendChild(tr);
+        tr.appendChild(td);
       }
+      paddedTable.appendChild(tr);
+    }
+    outTable.innerHTML = '';
+    for(let i=0; i<4; i++){
+      const tr = document.createElement('tr');
+      for(let j=0; j<4; j++){
+        const td = document.createElement('td');
+        const inp = document.createElement('input');
+        inp.className = 'quiz-input output-input';
+        inp.style.width = '60px'; inp.style.height = '44px';
+        td.appendChild(inp);
+        tr.appendChild(td);
+      }
+      outTable.appendChild(tr);
+    }
+  }
+
+  function updateProgressDatabase() {
+    fetch("/api/update-progres/", {
+      method: "POST",
+      headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify({ slug: 't-padding' })
+    })
+    .then(async response => {
+      const isJson = response.headers.get('content-type')?.includes('application/json');
+      const data = isJson ? await response.json() : null;
+      if (!response.ok) throw new Error((data && data.message) || 'Terjadi kesalahan.');
+      return data;
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        Swal.fire({ title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.', icon: 'success', confirmButtonColor: '#3b7be3' })
+        .then(() => {
+          const nBtn = document.getElementById('nav-next-materi');
+          if(nBtn) { nBtn.classList.remove('disabled'); nBtn.style.opacity = '1'; nBtn.style.pointerEvents = 'auto'; }
+        });
+      }
+    })
+    .catch(err => { Swal.fire('Gagal Simpan', err.message, 'error'); });
+  }
+
+  const checkAnsBtn = document.getElementById('checkAnswers');
+  if(checkAnsBtn) checkAnsBtn.onclick = () => {
+    let isCorrect = true;
+    const pInputs = Array.from(document.querySelectorAll('.padding-input'));
+    const oInputs = Array.from(document.querySelectorAll('.output-input'));
+    const allInp = [...pInputs, ...oInputs];
+    const empty = allInp.some(inp => inp.value.trim() === "" || isNaN(parseInt(inp.value)));
+
+    if (empty) {
+      Swal.fire({ title: 'Belum Lengkap!', text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.', icon: 'warning', confirmButtonColor: '#f39c12' });
+      return;
     }
 
-    function updateProgressDatabase() {
-      fetch("/api/update-progres/", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ slug: 't-padding' })
-      })
-      .then(async response => {
-        const isJson = response.headers.get('content-type')?.includes('application/json');
-        const data = isJson ? await response.json() : null;
-        if (!response.ok) throw new Error((data && data.message) || 'Terjadi kesalahan.');
-        return data;
-      })
-      .then(data => {
-        if (data.status === 'success') {
-          Swal.fire({
-            title: 'Luar Biasa!',
-            text: 'Aktivitas Selesai. Silakan lanjut ke materi berikutnya.',
-            icon: 'success',
-            confirmButtonText: 'Lanjutkan',
-            confirmButtonColor: '#3b7be3'
-          }).then(() => {
-            const nextBtnNav = document.getElementById('nav-next-materi');
-            if(nextBtnNav) {
-                nextBtnNav.classList.remove('disabled');
-                nextBtnNav.style.opacity = '1';
-                nextBtnNav.style.pointerEvents = 'auto';
-            }
-          });
-        }
-      })
-      .catch(err => {
-        Swal.fire('Gagal Simpan', err.message, 'error');
-      });
-    }
+    pInputs.forEach(inp => {
+      const cor = getReplicated(parseInt(inp.dataset.row), parseInt(inp.dataset.col));
+      const val = parseInt(inp.value.trim());
+      if (val === cor) { inp.style.background = '#4f71be'; inp.style.color = '#fff'; }
+      else { inp.style.background = '#c0392b'; inp.style.color = '#fff'; isCorrect = false; }
+    });
 
-    document.getElementById('checkAnswers').onclick = () => {
-      let isCorrect = true, allFilled = true;
-      document.querySelectorAll('.padding-input').forEach(inp => {
-        const correct = getReplicated(parseInt(inp.dataset.row), parseInt(inp.dataset.col));
-        const valText = inp.value.trim();
-        const val = parseInt(valText);
-        if(valText === "" || isNaN(val)) allFilled = false;
-        if(val === correct) { inp.style.background = '#4f71be'; inp.style.color = '#fff'; }
-        else { inp.style.background = '#c0392b'; inp.style.color = '#fff'; isCorrect = false; }
-      });
-      document.querySelectorAll('.output-input').forEach((inp, idx) => {
-        const r = Math.floor(idx/4), c = idx%4;
-        let sum = 0;
-        for(let ki=0; ki<3; ki++) for(let kj=0; kj<3; kj++) sum += getReplicated(r+ki, c+kj) * kernelQuiz[ki][kj];
-        const valText = inp.value.trim();
-        const val = parseInt(valText);
-        if(valText === "" || isNaN(val)) allFilled = false;
-        if(val === sum) { inp.style.background = '#4f71be'; inp.style.color = '#fff'; }
-        else { inp.style.background = '#c0392b'; inp.style.color = '#fff'; isCorrect = false; }
-      });
-      if(!allFilled) { Swal.fire('Belum Lengkap!', 'Silakan isi semua kolom jawaban.', 'warning'); return; }
-      if(isCorrect) updateProgressDatabase();
-      else Swal.fire('Coba Lagi!', 'Masih ada jawaban yang salah, periksa kembali.', 'error');
-    };
+    oInputs.forEach((inp, idx) => {
+      const r = Math.floor(idx / 4), c = idx % 4;
+      let sum = 0;
+      for (let ki = 0; ki < 3; ki++) for (let kj = 0; kj < 3; kj++) sum += getReplicated(r + ki, c + kj) * kernelQuiz[ki][kj];
+      const val = parseInt(inp.value.trim());
+      if (val === sum) { inp.style.background = '#4f71be'; inp.style.color = '#fff'; }
+      else { inp.style.background = '#c0392b'; inp.style.color = '#fff'; isCorrect = false; }
+    });
 
-    document.getElementById('resetPaddingOnly').onclick = () => {
-      document.querySelectorAll('.padding-input').forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
-    };
+    if (isCorrect) updateProgressDatabase();
+    else Swal.fire({ title: 'Coba Lagi!', text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', icon: 'error', confirmButtonColor: '#c0392b' });
+  };
 
-    document.getElementById('resetOutputOnly').onclick = () => {
-      document.querySelectorAll('.output-input').forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
-    };
+  const resPad = document.getElementById('resetPaddingOnly');
+  if(resPad) resPad.onclick = () => {
+    document.querySelectorAll('.padding-input').forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
+  };
 
-    renderQuiz();
-  })();
+  const resOut = document.getElementById('resetOutputOnly');
+  if(resOut) resOut.onclick = () => {
+    document.querySelectorAll('.output-input').forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
+  };
+
+  renderQuiz();
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 {% endblock %}

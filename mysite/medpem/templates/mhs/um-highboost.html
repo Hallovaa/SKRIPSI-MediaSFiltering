@@ -416,7 +416,7 @@
     </p>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/C6.png' %}" style="display:block; margin:auto; width:65%;">
+      <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:65%;">
     </figure>
 
     <p style="margin-bottom: 30px">
@@ -717,6 +717,7 @@ function createTable(matrix, id, cls='input-cell', pad=false){
 
 function createKernelTable() {
   const t = document.getElementById('kernelTable');
+  if(!t) return;
   t.innerHTML = '';
   kernel.forEach(r => {
     const tr = document.createElement('tr');
@@ -735,12 +736,13 @@ function clearAllHighlights() {
 }
 
 function highlightKernelArea(i, j) {
+  const inputTable = document.getElementById('inputTable');
+  if(!inputTable) return;
   document.querySelectorAll('#inputTable td').forEach(c => c.classList.remove('highlight'));
-  const t = document.getElementById('inputTable');
   for (let ki = i; ki < i + 3; ki++) {
     for (let kj = j; kj < j + 3; kj++) {
-      if (t.rows[ki] && t.rows[ki].cells[kj]) {
-        t.rows[ki].cells[kj].classList.add('highlight');
+      if (inputTable.rows[ki] && inputTable.rows[ki].cells[kj]) {
+        inputTable.rows[ki].cells[kj].classList.add('highlight');
       }
     }
   }
@@ -748,6 +750,7 @@ function highlightKernelArea(i, j) {
 
 function showNextStepSim(id) {
   const el = document.getElementById(id);
+  if(!el) return;
   el.classList.add('active');
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -794,11 +797,13 @@ function handleUlang(stepIdx, matrixVar, tableId, msg, cellCls) {
 }
 
 let step1 = 0;
-document.getElementById('startBtn1').onclick=()=>{ handleStart('1'); nextConv(); };
-document.getElementById('autoBtn1').onclick=()=>{ handleAuto('1', nextConv); };
-document.getElementById('pauseBtn1').onclick=()=>{ handlePause('1'); };
-document.getElementById('nextBtn1').onclick=()=>nextConv();
-document.getElementById('ulang1').onclick=()=>{ handleUlang('1', blurResult, 'blurTable', 'Belum ada perhitungan', 'base-cell'); };
+if(document.getElementById('startBtn1')){
+  document.getElementById('startBtn1').onclick=()=>{ handleStart('1'); nextConv(); };
+  document.getElementById('autoBtn1').onclick=()=>{ handleAuto('1', nextConv); };
+  document.getElementById('pauseBtn1').onclick=()=>{ handlePause('1'); };
+  document.getElementById('nextBtn1').onclick=()=>nextConv();
+  document.getElementById('ulang1').onclick=()=>{ handleUlang('1', blurResult, 'blurTable', 'Belum ada perhitungan', 'base-cell'); };
+}
 
 function nextConv(){
   const coords=[]; for(let i=0;i<4;i++)for(let j=0;j<4;j++)coords.push([i,j]);
@@ -826,20 +831,24 @@ function nextConv(){
   }
 }
 
-document.getElementById('nextStep1').onclick=()=>{
-  document.getElementById('nextStep1').style.display='none';
-  showNextStepSim('step2');
-  createTable(original,'origMask', 'input-cell');
-  createTable(blurResult,'blurMask', 'blue-focus-cell');
-  createTable(maskResult,'maskTableSim','base-cell');
-};
+if(document.getElementById('nextStep1')){
+  document.getElementById('nextStep1').onclick=()=>{
+    document.getElementById('nextStep1').style.display='none';
+    showNextStepSim('step2');
+    createTable(original,'origMask', 'input-cell');
+    createTable(blurResult,'blurMask', 'blue-focus-cell');
+    createTable(maskResult,'maskTableSim','base-cell');
+  };
+}
 
 let step2=0;
-document.getElementById('startBtn2').onclick=()=>{ handleStart('2'); nextMask(); };
-document.getElementById('autoBtn2').onclick=()=>{ handleAuto('2', nextMask); };
-document.getElementById('pauseBtn2').onclick=()=>{ handlePause('2'); };
-document.getElementById('nextBtn2').onclick=()=>nextMask();
-document.getElementById('ulang2').onclick=()=>{ handleUlang('2', maskResult, 'maskTableSim', 'Belum ada perhitungan', 'base-cell'); };
+if(document.getElementById('startBtn2')){
+  document.getElementById('startBtn2').onclick=()=>{ handleStart('2'); nextMask(); };
+  document.getElementById('autoBtn2').onclick=()=>{ handleAuto('2', nextMask); };
+  document.getElementById('pauseBtn2').onclick=()=>{ handlePause('2'); };
+  document.getElementById('nextBtn2').onclick=()=>nextMask();
+  document.getElementById('ulang2').onclick=()=>{ handleUlang('2', maskResult, 'maskTableSim', 'Belum ada perhitungan', 'base-cell'); };
+}
 
 function nextMask(){
   const coords=[]; for(let i=0;i<4;i++)for(let j=0;j<4;j++)coords.push([i,j]);
@@ -864,24 +873,29 @@ function nextMask(){
   }
 }
 
-document.getElementById('nextStep2').onclick=()=>{
-  document.getElementById('nextStep2').style.display='none';
-  showNextStepSim('step3');
-  createTable(original,'compareOriginal', 'input-cell');
-  createTable(maskResult,'compareMask', 'blue-focus-cell');
-  createTable(boostResult,'compareResult','base-cell');
-};
+if(document.getElementById('nextStep2')){
+  document.getElementById('nextStep2').onclick=()=>{
+    document.getElementById('nextStep2').style.display='none';
+    showNextStepSim('step3');
+    createTable(original,'compareOriginal', 'input-cell');
+    createTable(maskResult,'compareMask', 'blue-focus-cell');
+    createTable(boostResult,'compareResult','base-cell');
+  };
+}
 
 let step3=0;
-document.getElementById('startBtn3').onclick=()=>{ handleStart('3'); nextHighboost(); };
-document.getElementById('autoBtn3').onclick=()=>{ handleAuto('3', nextHighboost); };
-document.getElementById('pauseBtn3').onclick=()=>{ handlePause('3'); };
-document.getElementById('nextBtn3').onclick=()=>nextHighboost();
-document.getElementById('ulang3').onclick=()=>{ handleUlang('3', boostResult, 'compareResult', 'Belum ada perhitungan', 'base-cell'); };
+if(document.getElementById('startBtn3')){
+  document.getElementById('startBtn3').onclick=()=>{ handleStart('3'); nextHighboost(); };
+  document.getElementById('autoBtn3').onclick=()=>{ handleAuto('3', nextHighboost); };
+  document.getElementById('pauseBtn3').onclick=()=>{ handlePause('3'); };
+  document.getElementById('nextBtn3').onclick=()=>nextHighboost();
+  document.getElementById('ulang3').onclick=()=>{ handleUlang('3', boostResult, 'compareResult', 'Belum ada perhitungan', 'base-cell'); };
+}
 
 function nextHighboost(){
   const coords=[]; for(let i=0;i<4;i++)for(let j=0;j<4;j++)coords.push([i,j]);
-  const k=parseFloat(document.getElementById('kValue').value)||1;
+  const kValInput = document.getElementById('kValue');
+  const k = kValInput ? parseFloat(kValInput.value) : 1;
   if(step3<coords.length){
     const [i,j]=coords[step3];
     document.querySelectorAll('#compareOriginal td, #compareMask td').forEach(c=>c.classList.remove('highlight'));
@@ -904,51 +918,29 @@ function nextHighboost(){
   }
 }
 
-document.getElementById('nextStep3').onclick=()=>{
-  document.getElementById('nextStep3').style.display='none';
-  showNextStepSim('step4');
-  createTable(original,'finalOriginal', 'input-cell');
-  createTable(boostResult,'finalResult', 'base-cell');
-  const o=document.getElementById('finalOriginal'), r=document.getElementById('finalResult');
-  for(let i=0;i<4;i++)for(let j=0;j<4;j++){
-    const vO=parseInt(o.rows[i].cells[j].textContent), vR=parseInt(r.rows[i].cells[j].textContent);
-    if(vR>vO) r.rows[i].cells[j].classList.add('val-increase');
-    else if(vR<vO) r.rows[i].cells[j].classList.add('val-decrease');
-    else r.rows[i].cells[j].classList.add('val-same');
-  }
-};
-
-function resetSimulasi(){
-  clearInterval(autoTimer);
-  clearAllHighlights();
-  step1=0; step2=0; step3=0;
-  blurResult=Array.from({length:4},()=>Array(4).fill(''));
-  maskResult=Array.from({length:4},()=>Array(4).fill(''));
-  boostResult=Array.from({length:4},()=>Array(4).fill(''));
-  document.querySelectorAll('.section-sim').forEach((s, idx) => { if(idx > 0) s.classList.remove('active'); });
-  createTable(padded,'inputTable','input-cell',true);
-  createTable(blurResult,'blurTable','base-cell');
-  createKernelTable(); 
-  ['1','2','3'].forEach(n=>{
-    document.getElementById('startBtn'+n).style.display='inline-block';
-    document.getElementById('autoBtn'+n).style.display='inline-block';
-    document.getElementById('nextBtn'+n).style.display='none';
-    document.getElementById('pauseBtn'+n).style.display='none';
-    document.getElementById('pauseBtn'+n).textContent='Pause';
-    document.getElementById('ulang'+n).style.display='none';
-    document.getElementById('nextStep'+n).style.display='none';
-  });
-  document.getElementById('calcBox1').textContent='Belum ada perhitungan';
-  document.getElementById('calcBox2').textContent='Belum ada perhitungan';
-  document.getElementById('calcBox3').textContent='Belum ada perhitungan';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+if(document.getElementById('nextStep3')){
+  document.getElementById('nextStep3').onclick=()=>{
+    document.getElementById('nextStep3').style.display='none';
+    showNextStepSim('step4');
+    createTable(original,'finalOriginal', 'input-cell');
+    createTable(boostResult,'finalResult', 'base-cell');
+    const o=document.getElementById('finalOriginal'), r=document.getElementById('finalResult');
+    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
+      const vO=parseInt(o.rows[i].cells[j].textContent), vR=parseInt(r.rows[i].cells[j].textContent);
+      if(vR>vO) r.rows[i].cells[j].classList.add('val-increase');
+      else if(vR<vO) r.rows[i].cells[j].classList.add('val-decrease');
+      else r.rows[i].cells[j].classList.add('val-same');
+    }
+  };
 }
 
 function unlockNextButton() {
   const btnNext = document.getElementById('nav-next-materi');
-  btnNext.classList.remove('disabled');
-  btnNext.style.opacity = '1';
-  btnNext.style.pointerEvents = 'auto';
+  if(btnNext){
+    btnNext.classList.remove('disabled');
+    btnNext.style.opacity = '1';
+    btnNext.style.pointerEvents = 'auto';
+  }
 }
 
 function updateProgressDatabase() {
@@ -972,9 +964,9 @@ function updateProgressDatabase() {
     if (data.status === 'success') {
       Swal.fire({
         title: 'Luar Biasa!',
-        text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+        text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
         icon: 'success',
-        confirmButtonText: 'Lanjutkan',
+        confirmButtonText: 'OK',
         confirmButtonColor: '#3b7be3'
       }).then(() => {
         unlockNextButton();
@@ -987,8 +979,8 @@ function updateProgressDatabase() {
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  createTable(padded,'inputTable','input-cell',true);
-  createTable(blurResult,'blurTable','base-cell');
+  if(document.getElementById('inputTable')) createTable(padded,'inputTable','input-cell',true);
+  if(document.getElementById('blurTable')) createTable(blurResult,'blurTable','base-cell');
   createKernelTable(); 
 
   const quizOrig = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
@@ -1002,6 +994,24 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 
   document.getElementById("checkHighboostBtn").onclick = () => {
+    let anyEmpty = false;
+    
+    document.querySelectorAll("#maskTableQuiz td, #highboostTableQuiz td").forEach(td => {
+      if(td.innerText.trim() === "") {
+        anyEmpty = true;
+      }
+    });
+
+    if(anyEmpty) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Belum Lengkap!',
+        text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.',
+        confirmButtonColor: '#f39c12'
+      });
+      return; 
+    }
+
     let ok1 = checkTable("maskTableQuiz", mAns);
     let ok2 = checkTable("highboostTableQuiz", hAns);
     
@@ -1011,20 +1021,29 @@ document.addEventListener('DOMContentLoaded', ()=>{
       Swal.fire({
         icon: 'error',
         title: 'Coba Lagi!',
-        text: 'Masih ada jawaban yang salah, periksa kembali.',
+        text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.',
         confirmButtonColor: '#c0392b'
       });
     }
   };
 
   function checkTable(id, ans){
-    let ok=true; const rows=document.getElementById(id).rows;
-    for(let i=0;i<4;i++)for(let j=0;j<4;j++){
-      const td=rows[i].cells[j], v=parseInt(td.innerText);
-      if(!isNaN(v)&&v===ans[i][j]){ 
-        td.style.background="#4f71be"; td.style.color="#fff"; 
-      } else { 
-        td.style.background="#c0392b"; td.style.color="#fff"; ok=false; 
+    let ok=true; 
+    const rows=document.getElementById(id).rows;
+    for(let i=0;i<4;i++){
+      for(let j=0;j<4;j++){
+        const td=rows[i].cells[j];
+        const rawText = td.innerText.trim();
+        const v = parseInt(rawText);
+        
+        if(!isNaN(v) && v === ans[i][j]){ 
+          td.style.background="#4f71be"; 
+          td.style.color="#fff"; 
+        } else { 
+          td.style.background="#c0392b"; 
+          td.style.color="#fff"; 
+          ok=false; 
+        }
       }
     }
     return ok;

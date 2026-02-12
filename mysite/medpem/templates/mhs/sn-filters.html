@@ -13,7 +13,7 @@
   margin-bottom: 22px;
   box-shadow: 0 6px 18px rgba(16,32,58,0.03);
 }
-  .card-section-header {
+.card-section-header {
   padding: 14px 18px;
   font-size: 20px;
   font-weight: 800;
@@ -77,29 +77,29 @@
 }
 
 .conv-controls {
-    display:flex;
-    gap:8px;
-    justify-content:center;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-top:10px;
-  }
-  .conv-controls button {
-    padding:8px 14px;
-    border-radius:8px;
-    border:none; 
-    cursor:pointer;
-    background:#3b7dd8; 
-    color:#fff;
-    font-weight:700;
-    font-family: inherit;
-    transition: opacity 0.2s;
-  }
-  .conv-controls button.btn-outline {
-    background:#fff;
-    color:#3b7dd8;
-    border:1px solid rgba(16,32,58,0.15);
-  }
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.conv-controls button {
+  padding:8px 14px;
+  border-radius:8px;
+  border:none; 
+  cursor:pointer;
+  background:#3b7dd8; 
+  color:#fff;
+  font-weight:700;
+  font-family: inherit;
+  transition: opacity 0.2s;
+}
+.conv-controls button.btn-outline {
+  background:#fff;
+  color:#3b7dd8;
+  border:1px solid rgba(16,32,58,0.15);
+}
 
 .calc-wrapper { width: 100%; max-width: 950px; margin: 15px auto; text-align: center; }
 .calc-title { font-weight: 800; font-size: 14px; color: #0b2540; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
@@ -243,7 +243,7 @@ input[type=number] {
     </p>
 
     <figure style="margin:20px 0; margin-bottom: 70px">
-      <img src="{% static 'assets/img/konten/c6.png' %}" style="display:block; margin:auto; width:50%;">
+      <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:50%;">
     </figure>
     <div class="sim-wrapper">
       <div class="sim-container">
@@ -303,14 +303,14 @@ input[type=number] {
     <div>Aktivitas 2</div>
   </div>
   <div class="card-section-body">
-    <p>Diberikan citra <em>grayscale</em> berukuran 4x4 berikut:</p>
+    <p>Diberikan sebuah citra <em>grayscale</em> berukuran 4×4 seperti pada gambar berikut:</p>
 
     <figure style="margin:20px 0;">
       <img src="{% static 'assets/img/konten/soal.png' %}" style="display:block; margin:auto; width:50%;">
     </figure>
 
     <p style="text-align: justify;margin-bottom: 30px;"> 
-      Dengan menggunakan <em>padding constant</em> 90, lengkapilah hasil <em>filter</em> berikut!
+      Dengan menggunakan <em>constant padding</em> bernilai 90, tentukan dan lengkapi matriks hasil <em>filtering</em> yang diperoleh.
     </p>
 
 
@@ -396,8 +396,10 @@ input[type=number] {
     Array.from(inTbl.querySelectorAll("td")).forEach(td => td.classList.remove("highlight"));
     for(let i=r; i<r+3; i++) {
       for(let j=c; j<c+3; j++) {
-        inTbl.rows[i].cells[j].classList.add("highlight");
-        vals.push(parseInt(inTbl.rows[i].cells[j].textContent));
+        if(inTbl.rows[i] && inTbl.rows[i].cells[j]) {
+          inTbl.rows[i].cells[j].classList.add("highlight");
+          vals.push(parseInt(inTbl.rows[i].cells[j].textContent));
+        }
       }
     }
     let sorted = [...vals].sort((a,b)=>a-b);
@@ -529,40 +531,90 @@ input[type=number] {
 
   checkQuizBtn.onclick = () => {
     const minAns = calculateAnswers('min'), maxAns = calculateAnswers('max'), medAns = calculateAnswers('median');
-    let isAllCorrect = true, anyEmpty = false;
-    const validateTable = (tbl, ansKey) => {
-      tbl.querySelectorAll("input").forEach((inp) => {
-        const r = parseInt(inp.dataset.row), c = parseInt(inp.dataset.col);
-        if(inp.value.trim() === "") anyEmpty = true;
-        if(parseInt(inp.value) === ansKey[r][c]){
-          inp.classList.add("result-correct"); inp.classList.remove("result-wrong");
-        } else {
-          inp.classList.add("result-wrong"); inp.classList.remove("result-correct");
-          isAllCorrect = false;
+    let isAllCorrect = true;
+    let anyEmpty = false;
+    const allInputs = [...minTable.querySelectorAll("input"), ...maxTable.querySelectorAll("input"), ...medianTable.querySelectorAll("input")];
+
+    for (let inp of allInputs) {
+        if (inp.value.trim() === "") {
+            anyEmpty = true;
+            break;
         }
-      });
+    }
+
+    if (anyEmpty) {
+        Swal.fire({
+            title: 'Belum Lengkap!',
+            text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.',
+            icon: 'warning',
+            confirmButtonColor: '#f39c12'
+        });
+        return;
+    }
+
+    const validateTable = (tbl, ansKey) => {
+        tbl.querySelectorAll("input").forEach((inp) => {
+            const r = parseInt(inp.dataset.row), c = parseInt(inp.dataset.col);
+            const val = inp.value.trim();
+            if (parseInt(val) === ansKey[r][c]) {
+                inp.classList.add("result-correct");
+                inp.classList.remove("result-wrong");
+            } else {
+                inp.classList.add("result-wrong");
+                inp.classList.remove("result-correct");
+                isAllCorrect = false;
+            }
+        });
     };
-    validateTable(minTable, minAns); validateTable(maxTable, maxAns); validateTable(medianTable, medAns);
-    if(anyEmpty) { Swal.fire('Belum Lengkap!', 'Silakan isi semua kolom jawaban.', 'warning'); return; }
-    if(isAllCorrect){
-      fetch("/api/update-progres/", {
-        method: "POST",
-        headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: 'sn-filters' })
-      }).then(() => {
-        Swal.fire({ title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.', icon: 'success', confirmButtonColor: '#3b7dd8' });
-        if(nextMaterialBtn) { nextMaterialBtn.classList.remove('btn-locked'); nextMaterialBtn.style.opacity = "1"; nextMaterialBtn.style.pointerEvents = "auto"; }
-      });
-    } else { Swal.fire('Coba Lagi!', 'Masih ada jawaban yang salah, periksa kembali.', 'error'); }
+
+    validateTable(minTable, minAns);
+    validateTable(maxTable, maxAns);
+    validateTable(medianTable, medAns);
+
+    if (isAllCorrect) {
+        fetch("/api/update-progres/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ slug: 'sn-filters' })
+        }).then(() => {
+            Swal.fire({
+                title: 'Luar Biasa!',
+                text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
+                icon: 'success',
+                confirmButtonColor: '#3b7dd8'
+            });
+            if (nextMaterialBtn) {
+                nextMaterialBtn.classList.remove('btn-locked');
+                nextMaterialBtn.style.opacity = "1";
+                nextMaterialBtn.style.pointerEvents = "auto";
+            }
+        });
+    } else {
+        Swal.fire({
+            title: 'Coba Lagi!',
+            text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.',
+            icon: 'error',
+            confirmButtonColor: '#c0392b'
+        });
+    }
   };
 
   resetResultsBtn.onclick = () => {
     [minTable, maxTable, medianTable].forEach(t => {
-      t.querySelectorAll("input").forEach(inp => { inp.value = ""; inp.classList.remove("result-correct", "result-wrong"); });
+        t.querySelectorAll("input").forEach(inp => {
+            inp.value = "";
+            inp.classList.remove("result-correct", "result-wrong");
+        });
     });
   };
 
-  renderPaddedTable(); renderResultTable(minTable, 'min'); renderResultTable(maxTable, 'max'); renderResultTable(medianTable, 'median');
+  renderPaddedTable();
+  renderResultTable(minTable, 'min');
+  renderResultTable(maxTable, 'max');
+  renderResultTable(medianTable, 'median');
 })();
 </script>
 {% endblock %}

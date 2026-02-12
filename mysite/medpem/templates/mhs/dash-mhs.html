@@ -89,10 +89,10 @@
   </div>
 
   <div class="col-md-4">
-    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_1 and 'ringkasan-citra' not in selesai_slugs %}opacity-50 locked{% endif %}">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_1 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
-        <div class="icon-box" style="background: {% if lulus_kuis.kuis_1 or 'ringkasan-citra' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_1 and 'ringkasan-citra' not in selesai_slugs %}bi-lock-fill{% else %}bi-2-square{% endif %}"></i>
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_1 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_1 %}bi-lock-fill{% else %}bi-2-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'pengertian_spatial' %}" class="text-decoration-none text-dark stretched-link">
@@ -105,10 +105,10 @@
   </div>
 
   <div class="col-md-4">
-    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_2 and 'ringkasan2' not in selesai_slugs %}opacity-50 locked{% endif %}">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_2 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
-        <div class="icon-box" style="background: {% if lulus_kuis.kuis_2 or 'ringkasan2' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_2 and 'ringkasan2' not in selesai_slugs %}bi-lock-fill{% else %}bi-3-square{% endif %}"></i>
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_2 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_2 %}bi-lock-fill{% else %}bi-3-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'k_konvolusi' %}" class="text-decoration-none text-dark stretched-link">
@@ -121,10 +121,10 @@
   </div>
 
   <div class="col-md-4">
-    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_3 and 'ringkasan3' not in selesai_slugs %}opacity-50 locked{% endif %}">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_3 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
-        <div class="icon-box" style="background: {% if lulus_kuis.kuis_3 or 'ringkasan3' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_3 and 'ringkasan3' not in selesai_slugs %}bi-lock-fill{% else %}bi-4-square{% endif %}"></i>
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_3 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_3 %}bi-lock-fill{% else %}bi-4-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'sl_filters' %}" class="text-decoration-none text-dark stretched-link">
@@ -137,10 +137,10 @@
   </div>
 
   <div class="col-md-4">
-    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_4 and 'ringkasan4' not in selesai_slugs %}opacity-50 locked{% endif %}">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_4 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
-        <div class="icon-box" style="background: {% if lulus_kuis.kuis_4 or 'ringkasan4' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_4 and 'ringkasan4' not in selesai_slugs %}bi-lock-fill{% else %}bi-5-square{% endif %}"></i>
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_4 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_4 %}bi-lock-fill{% else %}bi-5-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'sharp_citra' %}" class="text-decoration-none text-dark stretched-link">
@@ -153,10 +153,10 @@
   </div>
 
   <div class="col-md-4">
-    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_5 and 'ringkasan5' not in selesai_slugs %}opacity-50 locked{% endif %}">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_5 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
-        <div class="icon-box" style="background: {% if lulus_kuis.kuis_5 or 'ringkasan5' in selesai_slugs %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_5 and 'ringkasan5' not in selesai_slugs %}bi-lock-fill{% else %}bi-6-square{% endif %}"></i>
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_5 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_5 %}bi-lock-fill{% else %}bi-6-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'gray_biner' %}" class="text-decoration-none text-dark stretched-link">

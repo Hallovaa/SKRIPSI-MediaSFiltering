@@ -247,7 +247,7 @@
     <div>Aktivitas 1</div>
   </div>
   <div class="card-section-body">
-    <p class="muted">Pilih jawaban yang paling tepat. Jika salah — coba lagi sampai benar.</p>
+    <p class="muted">Pilih jawaban yang paling tepat. Jika jawaban belum tepat, silakan coba lagi sampai benar.</p>
     <div id="question-counter" style="font-weight:700; margin-bottom:12px;">Soal 1 / 5</div>
     
     <div id="question-area">
@@ -281,31 +281,31 @@
       q: "Tujuan utama penggunaan spatial filtering dalam pemrosesan citra digital adalah ….",
       opts: ["mengubah ukuran citra","mengonversi citra RGB menjadi grayscale","memperkecil resolusi citra","meningkatkan kualitas citra dengan mengolah nilai piksel secara langsung","menyimpan citra dalam format tertentu"],
       ans: "meningkatkan kualitas citra dengan mengolah nilai piksel secara langsung",
-      explain: "Spatial filtering bertujuan meningkatkan kualitas citra dengan memproses nilai piksel secara langsung pada domain spasial."
+      explain: "spatial filtering bertujuan meningkatkan kualitas citra dengan memproses nilai piksel secara langsung pada domain spasial."
     },
     {
       q: "Proses pemrosesan citra yang bekerja langsung pada nilai piksel dan piksel di sekitarnya disebut ….",
       opts: ["neighbourhood operation","frequency transformation","histogram equalization","image compression","thresholding"],
       ans: "neighbourhood operation",
-      explain: "Neighbourhood operation adalah proses yang memanfaatkan nilai piksel pusat dan piksel-piksel tetangganya."
+      explain: "neighbourhood operation adalah proses yang memanfaatkan nilai piksel pusat dan piksel-piksel tetangganya."
     },
     {
       q: "Proses spatial filtering dapat dikatakan sebagai operasi langsung pada citra karena ….",
       opts: ["tidak melibatkan perhitungan matematis","tidak membutuhkan kernel","bekerja langsung dengan nilai piksel asli dalam matriks citra","tidak memperhatikan posisi piksel","selalu dilakukan dalam domain frekuensi"],
       ans: "bekerja langsung dengan nilai piksel asli dalam matriks citra",
-      explain: "Spatial filtering bekerja langsung pada nilai piksel asli di dalam matriks citra, bukan pada hasil transformasi."
+      explain: "spatial filtering bekerja langsung pada nilai piksel asli di dalam matriks citra, bukan pada hasil transformasi."
     },
     {
       q: "Domain yang digunakan dalam proses spatial filtering adalah ….",
       opts: ["domain frekuensi","domain waktu","domain transformasi","domain biner","domain spasial"],
       ans: "domain spasial",
-      explain: "Spatial filtering dilakukan pada domain spasial, yaitu dengan memproses nilai piksel berdasarkan posisinya."
+      explain: "spatial filtering dilakukan pada domain spasial, yaitu dengan memproses nilai piksel berdasarkan posisinya."
     },
     {
       q: "Masalah citra yang tampak dipenuhi bintik-bintik kecil seperti debu disebut ….",
       opts: ["blur","noise","kontras","threshold","segmentasi"],
       ans: "noise",
-      explain: "Noise adalah gangguan pada citra yang tampak sebagai bintik-bintik acak seperti debu atau titik hitam-putih."
+      explain: "noise adalah gangguan pada citra yang tampak sebagai bintik-bintik acak seperti debu atau titik hitam-putih."
     }
   ];
 
@@ -338,13 +338,13 @@
         if (opt === item.ans) {
           btn.style.background = '#e9f2ff';
           btn.style.borderColor = '#3b7be3';
-          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar!</div><div class="muted">Benar — ${item.explain}</div>`;
+          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar! — ${item.explain}</div>`;
           btnNextQuiz.disabled = false;
           Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
         } else {
           btn.style.background = '#fff0f0';
           btn.style.borderColor = '#f5c6c6';
-          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Salah — coba lagi.</div>';
+          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Belum tepat, coba lagi.</div>';
         }
       };
       optsCont.appendChild(btn);
@@ -381,7 +381,7 @@
       if (data.status === 'success') {
         Swal.fire({
           title: 'Luar Biasa!',
-          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
+          text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
           icon: 'success',
           confirmButtonText: 'OK',
           confirmButtonColor: '#3b7be3'
@@ -390,7 +390,6 @@
           btnNavNext.style.opacity = '1';
           btnNavNext.style.pointerEvents = 'auto';
           
-          feedback.innerHTML = '<b style="color:blue">Aktivitas Selesai. Anda tetap bisa mencoba kuis lagi.</b>';
           
           const sidebarLink = document.querySelector(`a[href*="spatial_frequency"]`);
           if (sidebarLink) {
