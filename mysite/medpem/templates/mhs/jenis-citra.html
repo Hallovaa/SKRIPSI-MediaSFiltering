@@ -133,9 +133,9 @@
     <p style="text-align: justify; text-indent: 30px;">
       <strong>Citra berwarna</strong> adalah citra yang setiap pikselnya menyimpan informasi warna melalui 
       <strong>tiga channel</strong> utama, yaitu R (<em>Red</em>/merah), G (<em>Green</em>/hijau), dan 
-      B (<em>Blue</em>/biru), yang sering disebut sebagai <em>RGB</em>. Setiap piksel pada citra <strong>RGB</strong> tidak hanya menyimpan satu nilai, tetapi menyimpan tiga 
+      B (<em>Blue</em>/biru), yang sering disebut sebagai RGB. Setiap piksel pada citra <strong>RGB</strong> tidak hanya menyimpan satu nilai, tetapi menyimpan tiga 
       nilai sekaligus yang menunjukkan seberapa kuat warna merah, hijau, dan biru pada piksel tersebut. 
-      Citra <em>RGB</em> dapat dibayangkan sebagai sebuah matriks besar, di mana setiap kotaknya 
+      Citra RGB dapat dibayangkan sebagai sebuah matriks besar, di mana setiap kotaknya 
       merepresentasikan <strong>satu piksel yang memiliki tiga informasi warna di dalamnya</strong> seperti 
       ditunjukkan pada Gambar A.4.
     </p>
@@ -148,7 +148,7 @@
     </figure>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/5A.png' %}" style="display:block; margin:auto; width:90%;">
+      <img src="{% static 'assets/img/konten/5A.png' %}" style="display:block; margin:auto; width:95%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
         Gambar A.5 Contoh citra RGB
       </figcaption>
@@ -205,7 +205,7 @@
 
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      <strong>Citra grayscale</strong> merupakan citra digital yang hanya memiliki 
+      <strong>Citra <em>grayscale</em> </strong> merupakan citra digital yang hanya memiliki 
       <strong>satu <em>channel</em></strong>, berbeda dengan citra berwarna RGB yang memiliki 
       tiga <em>channel</em>. Karena hanya <strong>menyimpan satu nilai pada setiap piksel</strong>, 
       citra <em>grayscale</em> lebih hemat dalam penggunaan ruang penyimpanan dan lebih sederhana untuk diproses. 
@@ -233,8 +233,8 @@
       <div class="sub-card-header"><span>Citra <em>Grayscale</em> dan Nilai Pikselnya</span></div>
       <div class="sub-card-body">
         <p style="text-align: justify; text-indent: 30px;">
-          Perhatikan Gambar A.9 yang menampilkan citra <em>grayscale</em> berukuran 256 × 256 piksel dan citra hasil 
-          <em>resize</em> menjadi ukuran 8 × 8 piksel. Dengan ukuran citra yang lebih kecil, nilai matriks 
+          Perhatikan Gambar A.9 yang menampilkan citra <em>grayscale</em> berukuran 256×256 piksel dan citra hasil 
+          <em>resize</em> menjadi ukuran 8×8 piksel. Dengan ukuran citra yang lebih kecil, nilai matriks 
           piksel dan intensitas keabuan dapat diamati dengan lebih mudah. Hal ini membantu dalam memahami 
           bagaimana nilai numerik pada matriks citra berhubungan langsung dengan tampilan visual citra 
           <em>grayscale</em>.
@@ -263,21 +263,21 @@
     <br>
 
     <p style="text-align: justify; text-indent: 30px;">
-      <strong>Citra <em>grayscale</em> juga dikenal sebagai 8-bit image karena setiap pikselnya disimpan menggunakan 8 bit data</strong>. 
-      Artinya setiap piksel memiliki 256 kemungkinan nilai intensitas. Sebagai contoh piksel dengan nilai intensitas 27 
-      akan tampak sangat gelap, sedangkan piksel dengan nilai 210 akan tampak jauh lebih terang, seperti ditunjukkan pada Gambar A.8. 
+      <strong>Citra <em>grayscale</em> juga dikenal sebagai 8-bit <em>image</em> karena setiap pikselnya disimpan menggunakan 8 bit data</strong>. 
+      Artinya setiap piksel memiliki 256 kemungkinan nilai intensitas. Sebagai contoh, seperti yang ditunjukkan pada Gambar A.8, piksel dengan nilai intensitas 27 akan tampak sangat gelap, sedangkan piksel dengan nilai 210 akan terlihat jauh lebih terang.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Representasi ini meniru cara mata manusia membedakan tingkat terang dan gelap, karena dalam melihat suatu objek, 
-      mata manusia lebih peka terhadap perbedaan kecerahan dibandingkan perbedaan warna. Oleh sebab itu, citra <em>grayscale</em> sering 
-      digunakan dalam berbagai aplikasi pengolahan citra digital yang memerlukan analisis bentuk dan intensitas cahaya. 
+      Tampilan ini meniru cara mata manusia membedakan tingkat terang dan gelap, karena dalam melihat suatu objek, 
+      mata manusia sangat peka terhadap perubahan kecerahan, terutama saat mengenali bentuk dan detail. Oleh sebab 
+      itu, citra <em>grayscale</em> sering digunakan dalam berbagai aplikasi pemrosesan citra digital yang memerlukan 
+      analisis bentuk, tekstur, dan intensitas cahaya.
     </p>
 
     <figure style="margin:20px 0;">
       <img src="{% static 'assets/img/konten/10A.png' %}" style="display:block; margin:auto; width:80%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
-        Gambar A.10 Contoh citra <em><em>grayscale</em></em> 
+        Gambar A.10 Contoh citra <em>grayscale</em> 
       </figcaption>
     </figure>
 

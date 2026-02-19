@@ -201,26 +201,20 @@
 
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Secara umum terdapat dua domain utama yang digunakan dalam pemrosesan citra yaitu 
-      <em>Spatial Domain</em> dan <em>Frequency Domain</em>. 
-      <strong>Pada <em>Spatial Domain</em> (<em>Spatial Filtering</em>) pemrosesan citra dilakukan langsung 
-      pada piksel-piksel citra asli dengan cara mengubah nilai intensitas setiap piksel</strong>. 
-      Salah satu teknik yang digunakan pada domain ini adalah <strong>konvolusi</strong>, yaitu proses 
-      menghitung nilai baru suatu piksel berdasarkan nilai piksel tersebut dan piksel tetangganya 
-      menggunakan sebuah <em>kernel</em>. Melalui proses ini citra dapat diolah untuk tujuan tertentu 
-      seperti penghalusan (<em>smoothing</em>), penajaman (<em>sharpening</em>), dan deteksi tepi 
-      (<em>edge detection</em>). Teknik ini bekerja dengan memperhatikan piksel di sekitar suatu piksel.
+      Secara umum terdapat dua domain utama dalam pemrosesan citra, yaitu <em>spatial domain</em> dan <em>frequency domain</em>. 
+      <strong>Pada <em>spatial domain</em>, pemrosesan citra dilakukan langsung pada piksel-piksel citra dengan cara mengubah 
+      nilai intensitasnya</strong>. Salah satu teknik yang digunakan pada domain ini adalah <strong>neighboorhod operation</strong>. 
+      Melalui teknik tersebut, citra dapat diolah untuk tujuan tertentu seperti penghalusan (<em>smoothing</em>), 
+      penajaman (<em>sharpening</em>), dan deteksi tepi (<em>edge detection</em>). 
     </p>
 
     <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
-      Berbeda dengan <em>Spatial Domain</em>, pada <strong><em>Frequency Domain</em></strong> citra tidak 
-      diolah langsung berdasarkan pikselnya. Citra terlebih dahulu 
-      <strong>diubah ke dalam bentuk frekuensi</strong> menggunakan transformasi matematis seperti 
-      <em>Fast Fourier Transform</em> (<em>FFT</em>). Setelah berada di domain frekuensi, proses penyaringan 
-      dilakukan dengan menggunakan <em>frequency filter</em>, misalnya <em>low-pass filter</em> untuk 
-      perataan dan <em>high-pass filter</em> untuk penajaman. 
-      <strong>Hasil dari proses ini kemudian dikembalikan lagi ke domain spasial</strong> melalui 
-      transformasi balik agar dapat ditampilkan sebagai citra akhir. Perbedaan proses keduanya bisa 
+      Berbeda dengan <em>spatial domain</em>, pada <em>frequency domain</em> citra tidak diolah langsung berdasarkan nilai pikselnya. 
+      Citra terlebih dahulu diubah ke dalam bentuk frekuensi menggunakan transformasi matematis seperti 
+      <em>Fast Fourier Transform</em> (FFT). Setelah berada pada domain frekuensi, proses penyaringan dilakukan 
+      menggunakan <em>filter</em> frekuensi, misalnya <em>low-pass filter</em> untuk perataan dan <em>high-pass filter</em> untuk penajaman. 
+      <strong>Hasil pemrosesan tersebut kemudian dikembalikan ke <em>spatial domain</em></strong> melalui transformasi balik 
+      (<em>inverse transformation</em>) agar dapat ditampilkan sebagai citra akhir. Perbedaan proses keduanya bisa 
       dilihat pada Gambar B.5 berikut:
     </P>
 
