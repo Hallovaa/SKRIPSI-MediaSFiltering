@@ -349,13 +349,11 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Salah satu teknik utama yang digunakan pada <strong><em>Spatial Domain</em></strong> adalah 
-      <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) yang memanfaatkan nilai 
-      piksel pusat dan piksel-piksel di sekitarnya</strong>. Konvolusi digunakan karena melihat satu piksel 
-      saja tidak cukup untuk memahami isi sebuah gambar. Sebuah piksel hanya menunjukkan seberapa terang 
-      atau gelap titik tersebut, tetapi tidak memberi tahu apa yang ada di sekitarnya. Jika kita hanya 
-      melihat satu titik, kita tidak bisa memastikan apakah titik tersebut bagian dari suatu objek, bagian 
-      latar belakang, atau hanya gangguan kecil pada gambar.
+      Salah satu teknik utama yang digunakan pada <strong><em>spatial domain</em></strong> adalah 
+      <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) yang memanfaatkan nilai piksel pusat dan piksel-piksel di sekitarnya</strong>. 
+      Konvolusi digunakan karena melihat satu piksel saja tidak cukup untuk memahami isi sebuah gambar. 
+      Sebuah piksel hanya menunjukkan seberapa terang atau gelap titik tersebut, tetapi tidak memberi tahu apa yang ada di sekitarnya. 
+      Jika kita hanya melihat satu titik, kita tidak bisa memastikan apakah titik tersebut bagian dari suatu objek, bagian latar belakang, atau hanya gangguan kecil pada gambar.
     </p>
 
     <figure style="margin:20px 0;">
@@ -366,33 +364,23 @@
     </figure>
 
   <p style="text-align: justify; text-indent: 30px;">
-    Pada Gambar C.1 terlihat bahwa 
-    <strong>satu nilai piksel saja belum cukup untuk memahami sebuah gambar, sehingga perlu diperhatikan 
-    piksel-piksel di sekitarnya</strong>. Piksel yang berada di tengah area (ditandai dengan warna biru) 
-    disebut sebagai piksel pusat, sedangkan piksel-piksel di sekitarnya disebut piksel tetangga.
+    Pada Gambar C.1 terlihat bahwa <strong>satu nilai piksel saja belum cukup untuk memahami sebuah gambar, sehingga perlu diperhatikan piksel-piksel di sekitarnya</strong>. 
+    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel-piksel di sekitarnya disebut piksel tetangga. 
+    Dengan membandingkan nilai piksel pusat dan piksel-piksel tetangganya barulah dapat diketahui bahwa pada area tersebut terdapat perbedaan tingkat gelap dan terang yang cukup kontras, sehingga menandakan adanya perubahan intensitas yang tajam. 
+    Perubahan intensitas yang tajam inilah yang menunjukkan bahwa area tersebut merupakan area tepi (<em>edge</em>) pada citra.
   </p>
 
-  <p style="text-align: justify; text-indent: 30px;">
-    Dengan membandingkan nilai piksel pusat dan piksel-piksel tetangganya, barulah dapat diketahui bahwa 
-    pada area tersebut terdapat perbedaan tingkat gelap dan terang yang cukup kontras, sehingga 
-    menandakan adanya perubahan intensitas yang tajam. Perubahan intensitas yang tajam inilah yang 
-    menunjukkan bahwa area tersebut merupakan area tepi (<em>edge</em>) pada citra.
-  </p>
 
   <p style="text-align: justify; text-indent: 30px;">
     <strong><em>Filtering</em></strong> bertujuan untuk menghasilkan citra sesuai dengan kebutuhan. 
     Dengan menggunakan konvolusi, <em>filtering</em> dapat menghasilkan citra baru yang 
-    <strong>lebih halus, lebih tajam, atau dengan tepi objek yang lebih jelas</strong>. Pada proses 
-    konvolusi digunakan sebuah <strong><em>kernel</em></strong>, yaitu 
-    <strong>matriks kecil berisi nilai bobot</strong> yang dapat dibayangkan seperti jendela kecil yang 
-    digeser di atas gambar dari satu piksel ke piksel lainnya.
+    <strong>lebih halus, lebih tajam, atau dengan tepi objek yang lebih jelas</strong>. Pada proses konvolusi digunakan sebuah <strong><em>kernel</em></strong>, yaitu 
+    <strong>matriks kecil berisi nilai bobot</strong> yang dapat dibayangkan seperti jendela kecil yang digeser di atas gambar dari satu piksel ke piksel lainnya.
   </p>
 
   <p style="text-align: justify; text-indent: 30px;">
-    Saat <em>kernel</em> digeser, nilai piksel pusat dan piksel-piksel di sekitarnya dikalikan dengan bobot 
-    <em>kernel</em>, lalu hasilnya dijumlahkan. Hasil perhitungan ini menjadi nilai baru bagi piksel pusat. 
-    Proses yang sama diterapkan pada seluruh citra sehingga tampilan gambar berubah sesuai dengan tujuan 
-    <em>filtering</em>.
+    Saat <em>kernel</em> digeser, nilai piksel pusat dan piksel-piksel di sekitarnya dikalikan dengan bobot pada <em>kernel</em>, kemudian seluruh hasil perkalian tersebut dijumlahkan untuk menghasilkan nilai baru bagi piksel pusat. 
+    Proses ini diterapkan pada seluruh citra sehingga tampilan gambar berubah sesuai dengan tujuan <em>filtering</em>. 
   </P>
   </div>
 </section>
@@ -404,11 +392,8 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      <strong>Nilai bobot pada <em>kernel</em> mengatur seberapa besar peran setiap piksel tetangga dalam 
-      menentukan nilai piksel pusat</strong>. Setiap nilai piksel di sekitar pusat dikalikan dengan bobot 
-      <em>kernel</em>, kemudian seluruh hasil perkalian tersebut dijumlahkan untuk menghasilkan nilai 
-      piksel baru. <strong>Perbedaan bobot inilah yang menyebabkan hasil <em>filtering</em> dapat 
-      berbeda-beda</strong>.
+      <strong>Besarnya nilai bobot pada <em>kernel</em> menentukan seberapa besar pengaruh setiap piksel tetangga terhadap piksel pusat</strong>. 
+      Perbedaan susunan dan nilai bobot inilah yang menyebabkan hasil <em>filtering</em> dapat berbeda-beda.
     </p>
 
     <div class="kernel-wrapper">
@@ -440,19 +425,17 @@
     </div>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada dua jenis <em>kernel</em> di atas memiliki ukuran yang sama yaitu 3×3, tetapi memiliki nilai 
-      bobot yang berbeda. Nilai bobot inilah yang menentukan bagaimana piksel di sekitar ikut 
-      dihitung. Pada <em>Laplacian kernel</em> nilai bobotnya dibuat agar perbedaan antara piksel gelap dan 
-      terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk menonjolkan tepi gambar. 
-      Sebaliknya, pada <em>Gaussian kernel</em> nilai bobotnya dibuat lebih merata sehingga nilai piksel di 
-      sekitar saling diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang.
+      Pada dua jenis <em>kernel</em> di atas memiliki ukuran yang sama yaitu 3×3, tetapi memiliki nilai bobot yang berbeda. 
+      Nilai bobot inilah yang menentukan bagaimana piksel di sekitar ikut dihitung. 
+      Pada <em>kernel Laplacian</em> nilai bobotnya dibuat agar perbedaan antara piksel gelap dan terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk menonjolkan tepi gambar. 
+      Sebaliknya, pada <em>kernel Gaussian</em> nilai bobotnya dibuat lebih merata sehingga nilai piksel di sekitar saling diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang. 
+      Dengan demikian, meskipun ukuran <em>kernel</em> sama, perbedaan nilai bobot di dalam <em>kernel</em> menghasilkan tampilan citra yang berbeda.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      <strong>Selain nilai bobot, ukuran <em>kernel</em> juga menentukan berapa banyak piksel tetangga yang 
-      terlibat dalam perhitungan</strong>. Karena <em>kernel</em> diletakkan tepat di atas satu piksel, maka 
-      ukurnya harus ganjil, seperti 3×3 atau 5×5 agar terdapat satu piksel pusat yang jelas. Piksel pusat 
-      inilah yang nilainya diperbarui melalui proses konvolusi.
+      <strong>Selain nilai bobot, ukuran <em>kernel</em> juga menentukan berapa banyak piksel tetangga yang terlibat dalam perhitungan</strong>. 
+      Karena <em>kernel</em> diletakkan tepat di atas satu piksel maka ukurannya harus ganjil, seperti 3×3 atau 5×5 agar terdapat satu piksel pusat yang jelas. 
+      Piksel pusat inilah yang nilainya diperbarui melalui proses konvolusi.
     </p>
   </div>
 </section>
@@ -465,10 +448,13 @@
 
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Pada umumnya <em>kernel</em> berukuran 3×3 paling sering digunakan karena sederhana dan sudah cukup 
-      untuk melihat perubahan gelap dan terang di sekitar piksel pusat. Dengan <em>kernel</em> ini, satu 
-      piksel pusat akan dihitung bersama delapan piksel tetangganya untuk menghasilkan nilai baru.
+      Pada umumnya, <em>kernel</em> berukuran 3×3 paling sering digunakan karena bentuknya sederhana dan sudah cukup untuk melihat perubahan gelap dan terang di sekitar satu piksel. 
+      Dengan <em>kernel</em> 3×3, satu piksel pusat akan dihitung bersama delapan piksel di sekitarnya untuk menghasilkan satu nilai baru pada citra hasil.
     </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Proses perhitungan konvolusi dapat dinyatakan secara matematis dengan persamaan berikut:
+    </P>
 
     <p style="text-align: center; font-size: 30px;">
     \[
@@ -487,18 +473,17 @@
     </ul>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada proses konvolusi, setiap bobot pada <em>kernel</em> \( h(j,k) \) dikalikan dengan nilai piksel citra yang berada pada posisi 
-      yang sesuai, yaitu \( f(x-j,y-k) \). Setelah semua nilai dikalikan, hasilnya dijumlahkan untuk mendapatkan nilai piksel baru pada posisi \( g(x,y) \).
+      Pada proses konvolusi, setiap bobot pada <em>kernel</em> \( h(j,k) \) dikalikan dengan nilai piksel citra yang berada pada posisi yang sesuai, yaitu \( f(x-j,y-k) \). 
+      Setelah semua nilai dikalikan, hasilnya dijumlahkan untuk mendapatkan nilai piksel baru pada posisi \( g(x,y) \). 
+      Bentuk \( (x-j, y-k) \) menunjukkan bahwa <em>kernel</em> dibalik atau diputar 180° sebelum dikalikan dengan citra. 
+      Artinya, bobot yang berada di kiri atas <em>kernel</em> akan dikalikan dengan piksel citra yang berada di kanan bawah terhadap piksel pusat, dan sebaliknya.
     </p>
 
-    <p style="text-align: justify; text-indent: 30px;">
-      Bentuk \( x-j \) dan \( y-k \) menunjukkan bahwa <em>kernel</em> dibalik atau diputar 180° sebelum dikalikan dengan citra. Artinya, bobot yang 
-      berada di kiri atas <em>kernel</em> akan dikalikan dengan piksel citra yang berada di kanan bawah terhadap piksel pusat, dan sebaliknya.
-    </p>
-
-    <p style="text-align: justify; text-indent: 30px; margin-bottom: 40px;">
-      Namun, jika <em>kernel</em> yang digunakan bersifat simetris, seperti <em>kernel</em> Laplacian atau Gaussian, maka proses pembalikan tersebut 
-      tidak akan mengubah bentuk maupun bobotnya. Hal ini karena susunan angkanya sudah seimbang terhadap pusatnya, sehingga tetap sama meskipun dibalik.
+    <p style="text-align: justify; text-indent: 30px; margin-bottom:30px">
+      Selain itu, terdapat operasi korelasi yang cara kerjanya hampir sama dengan konvolusi karena sama-sama menggunakan <em>kernel</em> yang digeser di atas citra. 
+      Perbedaannya terletak pada pembalikan <em>kernel</em>, di mana pada korelasi <em>kernel</em> tidak diputar 180° dan langsung digunakan sesuai posisinya. 
+      Namun, jika <em>kernel</em> yang digunakan bersifat simetris, seperti <em>kernel Laplacian</em> atau <em>Gaussian</em>, maka proses pembalikan tersebut tidak akan mengubah bentuk maupun bobotnya. 
+      Hal ini karena susunan angkanya sudah seimbang terhadap pusatnya, sehingga tetap sama meskipun dibalik.
     </p>
 
     <div class="sub-card">
@@ -507,8 +492,8 @@
 
         <div class="card-section-body">
           <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
-            Untuk memahami proses tersebut, arahkan kursor ke salah satu elemen pada matriks <em>kernel</em> atau citra di bawah ini. Amati bagaimana setiap 
-            bobot \( h(j,k) \) dikalikan dengan piksel \( f(x-j,y-k) \), karena dalam konvolusi <em>kernel</em> diputar 180° sebelum digunakan.
+            Untuk memahami proses tersebut, arahkan kursor ke salah satu elemen pada matriks <em>kernel</em> atau <em>input</em> citra di bawah ini. 
+            Amati bagaimana setiap bobot \( h(j,k) \) dikalikan dengan piksel \( f(x-j,y-k) \), karena dalam konvolusi <em>kernel</em> diputar 180° sebelum digunakan.
           </p>
 
           <div class="instruction">
@@ -644,12 +629,9 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px; margin-top: 30px">
-      Pada Gambar C.3 ditunjukkan hasil penerapan <em>Laplacian filter</em> dan <em>smoothing filter</em> pada 
-      citra <em>grayscale</em> menggunakan proses konvolusi. Ketika citra diproses menggunakan 
-      <em>Laplacian kernel</em>, bagian tepi dan garis pada citra terlihat lebih jelas dan tajam karena 
-      perbedaan nilai gelap dan terang diperkuat. Sebaliknya, ketika citra diproses menggunakan 
-      <em>smoothing kernel</em>, tampilan citra menjadi lebih halus karena nilai piksel di sekitarnya 
-      diratakan, sehingga gangguan kecil atau <em>noise</em> menjadi berkurang.
+      Pada Gambar C.3 ditunjukkan hasil penerapan <em>filter Laplacian</em> dan <em>filter smoothing</em> pada citra <em>grayscale</em> menggunakan proses konvolusi. 
+      Ketika citra diproses menggunakan <em>kernel Laplacian</em>, bagian tepi dan garis pada citra terlihat lebih jelas dan tajam karena perbedaan nilai gelap dan terang diperkuat. 
+      Sebaliknya, ketika citra diproses menggunakan <em>kernel smoothing</em>, tampilan citra menjadi lebih halus karena nilai piksel di sekitarnya diratakan, sehingga gangguan kecil atau <em>noise</em> menjadi berkurang.
     </p>
   </div>
 </section>
@@ -791,7 +773,7 @@ function fromKernel(r, c, val, name) {
 function fromPixel(coord, val, hName, hVal, label) {
     document.getElementById('sp-coord').innerText = `(${coord})`;
     document.getElementById('sp-label').innerText = label;
-    document.getElementById('sp-logic').innerText = "Posisi kernel setelah diputar 180°:";
+    document.getElementById('sp-logic').innerText = "Posisi kernel setelah diputar 180° maka:";
     document.getElementById('sp-math').innerText = `${hName} × f(${coord})`;
     document.getElementById('sp-res').innerText = `${hVal} × ${val} = ${hVal * val}`;
 }

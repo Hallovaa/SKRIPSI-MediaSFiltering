@@ -202,20 +202,17 @@
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
       Secara umum terdapat dua domain utama dalam pemrosesan citra, yaitu <em>spatial domain</em> dan <em>frequency domain</em>. 
-      <strong>Pada <em>spatial domain</em>, pemrosesan citra dilakukan langsung pada piksel-piksel citra dengan cara mengubah 
-      nilai intensitasnya</strong>. Salah satu teknik yang digunakan pada domain ini adalah <strong>neighboorhod operation</strong>. 
-      Melalui teknik tersebut, citra dapat diolah untuk tujuan tertentu seperti penghalusan (<em>smoothing</em>), 
-      penajaman (<em>sharpening</em>), dan deteksi tepi (<em>edge detection</em>). 
+      <strong>Pada <em>spatial domain</em>, pemrosesan citra dilakukan langsung pada piksel-piksel citra dengan cara mengubah nilai intensitasnya</strong>. 
+      Salah satu teknik yang digunakan pada domain ini adalah <strong><em>neighboorhod operation</em></strong>. 
+      Melalui teknik tersebut, citra dapat diolah untuk tujuan tertentu seperti penghalusan (<em>smoothing</em>), penajaman (<em>sharpening</em>), dan deteksi tepi (<em>edge detection</em>).
     </p>
 
     <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
-      Berbeda dengan <em>spatial domain</em>, pada <em>frequency domain</em> citra tidak diolah langsung berdasarkan nilai pikselnya. 
-      Citra terlebih dahulu diubah ke dalam bentuk frekuensi menggunakan transformasi matematis seperti 
-      <em>Fast Fourier Transform</em> (FFT). Setelah berada pada domain frekuensi, proses penyaringan dilakukan 
-      menggunakan <em>filter</em> frekuensi, misalnya <em>low-pass filter</em> untuk perataan dan <em>high-pass filter</em> untuk penajaman. 
-      <strong>Hasil pemrosesan tersebut kemudian dikembalikan ke <em>spatial domain</em></strong> melalui transformasi balik 
-      (<em>inverse transformation</em>) agar dapat ditampilkan sebagai citra akhir. Perbedaan proses keduanya bisa 
-      dilihat pada Gambar B.5 berikut:
+      Berbeda dengan <em>spatial domain</em>, pada <strong><em>frequency domain</em></strong> citra tidak diolah langsung berdasarkan nilai pikselnya. 
+      Citra terlebih dahulu <strong>diubah ke dalam bentuk frekuensi</strong> menggunakan transformasi matematis seperti <em>Fast Fourier Transform</em> (<em>FFT</em>). 
+      Setelah berada pada domain frekuensi, proses penyaringan dilakukan menggunakan filter frekuensi, misalnya <em>low-pass filter</em> untuk perataan dan <em>high-pass filter</em> untuk penajaman. 
+      <strong>Hasil pemrosesan tersebut kemudian dikembalikan ke <em>spatial domain</em></strong> melalui transformasi balik (<em>inverse transformation</em>) agar dapat ditampilkan sebagai citra akhir. 
+      Perbedaan proses keduanya bisa dilihat pada Gambar B.5 berikut:
     </P>
 
 
@@ -227,14 +224,12 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px; margin-top: 30px">
-      Seperti yang ditunjukkan pada Gambar B.5, pada <em>Spatial Domain</em> citra input diproses secara 
-      langsung menggunakan <em>spatial filter</em> untuk menghasilkan citra <em>output</em>. Proses ini 
-      dilakukan tanpa mengubah citra ke bentuk lain sehingga perubahan dapat langsung diterapkan pada nilai 
-      piksel citra. Sebaliknya, pada <em>Frequency Domain</em> citra harus melalui beberapa tahap, yaitu 
-      diubah terlebih dahulu ke domain frekuensi (<em>direct transformation</em>), kemudian dilakukan 
-      proses penyaringan menggunakan <em>frequency filter</em>, dan hasilnya dikembalikan lagi ke domain 
-      spasial melalui transformasi balik (<em>inverse transformation</em>) agar dapat ditampilkan sebagai 
-      citra <em>output</em>.
+      Seperti yang ditunjukkan pada Gambar B.5, pada <em>spatial domain</em> citra input diproses secara langsung 
+      menggunakan <em>spatial filter</em> untuk menghasilkan citra output. Proses ini dilakukan tanpa mengubah citra 
+      ke bentuk lain sehingga perubahan dapat langsung diterapkan pada nilai piksel citra. Sebaliknya, 
+      pada <em>frequency domain</em> citra harus melalui beberapa tahap, yaitu diubah terlebih dahulu ke domain frekuensi 
+      (<em>direct transformation</em>), kemudian dilakukan proses penyaringan menggunakan filter frekuensi, dan hasilnya 
+      dikembalikan lagi ke domain spasial melalui transformasi balik (<em>inverse transformation</em>) agar dapat ditampilkan sebagai citra output.
     </p>
   </div>
 </section>
