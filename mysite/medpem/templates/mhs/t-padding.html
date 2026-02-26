@@ -266,10 +266,9 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Pada proses konvolusi muncul masalah pada piksel yang berada di tepi (<em>border</em>) citra. Hal ini 
-      terjadi karena sebagian <em>kernel</em> keluar dari area citra, sehingga tidak semua koefisien 
-      konvolusi memiliki pasangan nilai piksel. Akibatnya, piksel di tepi tidak bisa dihitung nilainya 
-      secara penuh.
+      Pada proses konvolusi sering muncul masalah pada piksel yang berada di bagian tepi (<em>border</em>) citra. 
+      Hal ini terjadi ketika <em>kernel</em> digeser hingga ke tepi, sebagian <em>kernel</em> berada di luar area citra. 
+      Akibatnya tidak semua elemen <em>kernel</em> memiliki pasangan piksel untuk dikalikan, sehingga perhitungan konvolusi menjadi tidak lengkap.
     </p>
 
     <figure style="margin:20px 0;">
@@ -280,11 +279,10 @@
     </figure>
     
     <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
-      Masalah ini disebut juga sebagai masalah menggantung (lihat pada Gambar C.4), yaitu kondisi 
-      yang terjadi pada piksel-piksel di bagian tepi citra baik di sisi kiri, kanan, atas, maupun bawah. 
-      Solusi untuk masalah ini adalah dengan mengabaikan piksel-piksel di bagian tepi citra, 
-      sehingga area tersebut tidak dikonvolusi melainkan mempertahankan nilai piksel 
-      pada bagian tepi sebagaimana nilai aslinya.
+      Masalah ini disebut juga sebagai masalah menggantung (lihat pada Gambar C.4), yaitu kondisi yang 
+      terjadi pada piksel-piksel di bagian tepi citra, baik di sisi kiri, kanan, atas, maupun bawah. 
+      Salah satu cara mengatasinya adalah dengan hanya melakukan konvolusi pada bagian citra yang memiliki data lengkap, 
+      sementara piksel di bagian tepi tidak dihitung ulang. 
     </p>
 
     <figure style="margin:20px 0;">
@@ -295,23 +293,27 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
-      Dengan mengabaikan piksel-piksel di bagian tepi citra, perhitungan konvolusi hanya dilakukan 
-      pada bagian tengah gambar yang memiliki data lengkap. Piksel di tepi dibiarkan 
-      seperti nilai aslinya karena tidak memiliki cukup tetangga untuk dihitung. 
-      Dengan cara ini hasil akhirnya akan tampak seperti pada Gambar C.5.
+      Dengan mengabaikan piksel-piksel di bagian tepi citra, perhitungan konvolusi hanya dilakukan pada bagian tengah 
+      citra yang memiliki data lengkap. Piksel di tepi dibiarkan seperti nilai aslinya karena tidak memiliki cukup 
+      tetangga untuk dihitung. Dengan cara ini hasil akhirnya akan tampak seperti pada Gambar C.5.
     </p>
 
     <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
-      Selain itu, ada cara lain agar piksel di tepi citra tetap bisa diproses saat konvolusi, yaitu dengan 
-      <strong><em>padding</em></strong>. <strong><em>Padding</em> adalah teknik menambahkan baris dan kolom 
-      tambahan di tepi citra atas, bawah, kiri, dan kanan sebelum melakukan konvolusi atau 
-      <em>filtering</em></strong>.
+      Selain itu ada cara lain agar piksel di tepi citra tetap bisa diproses saat konvolusi, yaitu dengan <strong><em>Padding</em></strong>. 
+      Padding adalah teknik <strong>menambahkan baris dan kolom tambahan di tepi citra atas, bawah, kiri, dan kanan sebelum melakukan konvolusi atau <em>filtering</em></strong>.
     </p>
+  </div>
+</section>
 
+<section class="card-section" style="margin-bottom:18px;">
+  <div class="card-section-header">
+    <i class="bi bi-plus-slash-minus"></i>
+    <div>Bagaimana Menentukan Ukuran <em>Output</em> dan <em>Padding</em> pada Konvolusi?</div>
+  </div>
+  <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px; margin-top: 15px;">
-      Ukuran hasil konvolusi tidak ditentukan secara acak, tetapi bergantung pada ukuran citra, 
-      <em>kernel</em>, <em>padding</em>, dan <em>stride</em>. Hubungan antara keempat faktor tersebut 
-      dapat dituliskan dengan persamaan berikut:
+      Ukuran hasil konvolusi tidak ditentukan secara acak, tetapi bergantung pada ukuran citra, <em>kernel</em>, 
+      <em>padding</em>, dan <em>stride</em>. Hubungan keempatnya dapat dituliskan dengan persamaan berikut:
     </p>
 
     <p style="text-align: center; font-size: 30px;">
@@ -397,11 +399,11 @@
       <b>1. <em>Zero Padding</em></b>
     </p>
     <p style="text-align: justify; text-indent:30px; margin-left: 30px">
-      <strong><em>Zero-padding</em> adalah teknik menambahkan angka nol di tepi citra digital</strong>. Tujuannya 
-      agar ukuran citra menjadi lebih besar, sehingga proses <em>konvolusi</em> dapat diterapkan 
-      hingga ke tepi citra tanpa mengubah informasi penting yang ada. Dengan menambahkan nol di 
-      sekeliling gambar, ukuran citra bertambah, tetapi citra aslinya tetap sama.
+      <strong><em>Zero padding</em> adalah teknik menambahkan nilai nol (0) di bagian tepi citra digital</strong>. 
+      Tujuannya adalah agar proses konvolusi tetap dapat dilakukan hingga ke piksel-piksel tepi. 
+      Dengan menambahkan nol di sekeliling citra, ukuran citra menjadi lebih besar, tetapi nilai piksel asli tetap tidak berubah.
     </p>
+
     <p style="text-align: center; font-size:20px;">
     \[
     \begin{bmatrix}
@@ -418,12 +420,12 @@
       <b>2. <em>Constant Padding</em></b>
     </p>
     <p style="text-align: justify; text-indent:30px; margin-left: 30px">
-      <strong><em>Constant padding</em> adalah teknik menambahkan nilai tertentu di tepi citra digital</strong>. 
-      Nilai ini bisa bebas dipilih, <strong>misalnya angka satu atau angka lain sesuai kebutuhan</strong>. 
-      Tujuannya sama seperti <em>zero padding</em>, yaitu memperluas ukuran citra agar proses 
-      <em>konvolusi</em> bisa mencakup seluruh gambar, termasuk bagian pinggir tanpa mengubah informasi utama. 
-      Dengan <em>constant padding</em>, tepi citra diisi dengan nilai yang sama secara konsisten.
+      <strong><em>Constant padding</em> adalah teknik menambahkan nilai konstan tertentu di bagian tepi citra digital</strong>. 
+      Nilai ini dapat dipilih sesuai kebutuhan, misalnya 1, 255, atau nilai lainnya. 
+      Tujuannya sama seperti <em>zero padding</em>, yaitu agar proses konvolusi tetap dapat dilakukan hingga ke piksel-piksel tepi. 
+      Dengan <em>constant padding</em>, jumlah baris dan kolom citra bertambah, dan bagian tepinya diisi dengan nilai yang sama secara konsisten.
     </p>
+
     <p style="text-align: center; font-size: 20px;">
     \[
     \begin{bmatrix}
@@ -436,17 +438,15 @@
     \end{bmatrix}
     \]
     </p>
+
     <p style="text-align: justify; margin-top:50px">
       <b>3. <em>Reflect Padding</em></b>
     </p>
     <p style="text-align: justify; text-indent:30px; margin-left: 30px">
-      <strong><em>Reflect padding</em> adalah teknik menambahkan piksel di tepi citra dengan cara 
-      menyalin piksel dari bagian dalam citra seperti memantulkan isinya</strong>. Kolom dan baris 
-      di tepi gambar mengulang nilai piksel yang ada di dekatnya, tetapi urutannya dibalik ke arah 
-      luar. Misalnya, piksel di tepi kiri meniru piksel yang ada di sebelah kanannya secara terbalik, 
-      begitu pula piksel di tepi kanan, atas, dan bawah yang memantulkan nilai dari piksel di bagian 
-      dalam citra.
+      <strong><em>Reflect padding</em> adalah teknik menambahkan piksel di bagian tepi citra dengan cara mencerminkan nilai piksel dari bagian dalam citra, seperti bayangan pada cermin</strong>. 
+      Piksel yang berada tepat di sebelah dalam tepi akan disalin ke luar. Prinsip ini berlaku untuk sisi kiri, kanan, atas, dan bawah citra.
     </p>
+
     <p style="text-align: center; font-size: 20px;">
     \[
     \begin{bmatrix}
@@ -463,12 +463,10 @@
       <b>4. <em>Replicate Padding</em></b>
     </p>
     <p style="text-align: justify; text-indent:30px; margin-left: 30px">
-      <strong><em>Replicate padding</em> adalah teknik menambahkan piksel di tepi citra dengan menyalin 
-      nilai piksel terdekat dari bagian dalam citra</strong>. Artinya, piksel di tepi mengikuti piksel 
-      yang paling dekat dengannya, sehingga tepi citra diperluas tanpa mengubah isi utama. Tujuannya 
-      sama seperti teknik <em>padding</em> lainnya, yaitu memperbesar citra agar proses 
-      <em>konvolusi</em> dapat diterapkan hingga ke bagian pinggir.
+      <strong><em>Replicate padding</em> adalah teknik menambahkan piksel di bagian tepi citra dengan cara menyalin nilai piksel yang berada tepat di batas tepi citra</strong>. 
+      Artinya, nilai piksel paling luar akan diulang ke arah luar untuk mengisi bagian <em>padding</em>.
     </p>
+
     <p style="text-align: center; font-size: 20px;">
     \[
     \begin{bmatrix}
@@ -481,16 +479,17 @@
     \end{bmatrix}
     \]
     </p>
+
     <p style="text-align: justify; margin-top:50px">
       <b>5. <em>Wrap Padding</em></b>
     </p>
     <p style="text-align: justify; text-indent:30px; margin-left: 30px">
-      <strong><em>Wrap padding</em> adalah teknik menambahkan piksel di tepi citra dengan cara 
-      mengulang piksel dari sisi berlawanan citra</strong>. Bagian tepi kiri akan diisi dengan 
-      piksel dari sisi kanan, sedangkan bagian tepi kanan akan diisi dengan piksel dari sisi kiri. 
-      Begitu pula tepi atas diisi dengan piksel dari sisi bawah, dan tepi bawah diisi dengan piksel 
-      dari sisi atas.
+      <strong><em>Wrap padding</em> adalah teknik menambahkan piksel di bagian tepi citra dengan cara mengambil nilai piksel dari sisi yang berlawanan</strong>. 
+      Artinya, tepi kiri diisi dengan piksel dari sisi kanan, dan tepi kanan diisi dengan piksel dari sisi kiri. 
+      Begitu pula, tepi atas diisi dengan piksel dari sisi bawah, dan tepi bawah diisi dengan piksel dari sisi atas. 
+      Teknik ini seolah-olah menganggap citra tersambung secara melingkar.
     </p>
+
     <p style="text-align: center; font-size: 20px;">
     \[
     \begin{bmatrix}

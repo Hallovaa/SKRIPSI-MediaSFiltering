@@ -519,10 +519,10 @@
     <div class="card-section-body">
       <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
       <ol>
-        <li>Memahami dasar penggunaan library Python untuk pemrosesan citra digital.</li>
-        <li>Menerapkan operasi konversi citra (grayscale dan citra biner) menggunakan kode Python.</li>
-        <li>Menerapkan operasi konvolusi dengan padding dan normalisasi pada citra digital menggunakan kode Python.</li>
-        <li>Menerapkan teknik smoothing dan sharpening pada citra digital menggunakan kode Python.</li>
+        <li>Memahami dasar penggunaan <em>library</em> Python untuk pemrosesan citra digital.</li>
+        <li>Menerapkan operasi konversi citra (<em>grayscale</em> dan citra biner) menggunakan kode Python.</li>
+        <li>Menerapkan operasi konvolusi dengan <em>padding</em> dan normalisasi pada citra digital menggunakan kode Python.</li>
+        <li>Menerapkan teknik <em>smoothing</em> dan <em>sharpening</em> pada citra digital menggunakan kode Python.</li>
       </ol>
     </div>
 </section>
@@ -534,9 +534,9 @@
     <div class="card-section-body">
         <p style="text-align:justify;text-indent:30px;">
             <strong>Pemrosesan citra digital adalah proses memanipulasi dan memperbaiki citra menggunakan komputer agar tampilannya lebih jelas atau sesuai dengan kebutuhan tertentu</strong>. 
-            Salah satu bahasa pemrograman yang banyak digunakan dalam pemrosesan citra digital adalah <strong><em>Python</em></strong>. 
-            Selain mudah dipelajari, <em>Python</em> didukung oleh berbagai pustaka (<em>library</em>) yang memudahkan proses pemrosesan citra. 
-            Pada materi ini digunakan pustaka <strong><em>Pillow</em></strong> yaitu <em>library</em> <em>Python</em> yang sederhana dan mudah digunakan untuk membaca, menampilkan, dan memodifikasi citra, termasuk menerapkan berbagai proses seperti <em>smoothing</em> (penghalusan) dan <em>sharpening</em> (penajaman).
+            Salah satu bahasa pemrograman yang banyak digunakan dalam pemrosesan citra digital adalah <strong>Python</strong>. 
+            Selain mudah dipelajari, Python didukung oleh berbagai pustaka (<em>library</em>) yang memudahkan proses pengolahan citra. 
+            Pada materi ini digunakan pustaka <strong>Pillow</strong> yaitu <em>library</em> Python yang sederhana dan mudah digunakan untuk membaca, menampilkan, dan memodifikasi citra termasuk menerapkan berbagai proses seperti <em>smoothing</em> (penghalusan) dan <em>sharpening</em> (penajaman).
         </p>
 
         <div class="code-box-import">
@@ -546,29 +546,18 @@
         
 
         <p style="text-align:justify;text-indent:30px;">
-            Dua modul utama yang digunakan dalam pustaka <em>Pillow</em> adalah 
-            <strong><em>Image</em></strong> dan <strong><em>ImageFilter</em></strong>. 
-            Modul <strong><em>Image</em></strong> berfungsi sebagai 
-            <strong>modul dasar untuk bekerja dengan citra</strong>, 
-            seperti membuka gambar menggunakan <em>Image.open()</em>, mengubah mode warna, 
-            mengubah ukuran, memutar gambar, serta menyimpan kembali citra yang telah diproses. 
-            Sementara itu, modul <strong><em>ImageFilter</em></strong> menyediakan berbagai 
-            <strong>filter siap pakai</strong>, seperti 
-            <strong><em>SMOOTH</em></strong>, 
-            <strong><em>BLUR</em></strong>, 
-            <strong><em>GaussianBlur</em></strong>, dan 
-            <strong><em>SHARPEN</em></strong>. 
-            Filter-filter ini dapat diterapkan pada citra melalui fungsi <em>image.filter()</em>, 
-            sehingga proses pemrosesan citra seperti penghalusan dan penajaman dapat dilakukan dengan mudah.
+            Dua modul utama yang digunakan dalam pustaka Pillow adalah <strong><em>Image</em></strong> dan <strong><em>ImageFilter</em></strong>. 
+            Modul <strong><em>Image</em></strong> berfungsi sebagai <strong>modul dasar untuk bekerja dengan citra</strong> seperti membuka gambar menggunakan <em>Image.open()</em>, mengubah mode warna, mengubah ukuran, memutar gambar, serta menyimpan kembali citra yang telah diproses. 
+            Sementara itu, modul <strong><em>ImageFilter</em></strong> menyediakan berbagai <strong><em>filter</em> siap pakai</strong>, seperti 
+            <strong><em>SMOOTH</em></strong>, <strong><em>BLUR</em></strong>, <strong><em>GaussianBlur</em></strong>, dan <strong><em>SHARPEN</em></strong>. 
+            <em>Filter-filter</em> ini dapat diterapkan pada citra melalui fungsi <em>image.filter()</em>, sehingga pemrosesan citra seperti penghalusan dan penajaman dapat dilakukan dengan mudah.
         </p>
 
         <div class="step-title">1) Mengubah gambar berwarna (RGB) menjadi gambar <em>grayscale</em></div>
         <p style="text-align:justify;text-indent:30px; margin-left:25px;">
-            Pada pustaka <strong><em>Pillow</em></strong>, konversi citra berwarna (<em>RGB</em>) menjadi 
-            <strong>citra grayscale</strong> dapat dilakukan menggunakan 
-            <strong><em>mode "L"</em></strong>. 
-            Mode ini mengubah citra berwarna menjadi citra keabuan berdasarkan 
-            <strong>nilai luminansi (<em>luminance</em>)</strong>, yaitu tingkat kecerahan yang dirasakan oleh mata manusia.
+            Pada pustaka <strong>Pillow</strong> konversi citra berwarna (RGB) menjadi <strong>citra <em>grayscale</em></strong> dapat dilakukan menggunakan 
+            <strong><em>mode</em> "L"</strong>. Mode ini mengubah citra berwarna menjadi citra keabuan berdasarkan 
+            <strong>nilai luminansi (<em>luminance</em>)</strong>, yaitu tingkat kecerahan suatu warna sesuai dengan cara mata manusia melihatnya.
         </p>
 
         <div class="code-box-code">
@@ -577,23 +566,23 @@
         </div>
 
         <p style="text-align:justify;text-indent:30px; margin-left:25px;">
-            Pada kode di atas, citra berwarna dibuka oleh komputer menggunakan fungsi <em>Image.open</em>( ), sehingga isi citra dapat dibaca dan diproses oleh program. 
-            Selanjutnya, citra tersebut dikonversi menjadi citra <em>grayscale</em> dengan metode <em>convert("L")</em>.
+            Pada kode di atas, citra berwarna dibuka oleh komputer menggunakan fungsi <em>Image.open()</em>, sehingga isi citra dapat dibaca dan diproses oleh program. 
+            Selanjutnya citra tersebut dikonversi menjadi citra <em>grayscale</em> dengan metode <em>convert</em>("L").
         </p>
 
         <div class="step-title">2) Mengubah gambar <em>grayscale</em> menjadi gambar <em>biner</em></div>
 
         <p style="text-align:justify;text-indent:30px; margin-left:25px;">
-            Mengubah citra <em>grayscale</em> menjadi <strong>citra biner</strong> dapat dilakukan dengan menggunakan 
-            <strong>nilai ambang (<em>threshold</em>)</strong>. Pada metode ini, nilai <em>threshold</em> diperoleh dari 
-            <strong>rata-rata seluruh nilai piksel</strong> pada citra <em>grayscale</em>. 
+            Mengubah citra <em>grayscale</em> menjadi <strong>citra biner</strong> dapat dilakukan dengan menggunakan <strong>nilai ambang (<em>threshold</em>)</strong>. 
+            Pada metode ini, nilai <em>threshold</em> diperoleh dari <strong>rata-rata seluruh nilai piksel</strong> pada citra <em>grayscale</em>. 
             Nilai rata-rata tersebut digunakan sebagai batas untuk menentukan apakah suatu piksel akan diubah menjadi hitam atau putih.
         </p>
 
         <p style="text-align:justify;text-indent:30px; margin-left:25px;">
             Piksel yang memiliki nilai <strong>lebih besar dari <em>threshold</em></strong> akan diubah menjadi 
-            <strong>putih (255)</strong>, sedangkan piksel yang memiliki nilai <strong>lebih kecil atau sama dengan <em>threshold</em></strong> akan diubah menjadi 
-            <strong>hitam (0)</strong>. Dengan cara ini, citra <em>grayscale</em> disederhanakan menjadi citra <em>biner</em> yang hanya memiliki dua nilai intensitas.
+            <strong>putih (1)</strong>, sedangkan piksel yang memiliki nilai 
+            <strong>lebih kecil atau sama dengan <em>threshold</em></strong> akan diubah menjadi <strong>hitam (0)</strong>. 
+            Dengan cara ini, citra <em>grayscale</em> disederhanakan menjadi citra biner yang hanya memiliki dua nilai intensitas.
         </p>
 
         <div class="code-box-code">
@@ -603,9 +592,9 @@
         </div>
 
         <p style="text-align:justify;text-indent:30px; margin-left:25px;">
-            Pada kode di atas, citra terlebih dahulu dikonversi ke <em>grayscale</em> menggunakan <em>convert("L")</em>. 
-            Selanjutnya, nilai <em>threshold</em> dihitung sebagai rata-rata dari seluruh nilai piksel <em>grayscale</em>. 
-            Fungsi <em>point()</em> kemudian digunakan untuk menerapkan aturan ambang tersebut pada setiap piksel sehingga dihasilkan citra <em>biner</em> dengan nilai hitam dan putih.
+            Pada kode di atas, citra terlebih dahulu dikonversi ke <em>grayscale</em> menggunakan <em>convert</em>("L"). 
+            Selanjutnya nilai <em>threshold</em> dihitung sebagai rata-rata dari seluruh nilai piksel <em>grayscale</em>. 
+            Fungsi <em>point()</em> kemudian digunakan untuk menerapkan aturan ambang tersebut pada setiap piksel sehingga dihasilkan citra biner dengan nilai hitam dan putih.
         </p>
     </div>
 </section>

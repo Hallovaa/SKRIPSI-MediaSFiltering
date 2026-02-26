@@ -181,29 +181,23 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Setelah proses konvolusi dilakukan, nilai piksel hasil perhitungan tidak selalu 
-      berada dalam rentang tampilan normal, yaitu 0 sampai 255. Akibatnya citra dapat 
-      terlihat terlalu gelap, terlalu terang, atau tidak dapat ditampilkan dengan baik. 
-      Pada hasil konvolusi menggunakan <em>padding</em> sebelumnya terdapat beberapa nilai piksel yang bernilai negatif.
+      Setelah proses konvolusi dilakukan, nilai piksel hasil perhitungan tidak selalu berada dalam rentang tampilan normal, yaitu 0 sampai 255. 
+      Akibatnya citra dapat terlihat terlalu gelap, terlalu terang, atau tidak dapat ditampilkan dengan baik. 
+      Pada hasil konvolusi menggunakan <em>padding</em> sebelumnya terdapat beberapa nilai piksel yang bernilai negatif. 
       Kondisi ini perlu disesuaikan agar seluruh nilai piksel berada dalam rentang yang dapat ditampilkan dengan baik pada layar.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Untuk mengatasi hal tersebut dilakukan proses yang disebut 
-      <strong>normalisasi citra</strong>. Normalisasi citra (<em>image normalization</em>) 
-      merupakan langkah dalam pemrosesan citra digital yang bertujuan untuk 
-      <strong>menyesuaikan kembali nilai intensitas piksel ke dalam skala tampilan yang umum</strong>, 
-      sehingga citra dapat ditampilkan dengan jelas. Proses ini membantu 
-      <strong>menjaga keseimbangan kecerahan dan kontras</strong>, tanpa menghilangkan perbedaan 
-      intensitas antar piksel.
+      Untuk mengatasi hal tersebut dilakukan proses yang disebut <strong>normalisasi citra</strong>. 
+      Normalisasi citra (<em>image normalization</em>) merupakan langkah dalam pemrosesan citra digital yang bertujuan untuk 
+      <strong>menyesuaikan kembali nilai intensitas piksel ke dalam skala tampilan yang umum</strong>, sehingga citra dapat ditampilkan dengan jelas. 
+      Proses ini membantu <strong>menjaga keseimbangan kecerahan dan kontras</strong>, tanpa menghilangkan perbedaan intensitas antar piksel.
     </p>
 
     <p style="text-align: justify; text-indent: 30px; margin-bottom: 50px;">
-      Secara sederhana, normalisasi bekerja dengan 
-      <strong>mengatur ulang nilai-nilai piksel hasil konvolusi agar berada dalam batas yang wajar</strong>, 
-      sekaligus mempertahankan perbandingan nilai antar piksel. Salah satu metode yang sering digunakan 
-      adalah <strong>normalisasi linear</strong> (<em>linear normalization</em>) yang dapat dituliskan 
-      dengan persamaan berikut:
+      Secara sederhana normalisasi bekerja dengan <strong>mengatur ulang nilai-nilai piksel hasil konvolusi agar berada dalam batas yang wajar</strong>, 
+      sekaligus mempertahankan perbandingan nilai antar piksel. Salah satu metode yang sering digunakan adalah 
+      <strong>normalisasi <em>linear</em></strong> yang dapat dituliskan dengan persamaan berikut:
     </p>
 
     <p style="text-align: center; font-size: 30px;">
@@ -213,10 +207,9 @@
     </p>
 
     <p style="text-align: justify; text-indent: 30px; margin-top:50px">
-      Pada citra <em>grayscale</em>, proses normalisasi cukup diterapkan pada satu <em>channel</em> 
-      karena citra hanya memiliki satu tingkat kecerahan. Sementara itu, pada citra berwarna 
-      (<em>RGB</em>), normalisasi dilakukan pada masing-masing <em>channel</em>, yaitu <em>channel</em> 
-      merah, hijau, dan biru dengan cara yang sama agar keseimbangan warna citra tetap terjaga.
+      Pada citra <em>grayscale</em> proses normalisasi cukup diterapkan pada satu <em>channel</em> karena citra 
+      hanya memiliki satu tingkat kecerahan. Sementara itu pada citra berwarna (RGB), normalisasi dilakukan 
+      pada masing-masing <em>channel</em> yaitu <em>channel</em> merah, hijau, dan biru dengan cara yang sama agar keseimbangan warna citra tetap terjaga.
     </p>
 
   </div>
@@ -241,10 +234,9 @@
     </ol>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Sebagai contoh, proses normalisasi dilakukan pada hasil konvolusi menggunakan <em>zero padding</em> sebelumnya. Jika terdapat nilai piksel hasil konvolusi yang 
-      melebihi 255 atau kurang dari 0, maka nilainya dinormalisasi kembali agar berada dalam 
-      rentang 0–255. Nilai hasil normalisasi kemudian dibulatkan ke bilangan bulat dengan aturan 
-      bahwa jika angka di belakang koma bernilai lima atau lebih, maka dibulatkan ke atas.
+      Sebagai contoh, proses normalisasi dilakukan pada hasil konvolusi menggunakan <em>zero padding</em> sebelumnya. 
+      Jika terdapat nilai piksel hasil konvolusi yang melebihi 255 atau kurang dari 0, maka nilainya dinormalisasi kembali agar berada dalam rentang 0–255. 
+      Nilai hasil normalisasi kemudian dibulatkan ke bilangan bulat dengan aturan bahwa jika angka di belakang koma bernilai lima atau lebih maka dibulatkan ke atas.
     </p>
 
     <p style="text-align: center; font-size: 30px;">

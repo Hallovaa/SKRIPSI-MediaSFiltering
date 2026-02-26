@@ -458,9 +458,9 @@
     </div>
     <div class="card-section-body">
         <p style="text-align:justify;text-indent:30px;">
-            Pustaka <em>Pillow</em> umumnya digunakan untuk membuka, menyimpan, dan melakukan pemrosesan citra dasar. 
-            Namun, pada <em>Pillow</em> pengaturan proses <em>convolution</em> dan cara piksel di bagian tepi citra diproses masih terbatas. 
-            Oleh karena itu, untuk melakukan <em>convolution</em> dengan pengaturan <em>kernel</em> dan penanganan tepi citra yang lebih lengkap digunakan pustaka <em>SciPy</em>.
+            Pustaka Pillow umumnya digunakan untuk membuka, menyimpan, dan melakukan pemrosesan citra dasar. 
+            Namun pada Pillow pengaturan proses konvolusi dan cara piksel di bagian tepi citra diproses masih terbatas. 
+            Oleh karena itu, untuk melakukan konvolusi dengan pengaturan <em>kernel</em> dan penanganan tepi citra yang lebih lengkap digunakan pustaka SciPy.
         </p>
 
         <div class="code-box-import">
@@ -469,11 +469,9 @@
         </div>
 
         <p style="text-align:justify;text-indent:30px;">
-            <strong><em>SciPy</em></strong> menyediakan fungsi 
-            <strong><em>convolve2d</em></strong> yang digunakan untuk melakukan 
-            <strong>konvolusi dua dimensi pada data berbentuk matriks</strong>, 
-            seperti citra digital yang telah diubah menjadi <em>array</em>. 
-            Melalui fungsi ini, pengguna dapat menentukan <em>kernel</em> yang digunakan serta cara penanganan piksel di bagian tepi citra sesuai kebutuhan pemrosesan.
+            <strong>SciPy</strong> menyediakan <strong>fungsi convolve2d</strong> yang digunakan untuk melakukan 
+            <strong>konvolusi dua dimensi pada data berbentuk matriks</strong>, seperti citra digital yang telah diubah menjadi <em>array</em>. 
+            Melalui fungsi ini pengguna dapat menentukan <em>kernel</em> yang digunakan serta cara penanganan piksel di bagian tepi citra sesuai kebutuhan pemrosesan.
         </p>
 
         <div class="code-box-code">
@@ -497,23 +495,23 @@
 
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
             Pada kode di atas, citra terlebih dahulu dikonversi menjadi <em>grayscale</em>, kemudian diubah ke dalam bentuk <em>array</em> agar dapat diproses menggunakan perhitungan numerik. 
-            Kernel yang digunakan adalah kernel <em>smoothing Gaussian</em> 3×3 yang berfungsi untuk menghaluskan citra dengan memberi pengaruh lebih besar pada piksel di sekitar pusat.
+            <em>Kernel</em> yang digunakan adalah <em>kernel smoothing</em> Gaussian 3×3 yang berfungsi untuk menghaluskan citra dengan memberi pengaruh lebih besar pada piksel di sekitar pusat.
         </p>
 
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
             Parameter <strong><em>mode="same"</em></strong> digunakan agar ukuran citra hasil konvolusi <strong>tetap sama dengan citra asli</strong>. 
-            Sementara itu, parameter <strong><em>boundary="symm"</em></strong> digunakan untuk memberikan <strong><em>padding</em></strong> pada bagian tepi citra dengan cara mencerminkan 
-            <strong>(<em>reflect</em>)</strong> nilai piksel di sekitarnya. Selain <em>symm</em>, <em>SciPy</em> juga menyediakan padding lain seperti 
-            <strong><em>fill</em></strong> yaitu <strong><em>constant padding</em></strong> yang secara default mengisi tepi citra dengan nilai nol 
-            (<em>zero padding</em>), namun nilainya dapat diatur menggunakan parameter <strong><em>fillvalue</em></strong>, misalnya <em>fillvalue=128</em>. 
-            <em>SciPy</em> juga menyediakan padding <strong><em>wrap</em></strong>, yaitu padding yang mengisi tepi citra menggunakan piksel dari sisi berlawanan sehingga citra diperlakukan seolah-olah melingkar.
+            Sementara itu, parameter <strong><em>boundary="symm"</em></strong> digunakan untuk memberikan 
+            <strong><em>padding</em></strong> pada bagian tepi citra dengan cara mencerminkan 
+            <strong><em>(reflect)</em></strong> nilai piksel di sekitarnya. Selain <em>symm</em>, SciPy juga menyediakan <em>padding</em> lain seperti 
+            <strong><em>fill</em></strong> yaitu <strong><em>constant padding</em></strong> yang secara default mengisi tepi citra dengan nilai nol (<em>zero padding</em>), namun nilainya dapat diatur menggunakan parameter <strong><em>fillvalue</em></strong>, misalnya <em>fillvalue=128</em>. 
+            SciPy juga menyediakan <strong><em>wrap</em></strong> yaitu <em>padding</em> yang mengisi tepi citra menggunakan piksel dari sisi berlawanan sehingga citra diperlakukan seolah-olah melingkar.
         </p>
 
 
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
             Hasil konvolusi kadang menghasilkan nilai piksel yang terlalu kecil (kurang dari 0) atau terlalu besar (lebih dari 255). 
             Padahal citra <em>grayscale</em> hanya dapat menampilkan nilai piksel dalam rentang 0 sampai 255. 
-            Oleh karena itu, nilai piksel hasil konvolusi perlu disesuaikan kembali agar sesuai dengan rentang nilai citra <em>digital</em>.
+            Oleh karena itu nilai piksel hasil konvolusi perlu disesuaikan kembali agar sesuai dengan rentang nilai citra digital.
         </p>
 
         <div class="code-box-code">

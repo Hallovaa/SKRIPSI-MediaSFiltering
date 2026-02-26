@@ -278,7 +278,7 @@
 <section class="card-section">
     <div class="card-section-header">
       <i class="bi bi-lightbulb"></i>
-      <div><em>Unsharp Masking</em></em></div>
+      <div><em>Unsharp Masking</em></div>
     </div>
     <div class="card-section-body">
 
@@ -328,9 +328,9 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Hasil penerapan <em>unsharp masking</em> pada Gambar E.4 memperlihatkan perubahan intensitas piksel setelah proses penajaman dilakukan. 
+      Hasil penerapan <em>unsharp masking</em> pada Gambar E.4 menunjukkan perubahan intensitas piksel setelah proses penajaman dilakukan. 
       Dibandingkan dengan citra asli (<em>grayscale</em>), bagian-bagian tertentu terutama pada tepi tulisan dan garis terlihat lebih tegas karena nilai intensitasnya meningkat. 
-      Secara visual, detail yang sebelumnya kurang menonjol menjadi lebih jelas, sementara area yang relatif rata tidak mengalami perubahan berarti. 
+      Secara visual detail yang sebelumnya kurang menonjol menjadi lebih jelas, sementara area yang relatif rata tidak mengalami perubahan berarti. 
       Perbandingan ini menunjukkan bahwa <em>unsharp masking</em> meningkatkan ketajaman citra dengan menambahkan kembali detail penting yang diperoleh dari proses penghalusan.
     </p>
     </div>
@@ -345,19 +345,19 @@
 
     <p style="text-align: justify; text-indent: 30px;">
       <strong><em>Highboost filtering</em></strong> merupakan pengembangan dari <em>unsharp masking</em> dengan efek penajaman yang lebih kuat. 
-      Pada <strong><em>unsharp masking</em> faktor penguatan ketajaman biasanya bernilai \( \mathbf{k} = \mathbf{1} \)</strong>, 
-      sedangkan pada <strong><em>highboost filtering</em> nilai \( \mathbf{k} > \mathbf{1} \)</strong>. 
-      Dengan nilai <em>k</em> yang lebih besar, tidak hanya tepi objek yang diperjelas, tetapi kontras dan detail citra secara keseluruhan juga menjadi lebih menonjol.
+      Pada <strong><em>unsharp masking</em> faktor penguatan ketajaman biasanya bernilai \( \mathbf{k}=\mathbf{1} \)</strong>, 
+      sedangkan pada <strong><em>highboost filtering</em> nilai \( \mathbf{k}>\mathbf{1} \)</strong>. 
+      Dengan nilai <em>k</em> yang lebih besar tidak hanya tepi objek yang diperjelas, tetapi kontras dan detail citra secara keseluruhan juga menjadi lebih menonjol.
     </p>
 
     <p style="text-align: justify;">
-      Langkah-langkah utama <em>highboost filtering</em>:
+      Langkah-langkah <em>highboost filtering</em>:
     </p>
     <ol style="text-align: justify; margin-left: 20px">
       <li><strong>Haluskan citra asli</strong> menggunakan metode <em>smoothing</em> (misalnya <em>Gaussian blur</em>) untuk mengurangi detail halus.</li>
       <li><strong>Hitung <em>mask</em></strong> dengan mengurangkan citra asli dengan citra hasil penghalusan sehingga diperoleh citra yang menonjolkan tepi dan detail.</li>
       <li><strong>Perkuat <em>mask</em></strong> dengan mengalikan <em>mask</em> menggunakan faktor penguatan <em>k</em>, dengan nilai <em>k</em> &gt; 1.</li>
-      <li><strong>Tambahkan <em>mask</em></strong> yang telah diperkuat ke citra asli sehingga diperoleh citra dengan ketajaman dan kontras yang lebih tinggi.</li>
+      <li><strong>Tambahkan <em>mask</em> yang telah diperkuat</strong> ke citra asli sehingga diperoleh citra dengan ketajaman dan kontras yang lebih tinggi.</li>
     </ol>
 
     <p style="text-align: justify; text-indent: 30px;">
@@ -391,12 +391,13 @@
     <p style="text-align: justify; text-indent: 30px;">
       Hasil <em>highboost filtering</em> menunjukkan perubahan nilai intensitas piksel yang lebih kuat dibandingkan <em>unsharp masking</em> biasa. 
       Hal ini terjadi karena <em>mask</em> diperkuat dengan faktor \( k > 1 \) sebelum ditambahkan kembali ke citra asli, sehingga efek penajaman menjadi lebih jelas. 
-      Akibatnya, tepi objek dan detail halus tampak lebih tajam, sementara bagian citra yang relatif seragam tetap terlihat normal.
+      Akibatnya tepi objek dan detail halus tampak lebih tajam, sementara bagian citra yang relatif seragam tetap terlihat normal.
     </p>
 
-    <p>
-      Pada Gambar E.5 ditunjukkan contoh penerapan <em>highboost filtering</em> pada citra asli. 
-      Secara visual, tepi objek serta detail kecil seperti garis tipis, tekstur, dan batas antar objek terlihat lebih menonjol, yang menunjukkan bahwa proses penajaman bekerja lebih kuat dibandingkan <em>unsharp masking</em> biasa.
+    <p style="text-align: justify; text-indent: 30px;">
+      Pada Gambar E.5 ditunjukkan contoh penerapan <em>highboost filtering</em> pada citra asli (<em>grayscale</em>). 
+      Secara visual, dibandingkan dengan <em>unsharp masking</em>, hasil <em>highboost filtering</em> memperlihatkan tepi objek dan detail kecil seperti garis tipis, tekstur, serta batas antar objek yang lebih menonjol. 
+      Hal ini menunjukkan bahwa proses penajaman yang dihasilkan lebih kuat dibandingkan <em>unsharp masking</em> biasa.
     </p>
 
 

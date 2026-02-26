@@ -164,9 +164,9 @@ input[type=number] {
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pendekatan ini dikenal sebagai <strong><em>order-statistic filtering</em></strong>, yaitu teknik penyaringan yang 
-      <strong>menentukan nilai piksel baru berdasarkan urutan nilai intensitas piksel di dalam area filter</strong>. 
-      Salah satu filter nonlinier yang paling umum digunakan adalah <em>median filter</em> yang mengganti nilai piksel pusat dengan nilai tengah (<em>median</em>) dari piksel-piksel di sekitarnya, termasuk piksel pusat itu sendiri, seperti yang ditunjukkan pada Gambar D.3. 
+      Pendekatan ini dikenal sebagai <strong><em>order-statistic filtering</em></strong> yaitu teknik penyaringan yang 
+      <strong>menentukan nilai piksel baru berdasarkan urutan nilai intensitas piksel di dalam area <em>filter</em></strong>. 
+      Salah satu <em>filter nonlinier</em> yang paling umum digunakan adalah <em>median filter</em> yang mengganti nilai piksel pusat dengan nilai tengah (<em>median</em>) dari piksel-piksel di sekitarnya termasuk piksel pusat itu sendiri seperti yang ditunjukkan pada Gambar D.3. 
       Metode ini efektif dalam mengurangi <em>noise</em> tanpa menyebabkan pengaburan tepi yang signifikan.
     </p>
 
@@ -178,17 +178,14 @@ input[type=number] {
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Proses <strong><em>median filter</em></strong> dilakukan dengan mengurutkan nilai piksel dalam area filter, kemudian memilih nilai tengah (<em>median</em>) sebagai nilai pengganti piksel pusat. 
-      Cara ini efektif untuk <strong>mengurangi <em>noise</em> acak, khususnya <em>salt and pepper noise</em></strong>, tanpa menyebabkan pengaburan citra karena nilai <em>median</em> tidak dipengaruhi oleh nilai ekstrem.
+      Proses <strong><em>median filter</em></strong> dilakukan dengan mengurutkan nilai piksel dalam area <em>filter</em> kemudian memilih nilai tengah (<em>median</em>) sebagai nilai pengganti piksel pusat. 
+      Cara ini efektif untuk <strong>mengurangi <em>noise</em> acak khususnya <em>salt and pepper noise</em></strong> tanpa menyebabkan pengaburan citra karena nilai <em>median</em> tidak dipengaruhi oleh nilai ekstrem.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Selain <em>median filter</em>, terdapat jenis <em>order-statistic filter</em> lain seperti 
-      <strong><em>max filter</em></strong> dan <strong><em>min filter</em></strong>. 
-      <strong><em>Max filter</em> memilih nilai terbesar</strong> pada area filter sehingga berguna untuk 
-      <strong>menghilangkan bintik gelap kecil</strong>, sedangkan 
-      <strong><em>min filter</em> memilih nilai terkecil</strong> untuk 
-      <strong>menghilangkan bintik terang kecil</strong>. 
+      Selain <em>median filter</em>, terdapat jenis <em>order-statistic filter</em> lain seperti <em>max filter</em> dan <em>min filter</em>. 
+      <strong><em>Max filter</em></strong> memilih <strong>nilai terbesar</strong> pada area <em>filter</em> sehingga berguna untuk <strong>menghilangkan bintik gelap kecil</strong>, 
+      sedangkan <strong><em>min filter</em></strong> memilih <strong>nilai terkecil</strong> untuk <strong>menghilangkan bintik terang kecil</strong>. 
       Pemilihan jenis <em>filter</em> ini memungkinkan proses penyaringan disesuaikan dengan jenis <em>noise</em> yang terdapat pada citra.
     </p>
 
@@ -200,8 +197,8 @@ input[type=number] {
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada Gambar D.4 ditunjukkan citra <em>grayscale</em> dan hasil penerapan <em>median filter</em>. 
-      Penerapan filter ini menghasilkan citra yang lebih halus, sementara tepi dan detail objek tetap terjaga tanpa mengalami pengaburan yang berlebihan.
+      Pada Gambar D.4 menunjukkan citra <em>grayscale</em> dan hasil penerapan <em>median filter</em>. 
+      Penerapan <em>filter</em> ini menghasilkan citra yang lebih halus, sementara tepi dan detail objek tetap terjaga tanpa mengalami pengaburan yang berlebihan.
     </p>
 
     <figure style="margin:20px 0; margin-top: 30px">
@@ -212,8 +209,8 @@ input[type=number] {
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Gambar D.5 memperlihatkan citra yang mengandung <em>pepper noise</em> (bintik-bintik hitam) serta hasil setelah diterapkan <em>max filter</em>. 
-      Hasil penerapan filter menunjukkan bahwa bintik-bintik hitam pada citra berkurang secara signifikan sehingga tampilan citra menjadi lebih bersih.
+      Gambar D.5 menunjukkan citra yang mengandung <em>pepper noise</em> (bintik-bintik hitam) serta hasil setelah diterapkan <em>max filter</em>. 
+      Hasil penerapan <em>filter</em> menunjukkan bahwa bintik-bintik hitam pada citra menghilang sehingga tampilan citra menjadi lebih bersih.
     </p>
 
     <figure style="margin:20px 0; margin-top: 30px">
@@ -224,8 +221,8 @@ input[type=number] {
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada Gambar D.6 ditampilkan citra yang mengandung <em>salt noise</em> (bintik-bintik putih) serta hasil setelah diterapkan <em>min filter</em>. 
-      Hasil penerapan filter menunjukkan bahwa bintik-bintik putih pada citra berkurang sehingga tampilan citra menjadi lebih stabil.
+      Pada Gambar D.6 menampilkan citra yang mengandung <em>salt noise</em> (bintik-bintik putih) serta hasil setelah diterapkan <em>min filter</em>. 
+      Hasil penerapan <em>filter</em> menunjukkan bahwa bintik-bintik putih pada citra menghilang sehingga tampilan citra menjadi lebih stabil.
     </p>
 
 

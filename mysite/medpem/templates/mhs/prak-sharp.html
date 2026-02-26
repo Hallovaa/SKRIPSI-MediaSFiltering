@@ -380,13 +380,14 @@
 
 <section class="card-section">
     <div class="card-section-header">
-        <i class="bi bi-triangle"></i> 1. Sharpening pada Citra Digital
+        <i class="bi bi-triangle"></i> <em>Sharpening</em> pada Citra Digital
     </div>
     <div class="card-section-body">
         <p style="text-align:justify;text-indent:30px;">
-            <em>Pillow</em> juga menyediakan <strong>filter penajaman (<em>sharpening</em>)</strong> melalui modul 
+            Pillow juga menyediakan <strong><em>filter</em> penajaman (<em>sharpening</em>)</strong> melalui modul 
             <strong><em>ImageFilter</em></strong> untuk membuat citra terlihat lebih tajam dengan menonjolkan detail dan tepi objek. 
-            Filter <strong><em>ImageFilter.SHARPEN</em></strong> merupakan filter bawaan yang dapat digunakan secara langsung untuk melakukan penajaman sederhana tanpa perlu menentukan <em>kernel</em> atau melakukan perhitungan <em>convolution</em> secara manual.
+            <em>Filter</em> <strong><em>ImageFilter.SHARPEN</em></strong> merupakan <em>filter</em> bawaan yang dapat digunakan 
+            secara langsung untuk melakukan penajaman sederhana tanpa perlu menentukan <em>kernel</em> atau melakukan perhitungan konvolusi secara manual.
         </p>
         
         <div class="code-box-code">
@@ -395,8 +396,8 @@
         </div>
 
         <p style="text-align:justify;text-indent:30px;">
-            Selain menggunakan filter bawaan, penajaman citra juga dapat dilakukan dengan <em>kernel</em> khusus melalui <em>ImageFilter.Kernel</em>. 
-            Dengan cara ini, ukuran dan nilai <em>kernel</em> dapat ditentukan sesuai kebutuhan, misalnya menggunakan <em>kernel</em> 3×3 yang menekankan piksel pusat untuk memperkuat tepi citra.
+            Selain menggunakan <em>filter</em> bawaan, penajaman citra juga dapat dilakukan dengan <em>kernel</em> khusus melalui <em>ImageFilter.Kernel</em>. 
+            Dengan cara ini ukuran dan nilai <em>kernel</em> dapat ditentukan sesuai kebutuhan, misalnya menggunakan <em>kernel</em> 3×3 yang menekankan piksel pusat untuk memperkuat tepi citra.
         </p>
         <div class="code-box-code">
             img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
@@ -413,12 +414,13 @@
 
 <section class="card-section">
     <div class="card-section-header">
-        <i class="bi bi-layers-fill"></i> 2. Unsharp Masking & Highboost
+        <i class="bi bi-layers-fill"></i> <em>Unsharp Masking</em> & <em>Highboost</em>
     </div>
     <div class="card-section-body">
         <p style="text-align:justify;text-indent:30px;">
-            <em>Pillow</em> juga menyediakan <strong><em>unsharp masking</em></strong> melalui filter 
-            <strong><em>ImageFilter.UnsharpMask</em></strong> yang dapat digunakan secara langsung. Metode ini bekerja dengan cara menghaluskan citra terlebih dahulu, kemudian selisih antara citra asli dan citra hasil penghalusan ditambahkan kembali ke citra asli. 
+            Pillow juga menyediakan <strong><em>unsharp masking</em></strong> melalui <em>filter</em> 
+            <strong><em>ImageFilter.UnsharpMask</em></strong> yang dapat digunakan secara langsung. 
+            Metode ini bekerja dengan cara menghaluskan citra terlebih dahulu, kemudian selisih antara citra asli dan citra hasil penghalusan ditambahkan kembali ke citra asli. 
             Proses ini membuat tepi dan detail objek tampak lebih jelas tanpa perlu mendefinisikan <em>kernel</em> atau melakukan perhitungan manual.
         </p>
 
@@ -428,8 +430,10 @@
         </div>
 
         <p style="text-align:justify;text-indent:30px;">
-            Selain menggunakan filter bawaan, penajaman juga dapat dilakukan menggunakan <strong><em>highboost filtering</em></strong> secara manual dengan bantuan <em>NumPy</em>. 
-            Pada metode ini, citra terlebih dahulu dihaluskan menggunakan <em>Gaussian blur</em>. Selanjutnya, selisih antara citra asli dan citra hasil <em>blur</em> diperkuat dengan faktor penguatan <em>k</em>, kemudian ditambahkan kembali ke citra asli. 
+            Selain menggunakan <em>filter</em> bawaan, penajaman juga dapat dilakukan menggunakan 
+            <strong><em>highboost filtering</em></strong> secara manual dengan bantuan NumPy. 
+            Pada metode ini citra terlebih dahulu dihaluskan menggunakan Gaussian <em>blur</em>. 
+            Selanjutnya selisih antara citra asli dan citra hasil <em>blur</em> diperkuat dengan faktor penguatan <em>k</em>, kemudian ditambahkan kembali ke citra asli. 
             Nilai <em>k</em> &gt; 1 menyebabkan efek penajaman yang dihasilkan lebih kuat dibandingkan <em>unsharp masking</em>.
         </p>
 

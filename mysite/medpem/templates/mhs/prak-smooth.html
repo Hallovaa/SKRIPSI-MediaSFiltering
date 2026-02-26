@@ -380,14 +380,14 @@
 
 <section class="card-section">
     <div class="card-section-header">
-        <i class="bi bi-water"></i> 1. Smoothing Linear Filters
+        <i class="bi bi-water"></i> <em>Smoothing Linear Filters</em>
     </div>
     <div class="card-section-body">
         <p style="text-align:justify;text-indent:30px;">
-            <em>Pillow</em> menyediakan filter bawaan melalui <strong><em>ImageFilter</em></strong> yang dapat digunakan untuk melakukan 
-            <em>smoothing</em> (penghalusan citra) dengan cara yang langsung dan mudah digunakan. Filter seperti 
-            <strong><em>ImageFilter.SMOOTH</em></strong> dan <strong><em>ImageFilter.SMOOTH_MORE</em></strong> dapat diterapkan tanpa perlu mengatur nilai 
-            <em>kernel</em>, <em>padding</em>, atau perhitungan <em>convolution</em> secara manual seperti pada konvolusi manual.
+            Pillow menyediakan <em>filter</em> bawaan melalui <strong><em>ImageFilter</em></strong> yang dapat 
+            digunakan untuk melakukan <em>smoothing</em> (penghalusan citra) dengan cara yang langsung dan mudah digunakan. 
+            <em>Filter</em> seperti <strong><em>ImageFilter.SMOOTH</em></strong> dan <strong><em>ImageFilter.SMOOTH_MORE</em></strong> 
+            dapat diterapkan tanpa perlu mengatur nilai <em>kernel</em>, <em>padding</em>, atau perhitungan konvolusi secara manual.
         </p>
         
         <div class="code-box-code">
@@ -400,12 +400,14 @@
         </div>
 
         <p style="text-align:justify;text-indent:30px;">
-            Filter <strong><em>ImageFilter.SMOOTH</em></strong> menghasilkan penghalusan ringan, sedangkan <strong><em>ImageFilter.SMOOTH_MORE</em></strong> memberikan efek penghalusan yang lebih kuat sehingga citra tampak lebih <em>blur</em>. 
-            Dengan menggunakan filter bawaan ini, proses <em>smoothing</em> dapat dilakukan dengan cepat dan praktis, terutama untuk kebutuhan pemrosesan citra dasar.
+            <em>Filter</em> <strong><em>ImageFilter.SMOOTH</em></strong> menghasilkan penghalusan ringan, sedangkan 
+            <strong><em>ImageFilter.SMOOTH_MORE</em></strong> memberikan efek penghalusan yang lebih kuat sehingga citra tampak lebih <em>blur</em>. 
+            Dengan menggunakan <em>filter</em> bawaan ini, proses <em>smoothing</em> dapat dilakukan dengan cepat dan praktis, terutama untuk kebutuhan pemrosesan citra dasar.
         </p>
+
         <p style="text-align:justify;text-indent:30px;">
-            Selain filter bawaan, <em>Pillow</em> juga menyediakan <strong><em>ImageFilter.Kernel</em></strong> bagi pengguna yang ingin menerapkan <em>smoothing</em> menggunakan <em>kernel</em> tertentu. 
-            Pada metode ini, pengguna cukup menentukan ukuran <em>kernel</em> dan nilai <em>kernel</em> yang digunakan tanpa perlu mengatur proses <em>padding</em> secara terpisah seperti pada <em>convolution</em> manual.
+            Selain <em>filter</em> bawaan, Pillow juga menyediakan <strong><em>ImageFilter.Kernel</em></strong> jika ingin menerapkan <em>smoothing</em> menggunakan <em>kernel</em> tertentu. 
+            Pada metode ini cukup menentukan ukuran <em>kernel</em> dan nilai <em>kernel</em> yang digunakan tanpa perlu mengatur proses <em>padding</em> secara terpisah seperti pada konvolusi manual.
         </p>
 
         <div class="code-box-code">
@@ -425,15 +427,16 @@
 
 <section class="card-section">
     <div class="card-section-header">
-        <i class="bi bi-layers-half"></i> 2. Order-Statistic (Nonlinear) Filters
+        <i class="bi bi-layers-half"></i> <em>Order-Statistic (Nonlinear) Filters</em>
     </div>
     <div class="card-section-body">
         <p style="text-align:justify;text-indent:30px;">
-            <em>Pillow</em> juga menyediakan beberapa filter <em>nonlinear</em> melalui modul <strong><em>ImageFilter</em></strong> yang bekerja dengan memanfaatkan nilai piksel di sekitar piksel pusat. 
-            Contoh <strong>filter nonlinear</strong> yang tersedia antara lain <strong><em>MedianFilter</em></strong>, 
-            <strong><em>MinFilter</em></strong>, dan <strong><em>MaxFilter</em></strong> yang masing-masing memiliki cara kerja berbeda dalam memproses citra. 
-            Filter-filter ini tidak menggunakan perhitungan rata-rata seperti pada <em>smoothing</em> <em>linear</em>, 
-            melainkan memilih nilai tertentu dari lingkungan piksel di sekitarnya. Parameter <strong><em>size=3</em></strong> menunjukkan ukuran jendela filter yang digunakan, yaitu 3×3 piksel.
+            Pillow juga menyediakan beberapa <em>filter</em> <em>nonlinear</em> melalui modul 
+            <strong><em>ImageFilter</em></strong> yang bekerja dengan memanfaatkan nilai piksel di sekitar piksel pusat. 
+            Contoh <strong><em>filter nonlinear</em></strong> yang tersedia antara lain 
+            <strong><em>MedianFilter</em></strong>, <strong><em>MinFilter</em></strong>, dan <strong><em>MaxFilter</em></strong> yang masing-masing memiliki cara kerja berbeda dalam memproses citra. 
+            <em>Filter</em>-filter ini tidak menggunakan perhitungan rata-rata seperti pada <em>smoothing</em> linear melainkan memilih nilai tertentu dari lingkungan piksel di sekitarnya. 
+            Parameter <strong><em>size=3</em> menunjukkan ukuran jendela <em>filter</em> yang digunakan yaitu 3×3 piksel</strong>.
         </p>
 
         <div class="code-box-code">

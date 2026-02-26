@@ -1,7 +1,7 @@
 {% extends "mhs/base.html" %}
 {% load static %}
 
-{% block title %}Subbab{% endblock %}
+{% block title %}Subbab 6 - Ringkasan{% endblock %}
 
 {% block content %}
 
@@ -62,7 +62,7 @@
 
 <div class="mb-3">
   <h1 class="title-main" style="margin:0;">
-    RINGKASAN SUBBAB 5 - <span style="color:var(--primary-500)"><em>SHARPENING SPATIAL FILTERS</em></span>
+     SUBBAB 6 - <span style="color:var(--primary-500)">RINGKASAN</span>
   </h1>
 </div>
 
@@ -75,20 +75,49 @@
   <div class="card-section-body">
 
     <div class="summary-box">
-      <h4><b>1. <em>Sharpening</em> pada Citra Digital</b></h4>
-      <p style="text-align: justify; text-indent: 30px; margin-left: 30px;">
-        Sharpening adalah proses penajaman citra untuk menonjolkan tepi dan detail objek agar terlihat lebih 
-        jelas. Salah satu metode yang sering digunakan adalah operator Laplacian, yang menekankan perbedaan intensitas antar piksel sehingga bagian tepi tampak lebih tegas.
-      </p>
-    </div>
 
-    <div class="summary-box">
-      <h4><b>2. <em>Unsharp-masking</em> dan <em>Highboost Filter</em></b></h4>
-      <p style="text-align: justify; text-indent: 30px; margin-left: 30px;">
-        Unsharp masking dilakukan dengan mengurangkan citra blur dari citra asli untuk mendapatkan detail tepi (mask), 
-        selanjutnya menambahkannya kembali ke citra asli. Highboost filter merupakan pengembangan dari unsharp 
-        masking yang memberikan faktor penguatan (k) lebih besar dari 1, sehingga hasil penajaman menjadi jauh lebih kuat.
+      <h4><b>1. Pustaka Pillow</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
+        Pillow adalah pustaka Python untuk <em>image processing</em> yang sederhana dan mudah digunakan, 
+        serta menyediakan <em>filter</em> bawaan seperti penghalusan dan penajaman citra.
       </p>
+
+      <h4><b>2. Konversi Citra RGB ke <em>Grayscale</em></b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
+        Konversi citra RGB ke <em>grayscale</em> dilakukan menggunakan fungsi 
+        <code>convert("L")</code> pada Pillow berdasarkan nilai luminansi setiap piksel.
+      </p>
+
+      <h4><b>3. Konversi Citra <em>Grayscale</em> ke Biner</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
+        Citra <em>grayscale</em> diubah menjadi citra biner dengan metode <em>threshold</em> 
+        menggunakan <code>img.point()</code> 
+        (nilai &gt; <em>threshold</em>  menjadi 255, selain itu menjadi 0).
+      </p>
+
+      <h4><b>4. Konvolusi</b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
+        Konvolusi citra dilakukan menggunakan pustaka SciPy melalui fungsi 
+        <code>convolve2d()</code> dengan metode <em>padding</em> seperti 
+        <em>symm</em> (refleksi), <em>fill</em> (konstan), dan <em>wrap</em> (melingkar).
+      </p>
+
+      <h4><b>5. <em>Smoothing Filters</em></b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
+        Pillow menyediakan <em>filter smoothing linear</em> seperti 
+        <code>ImageFilter.SMOOTH</code>, serta <em>filter nonlinear</em> seperti 
+        <code>ImageFilter.MedianFilter()</code>, 
+        <code>ImageFilter.MinFilter()</code>, dan 
+        <code>ImageFilter.MaxFilter()</code>.
+      </p>
+
+      <h4><b><em>Sharpening Filters</em></b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
+        Pillow juga menyediakan <em>filter sharpening</em> bawaan seperti 
+        <code>ImageFilter.SHARPEN</code> dan 
+        <code>ImageFilter.UnsharpMask()</code>.
+      </p>
+
     </div>
 
     <div class="material-nav">

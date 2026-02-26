@@ -216,15 +216,13 @@
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
       Ketika kita melihat sebuah citra terdapat bagian yang tampak jelas dan tegas seperti tepi objek, garis bangunan, atau detail wajah, serta bagian lain yang terlihat lebih lembut dan rata. 
-      Dalam pemrosesan citra digital, <strong>penekanan terhadap bagian-bagian yang tegas</strong> tersebut dapat dilakukan melalui proses 
-      <strong>penajaman (<em>sharpening</em>)</strong>.
+      Dalam pemrosesan citra digital <strong>penekanan terhadap bagian-bagian yang tegas</strong> tersebut dapat dilakukan melalui proses <strong>penajaman (<em>sharpening</em>)</strong>.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      <strong><em>Sharpening</em></strong> merupakan proses yang bertujuan untuk 
-      <strong>menonjolkan perbedaan intensitas antar piksel</strong>, sehingga tepi dan detail objek terlihat lebih jelas. 
-      Berbeda dengan <em>smoothing</em> yang berfungsi meratakan nilai piksel dan dapat melembutkan tepi, <em>sharpening</em> justru 
-      <strong>memperkuat perubahan intensitas</strong> agar detail yang sebelumnya melemah menjadi lebih tegas dan mudah dikenali.
+      <strong><em>Sharpening</em></strong> merupakan proses yang bertujuan untuk <strong>menonjolkan perbedaan intensitas antar piksel</strong>, 
+      sehingga tepi dan detail objek terlihat lebih jelas. Berbeda dengan <em>smoothing</em> yang berfungsi meratakan nilai piksel dan dapat melembutkan tepi, 
+      <em>sharpening</em> justru <strong>memperkuat perubahan intensitas</strong> agar detail yang sebelumnya melemah menjadi lebih tegas dan mudah dikenali.
     </p>
 
     <figure style="margin:20px 0;">
@@ -235,8 +233,8 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada Gambar E.1 ditunjukkan perbandingan citra <em>grayscale</em> sebelum dan sesudah proses <em>sharpening</em>. 
-      Setelah penajaman, tepi objek seperti batas antara cabai dan paprika terlihat lebih tegas dan jelas karena perbedaan terang–gelapnya semakin kuat. 
+      Pada Gambar E.1 menunjukkan perbandingan citra <em>grayscale</em> sebelum dan sesudah proses <em>sharpening</em>. 
+      Setelah penajaman, tepi objek seperti batas antara cabai dan paprika terlihat lebih tegas dan jelas karena perbedaan terang-gelapnya semakin kuat. 
       Sementara itu, bagian citra yang permukaannya rata atau seragam tetap terlihat sama dan tidak banyak berubah.
     </p>
 
@@ -248,20 +246,17 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Salah satu cara umum untuk melakukan penajaman citra adalah menggunakan operator Laplacian 
-      yaitu metode yang menonjolkan perbedaan nilai intensitas antara piksel pusat dan piksel di 
-      sekitarnya. Pada bagian citra yang relatif seragam seperti dinding atau lantai yang rata, 
-      perubahan intensitas antar piksel sangat kecil sehingga hampir tidak mengalami perubahan 
-      setelah proses penajaman.
+      Salah satu cara umum untuk melakukan penajaman citra adalah menggunakan operator Laplacian, 
+      yaitu metode yang menonjolkan perubahan intensitas yang tajam antara piksel pusat dan piksel di sekitarnya. 
+      Pada bagian citra yang relatif seragam, seperti dinding atau lantai yang rata, perubahan intensitas 
+      antar piksel sangat kecil sehingga bagian tersebut hampir tidak mengalami perubahan setelah proses penajaman.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Sebaliknya, pada bagian citra yang memiliki perubahan intensitas yang jelas, seperti tepi 
-      objek atau batas antar bidang, perbedaan nilai piksel menjadi lebih menonjol. Hal ini 
-      dapat dianalogikan dengan anak tangga pada Gambar E.2, di mana setiap tepi anak tangga 
-      memiliki perbedaan ketinggian yang tegas. Proses penajaman bekerja dengan 
-      menegaskan “batas-batas” tersebut, sehingga bentuk dan struktur objek pada 
-      citra terlihat lebih jelas dan mudah dikenali.
+      Sebaliknya, pada bagian citra yang memiliki perubahan intensitas yang jelas, seperti tepi objek atau 
+      batas antar bidang, bagian tepinya menjadi lebih menonjol. Hal ini dapat dianalogikan dengan anak tangga 
+      pada Gambar E.2, di mana setiap tepi anak tangga memiliki perbedaan ketinggian yang jelas. 
+      Proses penajaman bekerja dengan menegaskan batas-batas tersebut sehingga struktur objek terlihat lebih tegas.
     </p>
 
     <div class="kernel-wrapper">
@@ -306,14 +301,14 @@
 
 
     <p style="text-align: justify; text-indent: 30px;">
-      Perbedaan kedua <em>kernel Laplacian</em> terletak pada cara bobot disebarkan di sekitar piksel pusat. 
-      Pada <em>kernel</em> dengan nilai pusat 4, hanya piksel di atas, bawah, kiri, dan kanan yang diberi bobot −1, sedangkan piksel diagonal tidak ikut dihitung. 
-      Akibatnya, penajaman yang dihasilkan cenderung lebih lembut dan menegaskan tepi pada arah horizontal dan vertikal.
+      Perbedaan kedua <em>kernel</em> Laplacian terletak pada cara bobot disebarkan di sekitar piksel pusat. 
+      Pada <em>kernel</em> dengan nilai pusat 4 hanya piksel di atas, bawah, kiri, dan kanan yang diberi bobot −1, sedangkan piksel diagonal tidak ikut dihitung. 
+      Akibatnya penajaman yang dihasilkan cenderung lebih lembut dan menegaskan tepi pada arah horizontal dan vertikal.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Sementara itu, pada <em>kernel Laplacian</em> dengan nilai pusat 8, seluruh piksel di sekeliling pusat termasuk yang berada pada posisi diagonal, diberi bobot −1. 
-      Karena lebih banyak piksel tetangga yang dibandingkan, <em>kernel</em> ini menghasilkan efek <em>sharpening</em> yang lebih kuat dan membuat tepi objek terlihat lebih tegas ke berbagai arah, seperti yang diperlihatkan pada Gambar E.3.
+      Sementara itu, pada <em>kernel</em> dengan nilai pusat 8, seluruh piksel di sekeliling pusat termasuk yang berada pada posisi diagonal diberi bobot −1. 
+      Karena lebih banyak piksel tetangga yang dibandingkan, <em>kernel</em> ini menghasilkan efek penajaman yang lebih kuat dan membuat tepi objek terlihat lebih tegas ke berbagai arah seperti yang diperlihatkan pada Gambar E.3.
     </p>
 
     <figure style="margin:20px 0;">
@@ -334,7 +329,7 @@
   <div class="card-section-body">
     
     <p style="text-align: justify; text-indent: 30px;">
-      Syarat utama agar bagian citra yang permukaannya rata tidak ikut berubah saat proses <em>sharpening</em> adalah jumlah seluruh nilai pada <em>kernel</em> harus sama dengan nol. 
+      Syarat utama agar bagian citra yang permukaannya rata tidak ikut berubah saat proses penajaman adalah jumlah seluruh nilai pada <em>kernel</em> harus sama dengan nol. 
       Kondisi ini memastikan bahwa <em>kernel</em> tidak menambah atau mengurangi tingkat kecerahan pada area yang memiliki nilai piksel seragam.
     </p>
 
@@ -351,6 +346,7 @@
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
+      <p>
       Persamaan tersebut menunjukkan bahwa nilai-nilai dalam <em>kernel</em> saling menyeimbangkan, sehingga area citra dengan intensitas yang sama tidak mengalami perubahan. 
       Sebaliknya, area yang memiliki perbedaan intensitas seperti tepi objek atau detail halus akan menjadi lebih menonjol. 
       Akibatnya, citra terlihat lebih tajam dan batas antar objek menjadi lebih jelas.
@@ -396,10 +392,10 @@
     </div>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada contoh perhitungan dua <em>kernel Laplacian</em> di atas ditunjukkan bahwa keduanya memenuhi syarat <em>sharpening</em>, yaitu jumlah seluruh elemen <em>kernel</em> bernilai nol. 
-      Pada masing-masing <em>kernel</em>, nilai positif dan negatif dijumlahkan sehingga hasil akhirnya sama dengan nol. 
+      Pada contoh perhitungan dua <em>kernel</em> Laplacian di atas ditunjukkan bahwa keduanya memenuhi syarat penajaman yaitu jumlah seluruh elemen <em>kernel</em> bernilai nol. 
+      Pada masing-masing <em>kernel</em> nilai positif dan negatif dijumlahkan sehingga hasil akhirnya sama dengan nol. 
       Hal ini menunjukkan bahwa pengaruh setiap nilai pada <em>kernel</em> saling mengimbangi. 
-      Akibatnya, area citra dengan intensitas yang relatif sama tidak mengalami perubahan, sedangkan area dengan perbedaan intensitas yang jelas, seperti tepi objek, akan menjadi lebih menonjol setelah proses <em>sharpening</em>.
+      Akibatnya, area citra dengan intensitas yang relatif sama tidak mengalami perubahan, sedangkan area dengan perbedaan intensitas yang jelas, seperti tepi objek, akan menjadi lebih menonjol setelah proses penajaman.
     </p>
   </div>
 </section>

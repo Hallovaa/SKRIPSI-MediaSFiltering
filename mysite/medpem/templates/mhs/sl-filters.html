@@ -226,20 +226,17 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      <strong><em>Smoothing</em> merupakan salah satu bentuk <em>filtering</em> pada <em>spatial domain</em> yang bertujuan untuk mengurangi <em>noise</em> dan membuat citra tampak lebih halus.</strong>
-      Proses ini dilakukan menggunakan konvolusi.
-      Pada <em>smoothing</em>, nilai piksel di sekitar pusat diratakan sehingga gangguan kecil dapat dikurangi.
-      Namun proses ini juga menyebabkan tepi dan detail halus menjadi kurang tajam.
-      <strong>Semakin besar ukuran <em>kernel</em> yang digunakan, semakin kuat efek pelembutan, tetapi detail citra semakin berkurang.</strong>
+      <strong><em>Smoothing</em> merupakan salah satu bentuk <em>filtering</em> pada <em>spatial domain</em> yang bertujuan untuk mengurangi <em>noise</em> dan membuat citra tampak lebih halus</strong>. 
+      Pada <em>smoothing</em> nilai piksel di sekitar pusat diratakan sehingga gangguan kecil dapat dikurangi. 
+      Namun proses ini juga menyebabkan tepi dan detail halus menjadi kurang tajam. 
+      <strong>Semakin besar ukuran <em>kernel</em> yang digunakan semakin kuat efek pelembutan, tetapi detail citra semakin berkurang</strong>.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      <strong><em>Smoothing linear filters</em></strong> adalah teknik pelembutan citra yang menggunakan operasi konvolusi dengan kernel berbobot linear. 
-      Istilah <em>linear</em> berarti bahwa perhitungan nilai piksel hanya melibatkan operasi perkalian dan penjumlahan. 
-      Nilai piksel baru diperoleh dari hasil perkalian nilai piksel tetangga dengan bobot <em>kernel</em> yang kemudian dijumlahkan. 
-      Persamaan <em>smoothing linear filter</em> sama dengan persamaan konvolusi, tetapi 
-      <strong>hasil perhitungannya dibagi dengan jumlah bobot <em>kernel</em> sehingga diperoleh nilai rata-rata piksel</strong> 
-      dan citra tampak lebih halus.
+      <strong><em>Smoothing linear filters</em></strong> adalah teknik pelembutan citra yang dilakukan dengan operasi konvolusi menggunakan <em>kernel</em> berbobot. 
+      Persamaan <em>smoothing linear filter</em> pada dasarnya sama dengan persamaan konvolusi. Perbedaannya terletak pada 
+      <strong>hasil perhitungannya yang dibagi dengan jumlah seluruh bobot <em>kernel</em>, sehingga diperoleh nilai rata-rata piksel</strong> 
+      dan citra menjadi lebih halus.
     </p>
 
     <p style="text-align: center; font-size: 27px;">
@@ -276,12 +273,11 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      <strong>Dua jenis <em>smoothing linear filter</em> yang umum digunakan adalah <em>mean filter</em> dan <em>weighted averaging filter</em>.</strong>
-      <strong><em>Mean filter</em></strong> merupakan <em>smoothing linear filter</em> paling sederhana.
-      Filter ini mengganti nilai piksel pusat dengan nilai rata-rata dari seluruh piksel di dalam area <em>kernel</em>.
-      <strong>Semua elemen <em>kernel</em> memiliki bobot yang sama sehingga setiap piksel tetangga memberikan pengaruh yang setara.</strong>
-      Pada <em>kernel</em> berukuran 3×3 terdapat 9 piksel sehingga setiap elemen <em>kernel</em> bernilai \( \frac{1}{9} \),
-      dan untuk <em>kernel</em> 5×5 terdapat 25 piksel sehingga setiap elemen <em>kernel</em> bernilai \( \frac{1}{25} \).
+      <strong>Dua jenis <em>smoothing linear filter</em></strong> yang umum digunakan adalah <strong><em>mean filter</em></strong> dan 
+      <strong><em>weighted averaging filter</em></strong>. <strong><em>Mean filter</em></strong> merupakan <em>smoothing linear filter</em> paling sederhana. 
+      Filter ini mengganti nilai piksel pusat dengan nilai rata-rata dari seluruh piksel di dalam area <em>kernel</em>. 
+      <strong>Semua elemen <em>kernel</em> memiliki bobot yang sama sehingga setiap piksel tetangga memberikan pengaruh yang setara</strong>. 
+      Pada <em>kernel</em> berukuran 3×3 terdapat 9 piksel sehingga setiap elemen <em>kernel</em> bernilai \( \frac{1}{9} \) dan untuk <em>kernel</em> 5×5 terdapat 25 piksel sehingga setiap elemen <em>kernel</em> bernilai \( \frac{1}{25} \).
     </p>
 
     <div class="kernel-wrapper">
@@ -337,17 +333,23 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada Gambar D.1 ditunjukkan perubahan citra setelah diterapkan <em>mean filter</em> dengan ukuran <em>kernel</em> yang berbeda. 
-      Setelah dilakukan <em>filtering</em> menggunakan <em>kernel</em> 3×3, <em>noise</em> mulai berkurang karena setiap piksel digantikan oleh nilai rata-rata dari sembilan piksel tetangganya, sehingga citra tampak lebih halus meskipun tingkat ketajamannya sedikit menurun.
+      Pada Gambar D.1 menunjukkan perubahan citra setelah diterapkan <em>mean filter</em> dengan ukuran <em>kernel</em> yang berbeda. 
+      Pada citra asli detail objek terlihat tajam dan jelas, namun masih terdapat <em>noise</em> acak berupa bintik-bintik halus pada beberapa bagian. 
+      Setelah dilakukan <em>filtering</em> menggunakan <em>kernel</em> 3×3, <em>noise</em> mulai berkurang karena setiap piksel diganti dengan nilai rata-rata dari sembilan piksel tetangganya, sehingga citra tampak lebih halus meskipun ketajamannya sedikit menurun.
     </p>
+
     <p style="text-align: justify; text-indent: 30px;"> 
-      Pada <em>kernel</em> 5×5, efek perataan menjadi lebih kuat karena setiap piksel merupakan rata-rata dari 25 piksel tetangganya. 
-      Akibatnya <em>noise</em> hampir tidak terlihat, tetapi detail halus seperti garis tipis dan batas huruf mulai tampak kabur. 
+      Pada <em>kernel</em> 5×5 efek perataan menjadi lebih kuat karena setiap piksel merupakan rata-rata dari 25 piksel tetangganya. 
+      Akibatnya <em>noise</em> hampir tidak terlihat tetapi detail halus seperti garis tipis dan batas huruf mulai tampak kabur. 
+      Hal ini menunjukkan bahwa semakin besar ukuran <em>kernel</em> pada <em>mean filter</em> semakin kuat efek <em>smoothing</em> yang dihasilkan, namun semakin besar pula potensi hilangnya detail citra.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;"> 
       <strong><em>Weighted averaging filter</em></strong> merupakan pengembangan dari <em>mean filter</em> dengan 
-      <strong>bobot <em>kernel</em> yang tidak seragam. Piksel yang berada lebih dekat dengan pusat <em>kernel</em> diberi bobot lebih besar, sedangkan bobot menurun ke arah tepi.</strong>
+      <strong>bobot <em>kernel</em> yang tidak seragam. Piksel yang berada lebih dekat dengan pusat <em>kernel</em> diberi bobot lebih besar, sedangkan bobot menurun ke arah tepi</strong>. Akibatnya 
+      <strong>piksel pusat memiliki pengaruh dominan dalam perhitungan</strong>, sehingga proses <em>smoothing</em> tetap berlangsung tanpa terlalu menghilangkan detail tepi. 
+      Dengan pemberian bobot yang berbeda struktur penting citra dapat dipertahankan dengan lebih baik dibandingkan <em>mean filter</em>. 
+      Pada Gambar D.3 ditunjukkan pola bobot <em>kernel</em> tersebut di mana bobot terbesar berada di pusat dan semakin mengecil ke arah tepi.
     </p>
 
     <div class="kernel-wrapper">
@@ -401,6 +403,14 @@
         Gambar D.2 Contoh hasil penerapan <em>kernel weighted averaging Filter</em> 3x3 dan 5x5
       </figcaption>
     </figure>
+
+    <p style="text-align: justify; text-indent: 30px;"> 
+      Pada Gambar D.2 ditunjukkan hasil penerapan <em>weighted averaging filter</em> dengan ukuran <em>kernel</em> 3×3 dan 5×5. 
+      Pada <em>kernel</em> 3×3 <em>noise</em> mulai berkurang sementara ketajaman tepi masih cukup terjaga karena piksel pusat diberi bobot lebih besar. 
+      Ketika ukuran <em>kernel</em> diperbesar menjadi 5×5, citra tampak lebih halus, namun detail penting masih lebih terjaga dibandingkan hasil <em>mean filter</em> dengan ukuran <em>kernel</em> yang sama. 
+      Hal ini menunjukkan bahwa <em>weighted averaging filter</em> mampu mengurangi <em>noise</em> sekaligus mempertahankan struktur penting pada citra.
+    </p>
+
   </div>
 </section>
 
