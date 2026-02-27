@@ -51,11 +51,11 @@ def reg_mahasiswa(request):
         token = request.POST.get('token')
         try:
             if User.objects.filter(email=email).exists():
-                messages.error(request, 'Email sudah terdaftar.')
+                messages.error(request, 'Email sudah terdaftar. Silakan gunakan email lain.')
                 return render(request, 'reg_mahasiswa.html')
             
             if Mahasiswa.objects.filter(nim=nim).exists():
-                messages.error(request, 'NIM sudah terdaftar.')
+                messages.error(request, 'NIM sudah terdaftar. Silakan gunakan NIM lain.')
                 return render(request, 'reg_mahasiswa.html')
             
             kelas = Kelas.objects.get(token=token)
@@ -74,7 +74,7 @@ def reg_mahasiswa(request):
                 nim=nim, 
                 kelas=kelas
             )
-            messages.success(request, 'Registrasi berhasil, silakan login.')
+            messages.success(request, 'Pendaftaran berhasil, silakan masuk.')
             return redirect('login')
         except Kelas.DoesNotExist:
             messages.error(request, 'Token kelas tidak valid.')
@@ -90,11 +90,11 @@ def reg_dosen(request):
         password = request.POST.get('password')
         try:
             if User.objects.filter(email=email).exists():
-                messages.error(request, 'Email sudah terdaftar.')
+                messages.error(request, 'Email sudah terdaftar. Silakan gunakan email lain.')
                 return render(request, 'reg_dosen.html')
 
             if Dosen.objects.filter(nip=nip).exists():
-                messages.error(request, 'NIP sudah terdaftar.')
+                messages.error(request, 'NIP sudah terdaftar. Silakan gunakan NIP lain.')
                 return render(request, 'reg_dosen.html')
 
             user = User(
@@ -106,7 +106,7 @@ def reg_dosen(request):
             user.save()
 
             Dosen.objects.create(user=user, nama_lengkap=nama, nip=nip)
-            messages.success(request, 'Registrasi dosen berhasil.')
+            messages.success(request, 'Pendaftaran dosen berhasil.')
             return redirect('login')
         except Exception as e:
             messages.error(request, f'Terjadi kesalahan: {str(e)}')
