@@ -132,9 +132,9 @@
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
       <strong>Citra berwarna</strong> adalah citra yang setiap pikselnya menyimpan informasi warna melalui 
-      <strong>tiga <em>channel</em></strong> utama, yaitu R (<em>Red</em>/merah), G (<em>Green</em>/hijau), dan B (<em>Blue</em>/biru), yang sering disebut sebagai <strong><em>RGB</em></strong>. 
-      Setiap piksel pada citra <em>RGB</em> tidak hanya menyimpan satu nilai, tetapi menyimpan tiga nilai sekaligus yang menunjukkan seberapa kuat warna merah, hijau, dan biru pada piksel tersebut. 
-      Citra <em>RGB</em> dapat dibayangkan sebagai sebuah matriks besar, di mana setiap kotaknya merepresentasikan 
+      <strong>tiga <em>channel</em></strong> utama, yaitu R (<em>Red</em>/merah), G (<em>Green</em>/hijau), dan B (<em>Blue</em>/biru), yang sering disebut sebagai <strong>RGB</strong>. 
+      Setiap piksel pada citra RGB tidak hanya menyimpan satu nilai, tetapi menyimpan tiga nilai sekaligus yang menunjukkan seberapa kuat warna merah, hijau, dan biru pada piksel tersebut. 
+      Citra RGB dapat dibayangkan sebagai sebuah matriks besar, di mana setiap kotaknya merepresentasikan 
       <strong>satu piksel yang memiliki tiga informasi warna di dalamnya</strong> seperti ditunjukkan pada Gambar A.4 dan Gambar A.5.
     </p>
 
@@ -275,7 +275,10 @@
     </p>
 
     <p style="text-align: center; font-size: 28px; margin-top: 30px">
-    \( \displaystyle y = \frac{1}{3}(R + G + B) \)
+    \[
+      y = \frac{1}{3}({\color{red}{R}} + {\color{green}{G}} + {\color{blue}{B}})
+    \]
+
     </p> 
 
     <p style="text-align: justify; text-indent: 30px;">
@@ -288,9 +291,9 @@
 
     <p style="text-align: center; font-size: 28px;">
     \[
-    y = 0.299R + 0.587G + 0.114B
+    y = {\color{red}{0.299R}} + {\color{green}{0.587G}} + {\color{blue}{0.114B}}
     \]
-    </p><br><be>
+    </p><br>
 
 
     <figure style="margin:0px 0;">
@@ -319,7 +322,7 @@
     </p>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/12A.png' %}" style="display:block; margin:auto; width:80%;">
+      <img src="{% static 'assets/img/konten/12A.png' %}" style="display:block; margin:auto; width:70%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
         Gambar A.12 Citra biner dengan dua nilai piksel 0 dan 1
       </figcaption>
@@ -332,9 +335,9 @@
     </p>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/13A.png' %}" style="display:block; margin:auto; width:90%;">
+      <img src="{% static 'assets/img/konten/13A.png' %}" style="display:block; margin:auto; width:100%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
-        Gambar A.13 Citra RGB, Citra <em>grayscale</em> , dan Citra biner
+        Gambar A.13 Citra RGB, Citra <em>grayscale</em>, dan Citra biner
       </figcaption>
     </figure>
 

@@ -304,16 +304,16 @@
     <script>
         const STATIC_URL = "{% static '' %}";
         const soal = [
-            {q:"Alasan utama penggunaan konvolusi dalam pemrosesan citra adalah karena …", o:["satu piksel tidak cukup untuk memahami struktur citra","citra harus selalu diubah ke domain frekuensi","konvolusi hanya digunakan untuk citra berwarna","kernel selalu berukuran besar","nilai piksel pusat tidak berpengaruh"]},
-            {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut …", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"]},
-            {q:"Kernel Gaussian pada proses konvolusi umumnya digunakan untuk …", o:["menonjolkan garis tepi","menghaluskan citra dan mengurangi noise","mendeteksi sudut","memperbesar resolusi citra","mengubah citra menjadi biner"]},
-            {q:"Ukuran kernel pada proses konvolusi harus bernilai ganjil karena …", o:["mempermudah komputasi","agar kernel dapat digeser lebih cepat","mengikuti standar pemrosesan citra","harus memiliki satu piksel pusat yang jelas","mengurangi jumlah piksel tetangga"]},
-            {q:"Kernel berukuran 3×3 melibatkan jumlah piksel tetangga sebanyak …", o:["delapan piksel","enam piksel","empat piksel","sembilan piksel","dua belas piksel"]},
-            {q:"Teknik padding digunakan dalam konvolusi dengan tujuan utama untuk …", o:["mempercepat proses filtering","memperkecil ukuran citra","menghilangkan noise secara langsung","memungkinkan piksel tepi ikut diproses","menormalkan nilai piksel"]},
-            {q:"Jenis padding yang mengisi tepi citra dengan menyalin nilai piksel terdekat disebut …", o:["zero padding","constant padding","replicate padding","wrap padding","reflect padding"]},
-            {q:"Tujuan utama dari normalisasi citra setelah konvolusi adalah …", o:["meningkatkan resolusi citra","menyesuaikan nilai piksel ke rentang 0–255","menambahkan padding baru","menghilangkan kernel","memperbesar ukuran citra"]},
-            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk -12, -25, dan -8 adalah …", o:["14, 0, dan 18","14, 0, dan 19","14, 0, dan 20","15, 0, dan 19","15, 0, dan 20"], img: STATIC_URL + "assets/img/kuis/k3-9.png"},
-            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk 270 dan 256 adalah …", o:["255 dan 255","255 dan 230","255 dan 231","255 dan 240","255 dan 241"], img: STATIC_URL + "assets/img/kuis/k3-10.png"}
+            {q:"Alasan utama penggunaan konvolusi dalam pemrosesan citra adalah karena ….", o:["satu piksel tidak cukup untuk memahami struktur citra","citra harus selalu diubah ke domain frekuensi","konvolusi hanya digunakan untuk citra berwarna","kernel selalu berukuran besar","nilai piksel pusat tidak berpengaruh"]},
+            {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut ….", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"]},
+            {q:"Kernel Gaussian pada proses konvolusi umumnya digunakan untuk ….", o:["menonjolkan garis tepi","menghaluskan citra dan mengurangi noise","mendeteksi sudut","memperbesar resolusi citra","mengubah citra menjadi biner"]},
+            {q:"Ukuran kernel pada proses konvolusi harus bernilai ganjil karena ….", o:["mempermudah komputasi","agar kernel dapat digeser lebih cepat","mengikuti standar pemrosesan citra","harus memiliki satu piksel pusat yang jelas","mengurangi jumlah piksel tetangga"]},
+            {q:"Kernel berukuran 3×3 melibatkan jumlah piksel tetangga sebanyak ….", o:["delapan piksel","enam piksel","empat piksel","sembilan piksel","dua belas piksel"]},
+            {q:"Teknik padding digunakan dalam konvolusi dengan tujuan utama untuk ….", o:["mempercepat proses filtering","memperkecil ukuran citra","menghilangkan noise secara langsung","menormalkan nilai piksel","memungkinkan piksel tepi ikut diproses"]},
+            {q:"Jenis padding yang mengisi tepi citra dengan menyalin nilai piksel terdekat disebut ….", o:["zero padding","constant padding","replicate padding","wrap padding","reflect padding"]},
+            {q:"Tujuan utama dari normalisasi citra setelah konvolusi adalah ….", o:["meningkatkan resolusi citra","menyesuaikan nilai piksel ke rentang 0–255","menambahkan padding baru","menghilangkan kernel","memperbesar ukuran citra"]},
+            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk -12, -25, dan -8 adalah ….", o:["14, 0, dan 18","14, 0, dan 19","14, 0, dan 20","15, 0, dan 19","15, 0, dan 20"], img: STATIC_URL + "assets/img/kuis/k3-9.png"},
+            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk 270 dan 256 adalah ….", o:["255 dan 255","255 dan 230","255 dan 231","255 dan 240","255 dan 241"], img: STATIC_URL + "assets/img/kuis/k3-10.png"}
         ];
 
         let idx = 0;

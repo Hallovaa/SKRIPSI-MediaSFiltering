@@ -398,7 +398,7 @@
 
     <div class="kernel-wrapper">
       <div class="kernel-card">
-        <div class="kernel-header">Kernel Laplacian</div>
+        <div class="kernel-header"><em>Kernel</em> Laplacian</div>
         <div class="kernel-math">
           <div class="math-container">
             $$ \begin{bmatrix} 0 & -1 & 0 \\ -1 & 4 & -1 \\ 0 & -1 & 0 \end{bmatrix} $$
@@ -411,7 +411,7 @@
       </div>
 
       <div class="kernel-card">
-        <div class="kernel-header">Kernel Gaussian</div>
+        <div class="kernel-header"><em>Kernel</em> Gaussian</div>
         <div class="kernel-math">
           <div class="math-container">
             $$ \frac{1}{16} \times \begin{bmatrix} 1 & 2 & 1 \\ 2 & 4 & 2 \\ 1 & 2 & 1 \end{bmatrix} $$
@@ -427,8 +427,8 @@
     <p style="text-align: justify; text-indent: 30px;">
       Pada dua jenis <em>kernel</em> di atas memiliki ukuran yang sama yaitu 3×3, tetapi memiliki nilai bobot yang berbeda. 
       Nilai bobot inilah yang menentukan bagaimana piksel di sekitar ikut dihitung. 
-      Pada <em>kernel Laplacian</em> nilai bobotnya dibuat agar perbedaan antara piksel gelap dan terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk menonjolkan tepi gambar. 
-      Sebaliknya, pada <em>kernel Gaussian</em> nilai bobotnya dibuat lebih merata sehingga nilai piksel di sekitar saling diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang. 
+      Pada <em>kernel</em> Laplacian nilai bobotnya dibuat agar perbedaan antara piksel gelap dan terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk menonjolkan tepi gambar. 
+      Sebaliknya, pada <em>kernel</em> Gaussian nilai bobotnya dibuat lebih merata sehingga nilai piksel di sekitar saling diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang. 
       Dengan demikian, meskipun ukuran <em>kernel</em> sama, perbedaan nilai bobot di dalam <em>kernel</em> menghasilkan tampilan citra yang berbeda.
     </p>
 
@@ -448,7 +448,7 @@
 
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Pada umumnya, <em>kernel</em> berukuran 3×3 paling sering digunakan karena bentuknya sederhana dan sudah cukup untuk melihat perubahan gelap dan terang di sekitar satu piksel. 
+      Pada umumnya, <em>kernel</em> berukuran 3×3 paling sering digunakan karena bentuknya sederhana dan sudah cukup untuk melihat perubahan gelap dan terang di sekitar satu piksel pusat. 
       Dengan <em>kernel</em> 3×3, satu piksel pusat akan dihitung bersama delapan piksel di sekitarnya untuk menghasilkan satu nilai baru pada citra hasil.
     </p>
 
@@ -482,12 +482,12 @@
     <p style="text-align: justify; text-indent: 30px; margin-bottom:30px">
       Selain itu, terdapat operasi korelasi yang cara kerjanya hampir sama dengan konvolusi karena sama-sama menggunakan <em>kernel</em> yang digeser di atas citra. 
       Perbedaannya terletak pada pembalikan <em>kernel</em>, di mana pada korelasi <em>kernel</em> tidak diputar 180° dan langsung digunakan sesuai posisinya. 
-      Namun, jika <em>kernel</em> yang digunakan bersifat simetris, seperti <em>kernel Laplacian</em> atau <em>Gaussian</em>, maka proses pembalikan tersebut tidak akan mengubah bentuk maupun bobotnya. 
+      Namun, jika <em>kernel</em> yang digunakan bersifat simetris, seperti <em>kernel</em> Laplacian atau Gaussian, maka proses pembalikan tersebut tidak akan mengubah bentuk maupun bobotnya. 
       Hal ini karena susunan angkanya sudah seimbang terhadap pusatnya, sehingga tetap sama meskipun dibalik.
     </p>
 
     <div class="sub-card">
-      <div class="sub-card-header"><span>Bagaimana Elemen Kernel dipasangkan dengan Piksel Citra?</span></div>
+      <div class="sub-card-header"><span>Bagaimana Elemen <em>Kernel</em> dipasangkan dengan Piksel Citra?</span></div>
       <div class="sub-card-body">
 
         <div class="card-section-body">
@@ -629,8 +629,8 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px; margin-top: 30px">
-      Pada Gambar C.3 ditunjukkan hasil penerapan <em>filter Laplacian</em> dan <em>filter smoothing</em> pada citra <em>grayscale</em> menggunakan proses konvolusi. 
-      Ketika citra diproses menggunakan <em>kernel Laplacian</em>, bagian tepi dan garis pada citra terlihat lebih jelas dan tajam karena perbedaan nilai gelap dan terang diperkuat. 
+      Pada Gambar C.3 ditunjukkan hasil penerapan <em>filter</em> Laplacian dan <em>filter smoothing</em> pada citra <em>grayscale</em> menggunakan proses konvolusi. 
+      Ketika citra diproses menggunakan <em>kernel</em> Laplacian, bagian tepi dan garis pada citra terlihat lebih jelas dan tajam karena perbedaan nilai gelap dan terang diperkuat. 
       Sebaliknya, ketika citra diproses menggunakan <em>kernel smoothing</em>, tampilan citra menjadi lebih halus karena nilai piksel di sekitarnya diratakan, sehingga gangguan kecil atau <em>noise</em> menjadi berkurang.
     </p>
   </div>

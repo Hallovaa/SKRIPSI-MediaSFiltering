@@ -310,102 +310,16 @@
     <script>
         const STATIC_URL = "{% static '' %}";
         const soal = [
-            {
-                q: "Tujuan utama proses sharpening pada citra digital adalah ....",
-                o: [
-                "Mengurangi noise acak",
-                "Menonjolkan perbedaan intensitas agar tepi dan detail objek lebih jelas",
-                "Mengubah citra ke domain frekuensi",
-                "Menghaluskan seluruh citra",
-                "Memperkecil ukuran citra"
-                ]
-            },
-            {
-                q: "Kernel Laplacian dengan nilai pusat 8 menghasilkan penajaman yang lebih kuat karena ....",
-                o: [
-                "Hanya memperhitungkan piksel horizontal",
-                "Tidak menggunakan nilai negatif",
-                "Ukuran kernel lebih kecil",
-                "Tidak melibatkan piksel pusat",
-                "Seluruh piksel tetangga termasuk diagonal ikut dihitung"
-                ]
-            },
-            {
-                q: "Syarat utama agar area citra yang permukaannya rata tidak berubah setelah sharpening adalah ....",
-                o: [
-                "Jumlah seluruh nilai kernel sama dengan nol",
-                "Kernel harus berukuran besar",
-                "Citra harus berwarna",
-                "Hanya piksel pusat yang diproses",
-                "Semua bobot kernel bernilai positif"
-                ]
-            },
-            {
-                q: "Bagian citra yang memiliki intensitas seragam setelah proses sharpening akan ....",
-                o: [
-                "Menjadi lebih buram",
-                "Mengalami peningkatan noise",
-                "Berubah drastis",
-                "Relatif tidak mengalami perubahan",
-                "Menjadi lebih gelap"
-                ]
-            },
-            {
-                q: "Perbedaan utama antara smoothing dan sharpening adalah ....",
-                o: [
-                "Sharpening menegaskan tepi, smoothing meratakan nilai piksel",
-                "Smoothing bekerja di domain frekuensi",
-                "Sharpening mengurangi noise",
-                "Smoothing tidak memproses piksel tetangga",
-                "Sharpening hanya untuk citra berwarna"
-                ]
-            },
-            {
-                q: "Highboost filtering berbeda dari unsharp masking karena ....",
-                o: [
-                "Tidak menggunakan citra hasil smoothing",
-                "Hanya menggunakan kernel Laplacian",
-                "Bekerja pada domain frekuensi",
-                "Faktor penguatan k bernilai lebih dari 1",
-                "Tidak menggunakan mask"
-                ]
-            },
-            {
-                q: "Unsharp masking melakukan penajaman citra dengan cara ....",
-                o: [
-                "Langsung menerapkan kernel Laplacian",
-                "Menurunkan kontras citra",
-                "Menambahkan mask hasil selisih citra asli dan citra hasil smoothing",
-                "Hanya menggunakan citra hasil smoothing",
-                "Menghilangkan seluruh frekuensi rendah"
-                ]
-            },
-            {
-                q: "Pada sebuah citra grayscale, terdapat bagian permukaan yang rata dan bagian lain yang memiliki perubahan terang–gelap yang cukup jelas. Setelah proses sharpening dilakukan, batas antara kedua bagian tersebut terlihat lebih tegas, sementara area yang rata hampir tidak berubah. Kondisi ini menunjukkan bahwa sharpening bekerja dengan cara ....",
-                o: [
-                "Menghaluskan seluruh permukaan citra",
-                "Mengurangi perbedaan intensitas antar piksel",
-                "Menegaskan batas perubahan intensitas pada citra",
-                "Menyamakan nilai piksel di seluruh area citra",
-                "Menghilangkan detail objek pada citra"
-                ]
-            },
-            {
-                q: "Perhatikan citra grayscale dan citra blur 4×4 di bawah ini! Berdasarkan citra asli dan hasil Gaussian blur yang diberikan, matriks mask yang benar adalah ....",
-                o: [
-                STATIC_URL + "assets/img/kuis/k5-9-a.png",
-                STATIC_URL + "assets/img/kuis/k5-9-b.png",
-                STATIC_URL + "assets/img/kuis/k5-9-c.png",
-                STATIC_URL + "assets/img/kuis/k5-9-d.png",
-                STATIC_URL + "assets/img/kuis/k5-9-e.png"
-                ],
-                img: STATIC_URL + "assets/img/kuis/k5-9.png"
-            },
-            {
-                q: "Perhatikan citra grayscale 4×4 di bawah ini! Nilai mask yang telah diperkuat dengan faktor k = 2 untuk piksel pusat (ditandai warna biru) adalah ....",
-                o: ["1", "2", "3", "4", "5"],
-                img: STATIC_URL + "assets/img/kuis/k5-10.png"
-            }
+            {q: "Tujuan utama proses sharpening pada citra digital adalah ....", o: ["mengurangi noise acak", "menonjolkan perbedaan intensitas agar tepi dan detail objek lebih jelas", "mengubah citra ke domain frekuensi", "menghaluskan seluruh citra", "memperkecil ukuran citra"]},
+            {q: "Kernel Laplacian dengan nilai pusat 8 menghasilkan penajaman yang lebih kuat karena ....", o: ["hanya memperhitungkan piksel horizontal", "tidak menggunakan nilai negatif", "ukuran kernel lebih kecil", "tidak melibatkan piksel pusat", "seluruh piksel tetangga termasuk diagonal ikut dihitung"]},
+            {q: "Syarat utama agar area citra yang permukaannya rata tidak berubah setelah sharpening adalah ....", o: ["jumlah seluruh nilai kernel sama dengan nol", "kernel harus berukuran besar", "citra harus berwarna", "hanya piksel pusat yang diproses", "semua bobot kernel bernilai positif"]},
+            {q: "Bagian citra yang memiliki intensitas seragam setelah proses sharpening akan ....", o: ["menjadi lebih buram", "mengalami peningkatan noise", "berubah drastis", "relatif tidak mengalami perubahan", "menjadi lebih gelap"]},
+            {q: "Perbedaan utama antara smoothing dan sharpening adalah ....", o: ["sharpening menegaskan tepi, smoothing meratakan nilai piksel", "smoothing bekerja di domain frekuensi", "sharpening mengurangi noise", "smoothing tidak memproses piksel tetangga", "sharpening hanya untuk citra berwarna"]},
+            {q: "Highboost filtering berbeda dari unsharp masking karena ....", o: ["tidak menggunakan citra hasil smoothing", "hanya menggunakan kernel laplacian", "bekerja pada domain frekuensi", "faktor penguatan k bernilai lebih dari 1", "tidak menggunakan mask"]},
+            {q: "Unsharp masking melakukan penajaman citra dengan cara ....", o: ["langsung menerapkan kernel laplacian", "menurunkan kontras citra", "menambahkan mask hasil selisih citra asli dan citra hasil smoothing", "hanya menggunakan citra hasil smoothing", "menghilangkan seluruh frekuensi rendah"]},
+            {q: "Pada sebuah citra grayscale, terdapat bagian permukaan yang rata dan bagian lain yang memiliki perubahan terang–gelap yang cukup jelas. Setelah proses sharpening dilakukan, batas antara kedua bagian tersebut terlihat lebih tegas, sementara area yang rata hampir tidak berubah. Kondisi ini menunjukkan bahwa sharpening bekerja dengan cara ....", o: ["menghaluskan seluruh permukaan citra", "mengurangi perbedaan intensitas antar piksel", "menegaskan batas perubahan intensitas pada citra", "menyamakan nilai piksel di seluruh area citra", "menghilangkan detail objek pada citra"]},
+            {q: "Perhatikan citra grayscale dan citra blur 4×4 di bawah ini! Berdasarkan citra asli dan hasil Gaussian blur yang diberikan, matriks mask yang benar adalah ....", o: [STATIC_URL + "assets/img/kuis/k5-9-a.png", STATIC_URL + "assets/img/kuis/k5-9-b.png", STATIC_URL + "assets/img/kuis/k5-9-c.png", STATIC_URL + "assets/img/kuis/k5-9-d.png", STATIC_URL + "assets/img/kuis/k5-9-e.png"], img: STATIC_URL + "assets/img/kuis/k5-9.png"},
+            {q: "Perhatikan citra grayscale 4×4 di bawah ini! Nilai mask yang telah diperkuat dengan faktor k = 2 untuk piksel pusat (ditandai warna biru) adalah ....", o: ["1", "2", "3", "4", "5"], img: STATIC_URL + "assets/img/kuis/k5-10.png"},
             ];
 
 

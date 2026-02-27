@@ -170,7 +170,7 @@
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
       Pada Gambar B.3 ditunjukkan dua jenis citra yang mengalami gangguan (<em>noise</em>). 
-      Citra di sebelah kiri menunjukkan <em>Gaussian noise</em> yang tampak seperti butiran halus menyebar merata di seluruh gambar. 
+      Citra di sebelah kiri menunjukkan Gaussian <em>noise</em> yang tampak seperti butiran halus menyebar merata di seluruh gambar. 
       Sedangkan citra di sebelah kanan menunjukkan <em>salt and pepper noise</em> yang berbentuk bintik-bintik hitam dan putih acak seperti taburan garam dan merica.
     </p>
 
@@ -183,7 +183,7 @@
 
     <p style="text-align: justify; text-indent: 30px;">
       Dengan memanfaatkan <em>spatial filtering</em> berbagai jenis gangguan pada citra dapat dikurangi. 
-      Misalnya <em>mean filter</em> mengganti nilai piksel dengan rata-rata dari piksel di sekitarnya sehingga <em>Gaussian noise</em> dapat tersamarkan. 
+      Misalnya <em>mean filter</em> mengganti nilai piksel dengan rata-rata dari piksel di sekitarnya sehingga Gaussian <em>noise</em> dapat tersamarkan. 
       Sementara itu <em>median filter</em> lebih efektif untuk menghilangkan <em>salt and pepper noise</em> tanpa merusak tepi objek penting dalam gambar. 
       Contoh hasil penerapan kedua filter tersebut dapat dilihat pada Gambar B.4.
     </p>
@@ -232,7 +232,7 @@
 </section>
 
 <div class="material-nav">
-  <a href="{% url 'kuis_1' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a href="{% url 'ringkasan_citra' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
   <a id="nav-next-materi" href="{% url 'spatial_frequency' %}" 
      class="btn btn-primary {% if 'pengertian-spatial' not in selesai_slugs %}disabled{% endif %}" 
      style="{% if 'pengertian-spatial' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
@@ -249,12 +249,12 @@
   const questions = [
     {
       q: "Tujuan utama penggunaan spatial filtering dalam pemrosesan citra digital adalah ….",
-      opts: ["mengubah ukuran citra","mengonversi citra RGB menjadi grayscale","memperkecil resolusi citra","meningkatkan kualitas citra dengan mengolah nilai piksel secara langsung","menyimpan citra dalam format tertentu"],
-      ans: "meningkatkan kualitas citra dengan mengolah nilai piksel secara langsung",
-      explain: "spatial filtering bertujuan meningkatkan kualitas citra dengan memproses nilai piksel secara langsung pada domain spasial."
+      opts: ["memodifikasi ukuran citra untuk meningkatkan ketajaman tampilan","memodifikasi representasi citra ke dalam domain frekuensi untuk memperjelas detail","memodifikasi model warna citra untuk meningkatkan kualitas visual","memodifikasi nilai intensitas piksel secara langsung untuk meningkatkan kualitas citra","memodifikasi resolusi citra dengan menambah jumlah piksel"],
+      ans: "memodifikasi nilai intensitas piksel secara langsung untuk meningkatkan kualitas citra",
+      explain: "spatial filtering bekerja pada spatial domain dengan memodifikasi nilai intensitas piksel secara langsung berdasarkan piksel di sekitarnya untuk meningkatkan kualitas citra."
     },
     {
-      q: "Proses pemrosesan citra yang bekerja langsung pada nilai piksel dan piksel di sekitarnya disebut ….",
+      q: "Proses yang memodifikasi nilai piksel berdasarkan piksel tetangganya dalam spatial domain disebut ….",
       opts: ["neighbourhood operation","frequency transformation","histogram equalization","image compression","thresholding"],
       ans: "neighbourhood operation",
       explain: "neighbourhood operation adalah proses yang memanfaatkan nilai piksel pusat dan piksel-piksel tetangganya."

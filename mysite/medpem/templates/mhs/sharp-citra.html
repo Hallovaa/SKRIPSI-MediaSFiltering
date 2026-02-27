@@ -346,7 +346,6 @@
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      <p>
       Persamaan tersebut menunjukkan bahwa nilai-nilai dalam <em>kernel</em> saling menyeimbangkan, sehingga area citra dengan intensitas yang sama tidak mengalami perubahan. 
       Sebaliknya, area yang memiliki perbedaan intensitas seperti tepi objek atau detail halus akan menjadi lebih menonjol. 
       Akibatnya, citra terlihat lebih tajam dan batas antar objek menjadi lebih jelas.
@@ -500,7 +499,7 @@
 </section>
 
 <div class="material-nav">
-  <a href="{% url 'normalisasi_citra' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a href="{% url 'ringkasan4' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
   <a id="nav-next-materi" href="{% url 'um_highboost' %}" 
      class="btn btn-primary {% if 'sharp-citra' not in selesai_slugs %}disabled{% endif %}" 
      style="{% if 'sharp-citra' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">

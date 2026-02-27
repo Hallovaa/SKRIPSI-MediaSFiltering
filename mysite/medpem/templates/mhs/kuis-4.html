@@ -304,16 +304,16 @@
     <script>
         const STATIC_URL = "{% static '' %}";
         const soal = [
-            {q: "Tujuan utama proses smoothing pada citra digital adalah …", o: ["Menajamkan tepi objek", "Meningkatkan resolusi citra", "Mengurangi noise dan membuat citra tampak lebih halus", "Mengubah citra ke domain frekuensi", "Memisahkan objek dari latar belakang"]},
-            {q: "Smoothing linear filter disebut linear karena …", o: ["Menggunakan nilai median piksel", "Bobot kernel selalu sama", "Tidak menggunakan konvolusi", "Perhitungannya hanya melibatkan operasi perkalian dan penjumlahan", "Hasilnya selalu berupa citra biner"]},
-            {q: "Mean filter bekerja dengan cara …", o: ["Memilih nilai terbesar pada area filter", "Mengganti nilai piksel pusat dengan nilai rata-rata piksel tetangganya", "Mempertahankan nilai piksel pusat", "Mengurutkan nilai piksel lalu memilih nilai tengah", "Memilih nilai terkecil pada area filter"]},
-            {q: "Dampak utama penggunaan kernel mean filter berukuran besar adalah …", o: ["Noise semakin jelas terlihat", "Detail citra semakin tajam", "Citra tidak mengalami perubahan", "Tepi citra semakin kontras", "Citra semakin halus tetapi detail halus berkurang"]},
-            {q: "Perbedaan utama weighted averaging filter dibandingkan mean filter adalah …", o: ["Tidak menggunakan konvolusi", "Hanya bekerja pada citra biner", "Memberi bobot lebih besar pada piksel yang dekat dengan pusat", "Tidak mengurangi noise", "Menggunakan bobot yang sama untuk semua piksel"]},
-            {q: "Smoothing nonlinier berbeda dari smoothing linier karena …", o: ["Selalu menggunakan kernel berbobot", "Hanya dapat digunakan pada citra berwarna", "Tidak melibatkan piksel tetangga", "Tidak menggunakan operasi konvolusi berbobot", "Selalu menghasilkan citra kabur"]},
-            {q: "Filter yang paling sesuai untuk mengurangi bintik putih kecil (salt noise) adalah …", o: ["Min filter", "Max filter", "Median filter", "Mean filter", "Weighted averaging filter"]},
-            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil max filter untuk nilai piksel pusat adalah …", o: ["18", "20", "33", "45", "90"], img: STATIC_URL + "assets/img/kuis/k4-8.png"},
-            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil min filter untuk nilai piksel pusat adalah …", o: ["9", "14", "17", "18", "22"], img: STATIC_URL + "assets/img/kuis/k4-9.png"},
-            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil median filter untuk nilai piksel pusat adalah …", o: ["8", "10", "12", "15", "20"], img: STATIC_URL + "assets/img/kuis/k4-10.png"}
+            {q: "Tujuan utama proses smoothing pada citra digital adalah ….", o: ["menajamkan tepi objek", "meningkatkan resolusi citra", "mengurangi noise dan membuat citra tampak lebih halus", "mengubah citra ke domain frekuensi", "memisahkan objek dari latar belakang"]},
+            {q: "Order-statistic filtering menentukan nilai piksel baru berdasarkan ….", o: ["hasil transformasi fourier", "rata-rata seluruh piksel citra", "ukuran resolusi citra", "urutan nilai intensitas piksel dalam area filter", "jumlah kanal warna citra"]},
+            {q: "Mean filter bekerja dengan cara ….", o: ["memilih nilai terbesar pada area filter", "mengganti nilai piksel pusat dengan nilai rata-rata piksel tetangganya", "mempertahankan nilai piksel pusat", "mengurutkan nilai piksel lalu memilih nilai tengah", "memilih nilai terkecil pada area filter"]},
+            {q: "Dampak utama penggunaan kernel mean filter berukuran besar adalah ….", o: ["noise semakin jelas terlihat", "detail citra semakin tajam", "citra tidak mengalami perubahan", "tepi citra semakin kontras", "citra menjadi lebih halus, namun detail-detail kecil ikut berkurang"]},
+            {q: "Perbedaan utama weighted averaging filter dibandingkan mean filter adalah ….", o: ["tidak menggunakan konvolusi", "hanya bekerja pada citra biner", "memberi bobot lebih besar pada piksel yang dekat dengan pusat", "tidak mengurangi noise", "menggunakan bobot yang sama untuk semua piksel"]},
+            {q: "Smoothing nonlinier berbeda dari smoothing linier karena ….", o: ["selalu menggunakan kernel berbobot", "hanya dapat digunakan pada citra berwarna", "tidak melibatkan piksel tetangga", "tidak menggunakan operasi konvolusi berbobot", "selalu menghasilkan citra kabur"]},
+            {q: "Filter yang paling sesuai untuk mengurangi bintik putih kecil (salt noise) adalah ….", o: ["min filter", "max filter", "median filter", "mean filter", "weighted averaging filter"]},
+            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil max filter untuk nilai piksel pusat adalah ….", o: ["18", "20", "33", "45", "90"], img: STATIC_URL + "assets/img/kuis/k4-8.png"},
+            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil min filter untuk nilai piksel pusat adalah ….", o: ["9", "14", "17", "18", "22"], img: STATIC_URL + "assets/img/kuis/k4-9.png"},
+            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil median filter untuk nilai piksel pusat adalah ….", o: ["8", "10", "12", "15", "20"], img: STATIC_URL + "assets/img/kuis/k4-10.png"}
         ];
 
         let idx = 0;
