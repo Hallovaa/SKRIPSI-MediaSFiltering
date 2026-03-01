@@ -206,6 +206,14 @@
             font-weight: 600;
         }
 
+        .text-error-custom {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
         @media (max-width: 991px) {
             .navbar-collapse {
                 background: white;
@@ -276,7 +284,7 @@
             <h2 class="register-title">Daftar Akun Mahasiswa</h2>
             <p class="register-subtitle">Isi semua data di bawah ini dengan benar untuk bergabung.</p>
 
-            <form method="POST" action="{% url 'reg_mahasiswa' %}">
+            <form method="POST" action="{% url 'reg_mahasiswa' %}" id="registrationForm">
                 {% csrf_token %}
 
                 {% if messages %}
@@ -328,6 +336,7 @@
                                 oninput="this.setCustomValidity('')">
                             <i class="bi bi-eye" onclick="togglePassword('confirm_password', this)"></i>
                         </div>
+                        <div id="password_match_error" class="text-error-custom">Kata sandi dan konfirmasi kata sandi tidak cocok.</div>
                     </div>
                 </div>
 
@@ -364,6 +373,34 @@ function togglePassword(id, el) {
         el.classList.replace("bi-eye-slash", "bi-eye");
     }
 }
+
+const passInput = document.getElementById("password");
+const confirmInput = document.getElementById("confirm_password");
+const errorDiv = document.getElementById("password_match_error");
+const regForm = document.getElementById("registrationForm");
+
+function validate() {
+    if (passInput.value !== confirmInput.value && confirmInput.value !== "") {
+        confirmInput.style.borderColor = "#dc3545";
+        errorDiv.style.display = "block";
+        confirmInput.setCustomValidity("Not Match");
+    } else {
+        confirmInput.style.borderColor = "#d1d5db";
+        errorDiv.style.display = "none";
+        confirmInput.setCustomValidity("");
+    }
+}
+
+passInput.onchange = validate;
+confirmInput.onkeyup = validate;
+
+regForm.onsubmit = function() {
+    if (passInput.value !== confirmInput.value) {
+        validate();
+        return false;
+    }
+    return true;
+};
 </script>
 
 </body>

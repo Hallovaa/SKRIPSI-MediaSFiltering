@@ -48,8 +48,14 @@ def reg_mahasiswa(request):
         nim = request.POST.get('nim')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
         token = request.POST.get('token')
+        
         try:
+            if password != confirm_password:
+                messages.error(request, 'Kata sandi dan konfirmasi kata sandi tidak cocok.')
+                return render(request, 'reg_mahasiswa.html')
+
             if User.objects.filter(email=email).exists():
                 messages.error(request, 'Email sudah terdaftar. Silakan gunakan email lain.')
                 return render(request, 'reg_mahasiswa.html')
@@ -74,12 +80,18 @@ def reg_mahasiswa(request):
                 nim=nim, 
                 kelas=kelas
             )
+            
             messages.success(request, 'Pendaftaran berhasil, silakan masuk.')
             return redirect('login')
+
         except Kelas.DoesNotExist:
             messages.error(request, 'Token kelas tidak valid.')
+            return render(request, 'reg_mahasiswa.html')
+            
         except Exception as e:
             messages.error(request, f'Terjadi kesalahan: {str(e)}')
+            return render(request, 'reg_mahasiswa.html')
+            
     return render(request, 'reg_mahasiswa.html')
 
 def reg_dosen(request):
@@ -88,7 +100,13 @@ def reg_dosen(request):
         nip = request.POST.get('nip')
         email = request.POST.get('email')
         password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
         try:
+            if password != confirm_password:
+                messages.error(request, 'Kata sandi dan konfirmasi kata sandi tidak cocok.')
+                return render(request, 'reg_dosen.html')
+
             if User.objects.filter(email=email).exists():
                 messages.error(request, 'Email sudah terdaftar. Silakan gunakan email lain.')
                 return render(request, 'reg_dosen.html')
@@ -106,11 +124,14 @@ def reg_dosen(request):
             user.save()
 
             Dosen.objects.create(user=user, nama_lengkap=nama, nip=nip)
-            messages.success(request, 'Pendaftaran dosen berhasil.')
+            messages.success(request, 'Pendaftaran dosen berhasil. Silakan masuk.')
             return redirect('login')
+            
         except Exception as e:
             messages.error(request, f'Terjadi kesalahan: {str(e)}')
+            
     return render(request, 'reg_dosen.html')
+
 
 def login(request):
     if request.method == 'POST':
@@ -125,7 +146,7 @@ def login(request):
                 return redirect('dash_mhs')
             else:
                 return redirect('landing')
-        messages.error(request, 'Email atau password salah.')
+        messages.error(request, 'Email atau kata sandi salah.')
     return render(request, 'login.html')
 
 def logout(request):

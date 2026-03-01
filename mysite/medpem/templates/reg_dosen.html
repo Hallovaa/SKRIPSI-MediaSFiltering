@@ -207,6 +207,14 @@
             font-weight: 600;
         }
 
+        .text-error-custom {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
         @media (max-width: 991px) {
             .navbar-collapse {
                 background: white;
@@ -256,7 +264,7 @@
                         <a class="nav-link-custom {% if active_page == 'tentang' %}active{% endif %}" href="{% url 'tentang' %}">Tentang</a>
                     </li>
                     <li class="nav-item ms-lg-3">
-                        <a class="btn-daftar active w-100" href="{% url 'reg_mahasiswa' %}">Daftar</a>
+                        <a class="btn-daftar w-100" href="{% url 'reg_mahasiswa' %}">Daftar</a>
                     </li>
                     <li class="nav-item ms-lg-2">
                         <a class="btn-masuk w-100" href="{% url 'login' %}">Masuk</a>
@@ -277,7 +285,7 @@
             <h2 class="register-title">Daftar Akun Dosen</h2>
             <p class="register-subtitle">Isi data berikut untuk membuat akun dosen baru.</p>
 
-            <form method="POST" action="{% url 'reg_dosen' %}">
+            <form method="POST" action="{% url 'reg_dosen' %}" id="dosenRegForm">
                 {% csrf_token %}
 
                 {% if messages %}
@@ -329,6 +337,7 @@
                                 oninput="this.setCustomValidity('')">
                             <i class="bi bi-eye" onclick="togglePassword('confirm_password', this)"></i>
                         </div>
+                        <div id="password_match_error" class="text-error-custom">Kata sandi dan konfirmasi kata sandi tidak cocok.</div>
                     </div>
                 </div>
 
@@ -345,8 +354,8 @@
         </div>
     </div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 function togglePassword(id, el) {
     const input = document.getElementById(id);
@@ -358,6 +367,34 @@ function togglePassword(id, el) {
         el.classList.replace("bi-eye-slash", "bi-eye");
     }
 }
+
+const passInput = document.getElementById("password");
+const confirmInput = document.getElementById("confirm_password");
+const errorDiv = document.getElementById("password_match_error");
+const regForm = document.getElementById("dosenRegForm");
+
+function validate() {
+    if (passInput.value !== confirmInput.value && confirmInput.value !== "") {
+        confirmInput.style.borderColor = "#dc3545";
+        errorDiv.style.display = "block";
+        confirmInput.setCustomValidity("Not Match");
+    } else {
+        confirmInput.style.borderColor = "#d1d5db";
+        errorDiv.style.display = "none";
+        confirmInput.setCustomValidity("");
+    }
+}
+
+passInput.onchange = validate;
+confirmInput.onkeyup = validate;
+
+regForm.onsubmit = function() {
+    if (passInput.value !== confirmInput.value) {
+        validate();
+        return false;
+    }
+    return true;
+};
 </script>
 
 </body>
