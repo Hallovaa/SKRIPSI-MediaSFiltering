@@ -4,6 +4,8 @@
 {% block title %}Subbab 4 - Smoothing Linear Filters{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
+
 <style>
   .card-section {
     border: 2px solid #bcccdc;
@@ -569,6 +571,10 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script>
 (function(){
+  const currentSlug = 'sl-filters';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
   const kernelConfigs = {
     mean: { plainScale: "1/9", matrix: [[1,1,1],[1,1,1],[1,1,1]], divider: 9 },
@@ -578,6 +584,7 @@
   let paddingType = 'zero';
   let outputData = Array.from({length:4}, ()=>Array(4).fill(''));
   let step = 0, intervalId = null, paused = false;
+
   const inputTable = document.getElementById('inputMatrix');
   const kernelTable = document.getElementById('kernelMatrix');
   const kernelFractionSim = document.getElementById('kernelFractionSim');
@@ -585,11 +592,28 @@
   const calcText = document.getElementById('calculationText');
   const constGroup = document.getElementById('constInputGroup');
   const constValInp = document.getElementById('customPaddingInput');
+  const nextNavBtn = document.getElementById('nav-next-materi');
   const startBtn = document.getElementById('startBtn');
   const autoPlayBtn = document.getElementById('autoplayBtn');
   const nextBtn = document.getElementById('nextBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const resetBtn = document.getElementById('resetBtn');
+
+  function unlockNextMateri() {
+    if (nextNavBtn) {
+      nextNavBtn.classList.remove('disabled');
+      nextNavBtn.style.opacity = "1";
+      nextNavBtn.style.pointerEvents = "auto";
+    }
+    const sidebarLink = document.querySelector('a[href*="sn-filters"]');
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) lockIcon.remove();
+    }
+  }
 
   function createTable(matrix, table, cellClass='input-cell', editable=false){
     table.innerHTML = '';
@@ -619,8 +643,7 @@
     if(paddingType === 'zero') return 0;
     if(paddingType === 'constant') {
       let v = parseInt(constValInp.value);
-      if(isNaN(v) || v < 0) return 0;
-      if(v > 255) return 255;
+      if (isNaN(v)) return 1;
       return v;
     }
     if(paddingType === 'replicate') return inputData[Math.min(Math.max(x,0), r-1)][Math.min(Math.max(y,0), c-1)];
@@ -633,12 +656,9 @@
     return 0;
   }
 
-  function customRound(val) { return Math.floor(val + 0.5); }
-
   function processStep(){
     const ox = Math.floor(step/4), oy = step%4;
     Array.from(inputTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
-    
     for(let i=0; i<3; i++) {
       for(let j=0; j<3; j++) {
         if(inputTable.rows[ox+i] && inputTable.rows[ox+i].cells[oy+j]) {
@@ -646,30 +666,24 @@
         }
       }
     }
-
-    let rawSum = 0;
-    let multiplicationDetails = [];
+    let rawSum = 0, details = [];
     for(let i=-1; i<=1; i++) {
       for(let j=-1; j<=1; j++) {
         const val = getPaddedValue(ox+i, oy+j);
         const k = currentConfig.matrix[i+1][j+1];
         rawSum += (val * k);
-        multiplicationDetails.push(`(${k}×${val})`);
+        details.push(`(${k}×${val})`);
       }
     }
     let finalVal = rawSum / currentConfig.divider;
     outputData[ox][oy] = finalVal;
     createTable(outputData, outputTable, 'output-cell');
     outputTable.rows[ox].cells[oy].classList.add('output-highlight');
-    calcText.innerHTML = `
-      <div style="margin-bottom: 8px;">${currentConfig.plainScale} × (${multiplicationDetails.join(' + ')})</div>
-      <div>= ${currentConfig.plainScale} × ${rawSum} = <b>${customRound(finalVal)}</b></div>
-    `;
+    calcText.innerHTML = `${currentConfig.plainScale} × (${details.join('+')}) =&nbsp;<b>${Math.floor(finalVal + 0.5)}</b>`;
     step++;
     if(step >= 16){
       clearInterval(intervalId);
       nextBtn.style.display = pauseBtn.style.display = 'none';
-      return;
     }
   }
 
@@ -679,27 +693,27 @@
     nextBtn.style.display = resetBtn.style.display = 'inline-block';
     processStep();
   };
+
   autoPlayBtn.onclick = () => {
     step = 0; paused = false;
     startBtn.style.display = autoPlayBtn.style.display = 'none';
     pauseBtn.style.display = resetBtn.style.display = 'inline-block';
-    pauseBtn.textContent = 'Pause';
     intervalId = setInterval(() => { if(!paused) processStep(); }, 1000);
   };
+
   nextBtn.onclick = processStep;
   pauseBtn.onclick = () => { paused = !paused; pauseBtn.textContent = paused ? 'Resume' : 'Pause'; };
+
   resetBtn.onclick = () => {
     clearInterval(intervalId); step = 0; paused = false;
-    startBtn.style.display = 'inline-block';
-    autoPlayBtn.style.display = 'inline-block';
-    nextBtn.style.display = 'none';
-    pauseBtn.style.display = 'none';
-    resetBtn.style.display = 'none';
+    startBtn.style.display = autoPlayBtn.style.display = 'inline-block';
+    nextBtn.style.display = pauseBtn.style.display = resetBtn.style.display = 'none';
     outputData = Array.from({length:4}, ()=>Array(4).fill(''));
     createTable(outputData, outputTable, 'output-cell');
     updateInputTable();
     calcText.textContent = 'Belum ada perhitungan';
   };
+
   document.getElementById('kernelSelect').onchange = (e) => {
     currentConfig = JSON.parse(JSON.stringify(kernelConfigs[e.target.value]));
     let tex = e.target.value === 'mean' ? "\\frac{1}{9}" : "\\frac{1}{16}";
@@ -707,12 +721,20 @@
     if (window.MathJax) MathJax.typesetPromise([kernelFractionSim]);
     createTable(currentConfig.matrix, kernelTable, 'kernel-cell');
   };
+
   document.getElementById('paddingSelect').onchange = (e) => {
     paddingType = e.target.value;
     constGroup.style.display = paddingType === 'constant' ? 'block' : 'none';
     updateInputTable();
   };
-  constValInp.oninput = () => updateInputTable();
+
+  constValInp.oninput = () => {
+    let v = parseInt(constValInp.value);
+    if (v > 255) constValInp.value = 255;
+    if (v < 1) constValInp.value = 1;
+    updateInputTable();
+  };
+
   function updateInputTable(){
     let padded = [];
     for(let i=-1; i<5; i++){
@@ -727,95 +749,74 @@
       }
     }
   }
+
   updateInputTable();
   createTable(currentConfig.matrix, kernelTable, 'kernel-cell');
   createTable(outputData, outputTable, 'output-cell');
-})();
 
-(function(){
-  const input = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
-  const kernel = [[1,2,1],[2,4,2],[1,2,1]];
-  const kernelScale = 1/16;
-
-  function getReplicateValue(x,y){
-    const r = 4, c = 4;
-    return input[Math.min(Math.max(x,0), r-1)][Math.min(Math.max(y,0), c-1)];
+  const quizInput = [[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
+  const quizKernel = [[1,2,1],[2,4,2],[1,2,1]];
+  const quizCorrect = [];
+  for(let i=0; i<4; i++) {
+    for(let j=0; j<4; j++) {
+      let sum = 0;
+      for(let ki=-1; ki<=1; ki++) {
+        for(let kj=-1; kj<=1; kj++) {
+          let r = Math.min(Math.max(i+ki, 0), 3), c = Math.min(Math.max(j+kj, 0), 3);
+          sum += quizInput[r][c] * quizKernel[ki+1][kj+1];
+        }
+      }
+      quizCorrect.push(Math.floor((sum/16) + 0.5));
+    }
   }
 
-  function convolveAt(x,y){
-    let sum = 0;
-    for(let i=-1;i<=1;i++) for(let j=-1;j<=1;j++) sum += getReplicateValue(x+i, y+j) * kernel[i+1][j+1];
-    return Math.floor((sum * kernelScale) + 0.5);
-  }
-
-  const correct = [];
-  for(let i=0;i<4;i++) for(let j=0;j<4;j++) correct.push(convolveAt(i,j));
-  
   const inputs = Array.from(document.querySelectorAll('.quiz-input.conv4'));
-  const checkBtn = document.getElementById('checkConv4');
-  const nextNavBtn = document.getElementById('nav-next-materi');
-
-  checkBtn.onclick = () => {
+  document.getElementById('checkConv4').onclick = () => {
     let allCorrect = true;
-    const anyEmpty = inputs.some(inp => inp.value.trim() === "");
-
-    if(anyEmpty) {
-      Swal.fire({
-        title: 'Belum Lengkap!', 
-        text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.', 
-        icon: 'warning',
-        confirmButtonColor: '#f39c12'
-      });
-      return;
+    if(inputs.some(inp => inp.value.trim() === "")) {
+        return Swal.fire({ 
+            title: 'Belum Lengkap!', 
+            text: 'Silakan lengkapi seluruh kolom jawaban.', 
+            icon: 'warning' 
+        });
     }
 
     inputs.forEach((inp, idx) => {
-      const val = inp.value.trim();
-      if(parseInt(val) === correct[idx]){
-        inp.style.background = '#4f71be'; 
-        inp.style.color = '#fff';
+      if(parseInt(inp.value) === quizCorrect[idx]){
+        inp.style.background = '#4f71be'; inp.style.color = '#fff';
       } else {
-        inp.style.background = '#c0392b'; 
-        inp.style.color = '#fff';
-        allCorrect = false;
+        inp.style.background = '#c0392b'; inp.style.color = '#fff'; allCorrect = false;
       }
     });
 
     if(allCorrect){
-      fetch("/api/update-progres/", {
+      fetch("{% url 'update_progres' %}", {
         method: "POST",
         headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: 'sl-filters' })
+        body: JSON.stringify({ slug: currentSlug })
       }).then(() => {
         Swal.fire({ 
-          title: 'Luar Biasa!', 
-          text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.', 
-          icon: 'success', 
-          confirmButtonColor: '#3b7dd8' 
-        });
-        if(nextNavBtn) {
-          nextNavBtn.classList.remove('disabled');
-          nextNavBtn.style.opacity = "1";
-          nextNavBtn.style.pointerEvents = "auto";
-        }
+            title: 'Luar Biasa!', 
+            text: 'Jawaban benar. Materi konvolusi telah terbuka.', 
+            icon: 'success', 
+            confirmButtonColor: '#3b7be3' 
+        }).then(unlockNextMateri);
       });
     } else {
-      Swal.fire({ 
-        icon: 'error', 
-        title: 'Coba Lagi!', 
-        text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', 
-        confirmButtonColor: '#c0392b' 
-      });
+        Swal.fire({ 
+            title: 'Coba Lagi!', 
+            text: 'Masih ada jawaban yang belum tepat.', 
+            icon: 'error', 
+            confirmButtonColor: '#c0392b' 
+        });
     }
   };
 
   document.getElementById('resetConv4').onclick = () => {
-    inputs.forEach(inp => { 
-      inp.value = ''; 
-      inp.style.background = '#fff9ee'; 
-      inp.style.color = '#0b2540'; 
-    });
+    inputs.forEach(inp => { inp.value = ''; inp.style.background = '#fff9ee'; inp.style.color = '#0b2540'; });
   };
+
+  if (selesaiSlugs.includes(currentSlug)) unlockNextMateri();
 })();
 </script>
 {% endblock %}

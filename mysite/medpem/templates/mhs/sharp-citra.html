@@ -4,6 +4,7 @@
 {% block title %}Subbab 5 - Sharpening Citra Digital{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
@@ -511,6 +512,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+  const currentSlug = 'sharp-citra';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
   const kernels = { 
     laplacian4: [[0,-1,0],[-1,4,-1],[0,-1,0]], 
@@ -539,6 +544,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const nextBtn = document.getElementById('nextBtn');
   const resetBtn = document.getElementById('resetBtn');
   const btnNavNext = document.getElementById('nav-next-materi');
+
+  function unlockNextMateri() {
+    if (btnNavNext) {
+      btnNavNext.classList.remove('disabled');
+      btnNavNext.style.opacity = '1';
+      btnNavNext.style.pointerEvents = 'auto';
+    }
+    const sidebarLink = document.querySelector('a[href*="um-highboost"]');
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) lockIcon.remove();
+    }
+  }
 
   function createTable(matrix, table, cellClass='input-cell', editable=false){
     table.innerHTML = '';
@@ -831,7 +852,7 @@ document.addEventListener('DOMContentLoaded', function () {
         "Content-Type": "application/json",
         "Accept": "application/json"
       },
-      body: JSON.stringify({ slug: 'sharp-citra' })
+      body: JSON.stringify({ slug: currentSlug })
     })
     .then(async response => {
       const isJson = response.headers.get('content-type')?.includes('application/json');
@@ -848,9 +869,7 @@ document.addEventListener('DOMContentLoaded', function () {
           confirmButtonText: 'OK',
           confirmButtonColor: '#3b7be3'
         }).then(() => {
-          btnNavNext.classList.remove('disabled');
-          btnNavNext.style.opacity = '1';
-          btnNavNext.style.pointerEvents = 'auto';
+          unlockNextMateri();
           currentIdx = 0;
           renderQuestion(0);
         });
@@ -870,6 +889,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   renderQuestion(0);
+  if (selesaiSlugs.includes(currentSlug)) unlockNextMateri();
 });
 </script>
 {% endblock %}

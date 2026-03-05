@@ -4,6 +4,8 @@
 {% block title %}Subbab 4 - Smoothing Nonlinear Filters{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
+
 <style>
 .card-section {
   border: 2px solid #bcccdc;
@@ -341,6 +343,10 @@ input[type=number] {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function(){
+  const currentSlug = 'sn-filters';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const data = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
   let step = 0, intervalId = null;
   const inTbl = document.getElementById("inputMatrix"), outTbl = document.getElementById("outputMatrix");
@@ -349,6 +355,23 @@ input[type=number] {
   const nBtn = document.getElementById("nextBtn"), rBtn = document.getElementById("resetBtn");
   const pauseBtn = document.getElementById("pauseBtn"), resumeBtn = document.getElementById("resumeBtn");
   const calcText = document.getElementById("calculationText");
+  const nextMaterialBtn = document.getElementById("nextMaterialBtn");
+
+  function unlockNextMateri() {
+    if (nextMaterialBtn) {
+      nextMaterialBtn.classList.remove('btn-locked');
+      nextMaterialBtn.style.opacity = "1";
+      nextMaterialBtn.style.pointerEvents = "auto";
+    }
+    const sidebarLink = document.querySelector('a[href*="ringkasan4"]');
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) lockIcon.remove();
+    }
+  }
 
   function getPaddedVal(r, c, mode) {
     if (r >= 0 && r < 4 && c >= 0 && c < 4) return data[r][c];
@@ -360,7 +383,7 @@ input[type=number] {
       return data[nr][nc];
     }
     if (mode === "wrap") return data[(r % 4 + 4) % 4][(c % 4 + 4) % 4];
-    return 0;
+    return 90;
   }
 
   function renderSim() {
@@ -402,64 +425,53 @@ input[type=number] {
     let sorted = [...vals].sort((a,b)=>a-b);
     let filterType = fSel.value;
     let res = filterType === "median" ? sorted[4] : (filterType === "max" ? sorted[8] : sorted[0]);
-    
     outTbl.rows[r].cells[c].textContent = res;
     Array.from(outTbl.querySelectorAll("td")).forEach(td => td.classList.remove("output-highlight"));
     outTbl.rows[r].cells[c].classList.add("output-highlight");
-    
-    calcText.innerHTML = `
-      [${vals.join(", ")}] &rarr; Urut: [${sorted.join(", ")}] <br>
-      <span style="color:#0b2540;"><b>${filterType.toUpperCase()}: ${res}</b></span>
-    `;
-    
+    calcText.innerHTML = `[${vals.join(", ")}] &rarr; Urut: [${sorted.join(", ")}] <br><span style="color:#0b2540;"><b>${filterType.toUpperCase()}: ${res}</b></span>`;
     step++;
     if(step >= 16) { 
       clearInterval(intervalId); 
-      nBtn.style.display = "none";
-      pauseBtn.style.display = "none";
-      resumeBtn.style.display = "none";
+      nBtn.style.display = pauseBtn.style.display = resumeBtn.style.display = "none";
       return; 
     }
   }
 
   sBtn.onclick = () => {
     step = 0; renderSim();
-    sBtn.style.display = "none"; aBtn.style.display = "none";
-    nBtn.style.display = "inline-block"; rBtn.style.display = "inline-block";
+    sBtn.style.display = aBtn.style.display = "none";
+    nBtn.style.display = rBtn.style.display = "inline-block";
     pSel.disabled = fSel.disabled = true;
     runStep();
   };
+
   aBtn.onclick = () => {
     step = 0; renderSim();
-    sBtn.style.display = "none"; aBtn.style.display = "none";
-    pauseBtn.style.display = "inline-block"; rBtn.style.display = "inline-block";
+    sBtn.style.display = aBtn.style.display = "none";
+    pauseBtn.style.display = rBtn.style.display = "inline-block";
     pSel.disabled = fSel.disabled = true;
     intervalId = setInterval(runStep, 1000);
   };
+
   pauseBtn.onclick = () => { clearInterval(intervalId); pauseBtn.style.display = "none"; resumeBtn.style.display = "inline-block"; };
   resumeBtn.onclick = () => { resumeBtn.style.display = "none"; pauseBtn.style.display = "inline-block"; intervalId = setInterval(runStep, 1000); };
+  
   rBtn.onclick = () => { 
     clearInterval(intervalId); step = 0; renderSim(); 
-    sBtn.style.display = "inline-block"; aBtn.style.display = "inline-block";
-    nBtn.style.display = "none"; pauseBtn.style.display = "none";
-    resumeBtn.style.display = "none"; rBtn.style.display = "none"; 
+    sBtn.style.display = aBtn.style.display = "inline-block";
+    nBtn.style.display = pauseBtn.style.display = resumeBtn.style.display = rBtn.style.display = "none"; 
     pSel.disabled = fSel.disabled = false;
     calcText.textContent = "Belum ada perhitungan"; 
   };
+
   nBtn.onclick = runStep;
   pSel.onchange = renderSim;
   renderSim();
-})();
 
-(function(){
   const center=[[79,77,102,208],[84,79,106,118],[89,112,114,114],[83,99,90,109]];
   const paddedTable=document.getElementById("paddedTable");
-  const minTable=document.getElementById("minTable");
-  const maxTable=document.getElementById("maxTable");
-  const medianTable=document.getElementById("medianTable");
-  const checkQuizBtn=document.getElementById("checkQuizBtn");
-  const resetResultsBtn=document.getElementById("resetResultsBtn");
-  const nextMaterialBtn = document.getElementById("nextMaterialBtn");
+  const minTable=document.getElementById("minTable"), maxTable=document.getElementById("maxTable"), medianTable=document.getElementById("medianTable");
+  const checkQuizBtn=document.getElementById("checkQuizBtn"), resetResultsBtn=document.getElementById("resetResultsBtn");
 
   function getConstantPadMatrix(){
     const P=Array.from({length:6},()=>Array(6).fill(90));
@@ -476,9 +488,7 @@ input[type=number] {
         let window = [];
         for(let r=i; r<i+3; r++) for(let c=j; c<j+3; c++) window.push(P[r][c]);
         window.sort((a,b)=>a-b);
-        if(mode==='min') row.push(window[0]);
-        else if(mode==='max') row.push(window[8]);
-        else row.push(window[4]);
+        row.push(mode==='min' ? window[0] : (mode==='max' ? window[8] : window[4]));
       }
       result.push(row);
     }
@@ -493,8 +503,7 @@ input[type=number] {
       for(let j=0;j<6;j++){
         const td=document.createElement("td");
         td.textContent = P[i][j];
-        if(i>=1&&i<=4&&j>=1&&j<=4) td.className = "center-cell";
-        else td.className = "static-pad-cell";
+        td.className = (i>=1&&i<=4&&j>=1&&j<=4) ? "center-cell" : "static-pad-cell";
         tr.appendChild(td);
       }
       paddedTable.appendChild(tr);
@@ -508,18 +517,13 @@ input[type=number] {
       const tr=document.createElement("tr");
       for(let c=0;c<4;c++){
         const td=document.createElement("td");
-        let isInput = false;
-        if(mode === 'min' && ((r===1 && c===1) || (r===2 && c===2))) isInput = true;
-        if(mode === 'max' && ((r===3 && c===0) || (r===0 && c===3))) isInput = true;
-        if(mode === 'median' && ((r===2 && c===1) || (r===0 && c===1))) isInput = true;
+        let isInput = (mode === 'min' && ((r===1&&c===1)||(r===2&&c===2))) || (mode === 'max' && ((r===3&&c===0)||(r===0&&c===3))) || (mode === 'median' && ((r===2&&c===1)||(r===0&&c===1)));
         if(isInput){
           const inp=document.createElement("input");
           inp.type="number"; inp.className="result-input";
           inp.dataset.row = r; inp.dataset.col = c;
           td.appendChild(inp);
-        } else {
-          td.textContent = ansKey[r][c];
-        }
+        } else { td.textContent = ansKey[r][c]; }
         tr.appendChild(td);
       }
       tbl.appendChild(tr);
@@ -529,82 +533,44 @@ input[type=number] {
   checkQuizBtn.onclick = () => {
     const minAns = calculateAnswers('min'), maxAns = calculateAnswers('max'), medAns = calculateAnswers('median');
     let isAllCorrect = true;
-    let anyEmpty = false;
     const allInputs = [...minTable.querySelectorAll("input"), ...maxTable.querySelectorAll("input"), ...medianTable.querySelectorAll("input")];
-
-    for (let inp of allInputs) {
-        if (inp.value.trim() === "") {
-            anyEmpty = true;
-            break;
-        }
-    }
-
-    if (anyEmpty) {
-        Swal.fire({
-            title: 'Belum Lengkap!',
-            text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.',
-            icon: 'warning',
-            confirmButtonColor: '#f39c12'
-        });
-        return;
+    if (allInputs.some(inp => inp.value.trim() === "")) {
+      Swal.fire({ title: 'Belum Lengkap!', text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.', icon: 'warning', confirmButtonColor: '#f39c12' });
+      return;
     }
 
     const validateTable = (tbl, ansKey) => {
-        tbl.querySelectorAll("input").forEach((inp) => {
-            const r = parseInt(inp.dataset.row), c = parseInt(inp.dataset.col);
-            const val = inp.value.trim();
-            if (parseInt(val) === ansKey[r][c]) {
-                inp.classList.add("result-correct");
-                inp.classList.remove("result-wrong");
-            } else {
-                inp.classList.add("result-wrong");
-                inp.classList.remove("result-correct");
-                isAllCorrect = false;
-            }
-        });
+      tbl.querySelectorAll("input").forEach((inp) => {
+        const r = parseInt(inp.dataset.row), c = parseInt(inp.dataset.col);
+        if (parseInt(inp.value.trim()) === ansKey[r][c]) {
+          inp.classList.add("result-correct");
+          inp.classList.remove("result-wrong");
+        } else {
+          inp.classList.add("result-wrong");
+          inp.classList.remove("result-correct");
+          isAllCorrect = false;
+        }
+      });
     };
 
-    validateTable(minTable, minAns);
-    validateTable(maxTable, maxAns);
-    validateTable(medianTable, medAns);
+    validateTable(minTable, minAns); validateTable(maxTable, maxAns); validateTable(medianTable, medAns);
 
     if (isAllCorrect) {
-        fetch("/api/update-progres/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ slug: 'sn-filters' })
-        }).then(() => {
-            Swal.fire({
-                title: 'Luar Biasa!',
-                text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
-                icon: 'success',
-                confirmButtonColor: '#3b7dd8'
-            });
-            if (nextMaterialBtn) {
-                nextMaterialBtn.classList.remove('btn-locked');
-                nextMaterialBtn.style.opacity = "1";
-                nextMaterialBtn.style.pointerEvents = "auto";
-            }
-        });
+      fetch("/api/update-progres/", {
+        method: "POST",
+        headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: currentSlug })
+      }).then(() => {
+        Swal.fire({ title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.', icon: 'success', confirmButtonColor: '#3b7dd8' }).then(unlockNextMateri);
+      });
     } else {
-        Swal.fire({
-            title: 'Coba Lagi!',
-            text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.',
-            icon: 'error',
-            confirmButtonColor: '#c0392b'
-        });
+      Swal.fire({ title: 'Coba Lagi!', text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', icon: 'error', confirmButtonColor: '#c0392b' });
     }
   };
 
   resetResultsBtn.onclick = () => {
     [minTable, maxTable, medianTable].forEach(t => {
-        t.querySelectorAll("input").forEach(inp => {
-            inp.value = "";
-            inp.classList.remove("result-correct", "result-wrong");
-        });
+      t.querySelectorAll("input").forEach(inp => { inp.value = ""; inp.classList.remove("result-correct", "result-wrong"); });
     });
   };
 
@@ -612,6 +578,7 @@ input[type=number] {
   renderResultTable(minTable, 'min');
   renderResultTable(maxTable, 'max');
   renderResultTable(medianTable, 'median');
+  if (selesaiSlugs.includes(currentSlug)) unlockNextMateri();
 })();
 </script>
 {% endblock %}

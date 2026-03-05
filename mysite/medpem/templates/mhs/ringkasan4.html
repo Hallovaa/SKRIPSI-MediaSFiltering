@@ -4,6 +4,7 @@
 {% block title %}Subbab 4 - Ringkasan{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <style>
   .card-section {
@@ -24,7 +25,6 @@
     background: #edf4fe;
     border-bottom: 2px solid #bcccdc;
   }
-
   .card-section-header i {
     font-size:20px;
     color:var(--primary-500);
@@ -36,14 +36,12 @@
     border-radius:8px;
     background: rgba(59,123,227,0.12);
   }
-
   .card-section-body {
     padding: 35px;
     font-size: 19px;
     color: #222f3a;
     background: #fff;
   }
-
   .summary-box {
     background: #fbfdff;
     border: 1px solid #bcccdc;
@@ -52,17 +50,15 @@
     box-shadow: 0 6px 18px rgba(16,32,58,0.02);
     margin-bottom: 18px;
   }
-
   .summary-box h4 { margin-top: 0; margin-bottom: 8px; }
   .summary-box p, .summary-box ul { margin: 0 0 8px 0; line-height: 1.6; }
-
   .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; }
   .material-nav .btn { min-width:120px; }
 </style>
 
 <div class="mb-3">
   <h1 class="title-main" style="margin:0;">
-     SUBBAB 4 - <span style="color:var(--primary-500)">RINGKASAN</span>
+      SUBBAB 4 - <span style="color:var(--primary-500)">RINGKASAN</span>
   </h1>
 </div>
 
@@ -73,7 +69,6 @@
   </div>
 
   <div class="card-section-body">
-
     <div class="summary-box">
       <h4><b>1. Smoothing <em>Linear Filters</em></b></h4>
       <p style="text-align: justify; margin-left: 30px; text-indent: 25px; margin-top: 20px; margin-bottom: 50px;">
@@ -93,7 +88,7 @@
       <p style="margin-left: 50px; margin-bottom: 5px;"><b>1) <em>Median Filter</em></b></p>
       <ul style="padding-left: 60px; margin-left: 30px;">
         <li>Mengganti piksel pusat dengan nilai median dari area filter.</li>
-        <li>Sangat baik untuk menghilangkan salt and pepper noise.</li>
+        <li>Sangat baik untuk menghilangkan <em>salt and pepper noise</em>.</li>
         <li>Tidak terpengaruh oleh nilai ekstrem, sehingga tepi tetap terjaga.</li>
       </ul>
 
@@ -117,19 +112,20 @@
         Selanjutnya <i class="bi bi-chevron-right"></i>
       </a>
     </div>
-
   </div>
 </section>
 
 <script>
 (function() {
   const currentSlug = 'ringkasan4';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
   const nextBtn = document.getElementById('btn-selanjutnya');
 
   function saveAndNavigate(e) {
     e.preventDefault(); 
     const targetUrl = nextBtn.getAttribute('href');
-    const sudahSelesai = "{{ selesai_slugs|safe }}".includes(currentSlug);
+    const sudahSelesai = selesaiSlugs.includes(currentSlug);
 
     if (sudahSelesai) {
       window.location.href = targetUrl;
@@ -145,10 +141,10 @@
       },
       body: JSON.stringify({ slug: currentSlug })
     })
-    .then(response => {
+    .then(() => {
       window.location.href = targetUrl;
     })
-    .catch(error => {
+    .catch(() => {
       window.location.href = targetUrl;
     });
   }

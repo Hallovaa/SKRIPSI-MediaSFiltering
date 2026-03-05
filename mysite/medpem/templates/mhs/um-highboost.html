@@ -4,6 +4,8 @@
 {% block title %}Subbab 5 - Unsharp Masking dan Highboost Filtering{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
+
 <style>
 .card-section {
   border: 2px solid #bcccdc;
@@ -459,8 +461,8 @@
         <li>Pada <strong>Hasil Akhir Perbandingan</strong>, bandingkan <strong>citra asli</strong>
             dan <strong>hasil penajaman</strong> untuk mengamati perubahan nilai piksel.</li>
 
-        <li>Klik <strong>Ulangi</strong> atau <strong>Ulangi Semua Simulasi</strong> untuk
-            mengembalikan kondisi awal dan mengulangi seluruh proses.</li>
+        <li>Klik <strong>Ulangi</strong> atau <strong>Ulangi proses</strong> untuk
+            mengembalikan ke kondisi awal dan mengulangi seluruh proses.</li>
       </ul>
     </div>
 
@@ -942,6 +944,14 @@ function unlockNextButton() {
     btnNext.style.opacity = '1';
     btnNext.style.pointerEvents = 'auto';
   }
+  const sidebarLink = document.querySelector('a[href*="ringkasan5"]');
+  if (sidebarLink) {
+    sidebarLink.classList.remove('locked');
+    sidebarLink.style.pointerEvents = 'auto';
+    sidebarLink.style.opacity = '1';
+    const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+    if (lockIcon) lockIcon.remove();
+  }
 }
 
 function updateProgressDatabase() {
@@ -980,6 +990,10 @@ function updateProgressDatabase() {
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
+  const currentSlug = 'um-highboost';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   if(document.getElementById('inputTable')) createTable(padded,'inputTable','input-cell',true);
   if(document.getElementById('blurTable')) createTable(blurResult,'blurTable','base-cell');
   createKernelTable(); 
@@ -989,18 +1003,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   const mAns = quizOrig.map((r,i)=>r.map((v,j)=>v - quizBlur[i][j]));
   const hAns = quizOrig.map((r,i)=>r.map((v,j)=>Math.min(255, Math.max(0, v + 3 * (v - quizBlur[i][j])))));
 
-  const slugs = JSON.parse('{{ selesai_slugs_json|safe|default:"[]" }}');
-  if (slugs.includes('um-highboost')) {
+  if (selesaiSlugs.includes(currentSlug)) {
     unlockNextButton();
   }
 
   document.getElementById("checkHighboostBtn").onclick = () => {
     let anyEmpty = false;
-    
     document.querySelectorAll("#maskTableQuiz td, #highboostTableQuiz td").forEach(td => {
-      if(td.innerText.trim() === "") {
-        anyEmpty = true;
-      }
+      if(td.innerText.trim() === "") anyEmpty = true;
     });
 
     if(anyEmpty) {
@@ -1036,7 +1046,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
         const td=rows[i].cells[j];
         const rawText = td.innerText.trim();
         const v = parseInt(rawText);
-        
         if(!isNaN(v) && v === ans[i][j]){ 
           td.style.background="#4f71be"; 
           td.style.color="#fff"; 

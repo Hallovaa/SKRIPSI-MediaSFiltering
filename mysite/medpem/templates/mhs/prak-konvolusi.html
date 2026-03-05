@@ -4,6 +4,7 @@
 {% block title %}Subbab 6 - Konvolusi{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
@@ -653,14 +654,21 @@ let editors = {};
 
 function handleInput(el) {
     const feedback = document.getElementById('feedback-quiz');
-    
-    // Jika input yang sedang diketik sebelumnya berstatus salah (merah)
     if (el.classList.contains('wrong')) {
-        feedback.style.display = 'none'; // Sembunyikan pesan feedback "Masih ada jawaban..."
+        feedback.style.display = 'none';
     }
-    
-    // Reset warna kotak input menjadi default
     el.className = "quiz-input";
+}
+
+function unlockSidebarNext() {
+    const sidebarLink = document.querySelector('a[href*="prak-smooth"]');
+    if (sidebarLink) {
+        sidebarLink.classList.remove('locked');
+        sidebarLink.style.pointerEvents = 'auto';
+        sidebarLink.style.opacity = '1';
+        const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+        if (lockIcon) lockIcon.remove();
+    }
 }
 
 function updateProgressDatabase() {
@@ -676,13 +684,18 @@ function updateProgressDatabase() {
     .then(data => {
         if (data.status === 'success') {
             const navBtn = document.getElementById('nextBtnMaterial');
-            navBtn.classList.remove('disabled');
-            navBtn.style.opacity = '1';
-            navBtn.style.pointerEvents = 'auto';
+            if (navBtn) {
+                navBtn.classList.remove('disabled');
+                navBtn.style.opacity = '1';
+                navBtn.style.pointerEvents = 'auto';
+            }
             
             const badge = document.getElementById('quiz-badge');
-            badge.innerText = 'Selesai';
-            badge.classList.replace('bg-primary', 'bg-success');
+            if (badge) {
+                badge.innerText = 'Selesai';
+                badge.classList.replace('bg-primary', 'bg-success');
+            }
+            unlockSidebarNext();
         }
     });
 }
@@ -886,8 +899,27 @@ function clearFiles() {
     document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
 }
 
-
 document.addEventListener("DOMContentLoaded", function() {
+    const currentSlug = 'prak-konvolusi';
+    const dataElement = document.getElementById('selesai-slugs-data');
+    const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
+    if (selesaiSlugs.includes(currentSlug)) {
+        const navBtn = document.getElementById('nextBtnMaterial');
+        if (navBtn) {
+            navBtn.classList.remove('disabled');
+            navBtn.style.opacity = '1';
+            navBtn.style.pointerEvents = 'auto';
+        }
+        
+        const badge = document.getElementById('quiz-badge');
+        if (badge) {
+            badge.innerText = 'Selesai';
+            badge.classList.replace('bg-primary', 'bg-success');
+        }
+        unlockSidebarNext();
+    }
+
     initPyodide();
 });
 </script>

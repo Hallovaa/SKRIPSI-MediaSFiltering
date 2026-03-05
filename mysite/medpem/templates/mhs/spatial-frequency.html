@@ -4,6 +4,7 @@
 {% block title %}Subbab 2 - Spatial & Frequency Domain{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
@@ -213,8 +214,7 @@
       Setelah berada pada domain frekuensi, proses penyaringan dilakukan menggunakan filter frekuensi, misalnya <em>low-pass filter</em> untuk perataan dan <em>high-pass filter</em> untuk penajaman. 
       <strong>Hasil pemrosesan tersebut kemudian dikembalikan ke <em>spatial domain</em></strong> melalui transformasi balik (<em>inverse transformation</em>) agar dapat ditampilkan sebagai citra akhir. 
       Perbedaan proses keduanya bisa dilihat pada Gambar B.5 berikut:
-    </P>
-
+    </p>
 
     <figure style="margin:20px 0;">
       <img src="{% static 'assets/img/konten/5B.png' %}" style="display:block; margin:auto; width:87%;">
@@ -283,6 +283,10 @@
 <script>
 (function() {
   const currentSlug = 'spatial-frequency';
+  
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const spatialSteps = [
     "Input citra",
     "Tentukan piksel pusat",
@@ -300,26 +304,38 @@
   const pool = document.getElementById("pool");
   const spatialBox = document.getElementById("spatial");
   const frequencyBox = document.getElementById("frequency");
-  const navNext = document.getElementById("nav-next");
-  const feedback = document.getElementById("quiz-feedback");
-  const controls = document.getElementById("quiz-controls");
+  const btnNavNext = document.getElementById("nav-next"); 
   let draggedItem = null;
 
-  let isCompleted = "{{ selesai_slugs|safe }}".includes(currentSlug);
+  let isCompleted = selesaiSlugs.includes(currentSlug);
+
+  function unlockNext() {
+    if (btnNavNext) {
+      btnNavNext.classList.remove('disabled');
+      btnNavNext.style.opacity = '1';
+      btnNavNext.style.pointerEvents = 'auto';
+    }
+
+    const sidebarLink = document.querySelector('a[href*="ringkasan2"]');
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) {
+        lockIcon.remove();
+      }
+    }
+  }
 
   function updateProgressDatabase() {
     if (isCompleted) {
-        Swal.fire({
-          title: 'Luar Biasa!',
-          text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#4f71be'
-        });
-        return;
+      unlockNext();
+      return;
     }
 
-    fetch("/api/update-progres/", {
+    fetch("{% url 'update_progres' %}", {
       method: "POST",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
@@ -329,40 +345,32 @@
       body: JSON.stringify({ slug: currentSlug })
     })
     .then(async response => {
-        const contentType = response.headers.get("content-type");
-        if (!response.ok || !contentType || !contentType.includes("application/json")) {
-            throw new Error('Sesi berakhir atau URL tidak ditemukan.');
-        }
-        return response.json();
+      const contentType = response.headers.get("content-type");
+      if (!response.ok || !contentType || !contentType.includes("application/json")) {
+        throw new Error('Sesi berakhir atau URL tidak ditemukan.');
+      }
+      return response.json();
     })
     .then(data => {
       if (data.status === 'success') {
         isCompleted = true;
         Swal.fire({
           title: 'Luar Biasa!',
-          text: 'Urutan benar. Progres Anda telah disimpan.',
+          text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
           icon: 'success',
           confirmButtonText: 'Lanjutkan',
-          confirmButtonColor: '#4f71be'
+          confirmButtonColor: '#3b82f6'
         }).then(() => {
           unlockNext();
         });
       } else {
-        throw new Error(data.message);
+        throw new Error(data.message || 'Gagal menyimpan progres.');
       }
     })
     .catch(err => {
-        console.error(err);
-        Swal.fire('Gagal Simpan', err.message, 'error');
+      console.error(err);
+      Swal.fire('Gagal Simpan', err.message, 'error');
     });
-  }
-
-  function unlockNext() {
-    if(navNext) {
-        navNext.classList.remove('disabled');
-        navNext.style.opacity = '1';
-        navNext.style.pointerEvents = 'auto';
-    }
   }
 
   function createSlot(correctText) {
@@ -393,31 +401,23 @@
 
   function init() {
     pool.innerHTML = "<h4>Langkah-langkah Proses</h4>";
-    spatialBox.querySelectorAll('.dnd-slot').forEach(s => s.remove());
-    frequencyBox.querySelectorAll('.dnd-slot').forEach(s => s.remove());
+    
+    const spatialSlots = spatialBox.querySelectorAll('.dnd-slot');
+    spatialSlots.forEach(s => s.remove());
+    
+    const frequencySlots = frequencyBox.querySelectorAll('.dnd-slot');
+    frequencySlots.forEach(s => s.remove());
 
     spatialSteps.forEach(s => spatialBox.appendChild(createSlot(s)));
     frequencySteps.forEach(f => frequencyBox.appendChild(createSlot(f)));
 
     const allSteps = [...spatialSteps, ...frequencySteps];
     allSteps.sort(() => Math.random() - 0.5).forEach(t => pool.appendChild(createItem(t)));
-    
-    document.querySelectorAll(".dnd-slot").forEach(s => {
-        s.classList.remove("correct", "wrong");
-        s.classList.add("empty");
-    });
   }
 
   document.getElementById("check").onclick = () => {
     const slots = document.querySelectorAll(".dnd-slot");
-    let anyEmpty = false;
-
-    // Tahap 1: Cek apakah ada yang masih kosong
-    slots.forEach(slot => {
-      if (!slot.firstChild) {
-        anyEmpty = true;
-      }
-    });
+    let anyEmpty = Array.from(slots).some(slot => !slot.firstChild);
 
     if (anyEmpty) {
       Swal.fire({
@@ -426,15 +426,13 @@
         text: 'Silakan lengkapi seluruh bagan jawaban terlebih dahulu.',
         confirmButtonColor: '#f39c12'
       });
-      return; // Berhenti di sini, jangan beri warna merah/hijau dulu
+      return;
     }
 
-    // Tahap 2: Jika sudah terisi semua, baru cek kebenaran dan beri warna
     let allCorrect = true;
     slots.forEach(slot => {
       slot.classList.remove("correct", "wrong");
-      const item = slot.firstChild;
-      if (item.textContent === slot.dataset.correct) {
+      if (slot.firstChild.textContent === slot.dataset.correct) {
         slot.classList.add("correct");
       } else {
         slot.classList.add("wrong");
@@ -459,7 +457,6 @@
   if (isCompleted) {
     unlockNext();
   }
-  
   init(); 
 })();
 </script>

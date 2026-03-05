@@ -5,6 +5,8 @@
 
 {% block content %}
 
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
+
 <style>
   .card-section {
     border: 2px solid #bcccdc;
@@ -62,7 +64,7 @@
 
 <div class="mb-3">
   <h1 class="title-main" style="margin:0;">
-     SUBBAB 6 - <span style="color:var(--primary-500)">RINGKASAN</span>
+      SUBBAB 6 - <span style="color:var(--primary-500)">RINGKASAN</span>
   </h1>
 </div>
 
@@ -111,7 +113,7 @@
         <code>ImageFilter.MaxFilter()</code>.
       </p>
 
-      <h4><b><em>Sharpening Filters</em></b></h4>
+      <h4><b>6. <em>Sharpening Filters</em></b></h4>
       <p style="text-align: justify; text-indent: 30px; margin-left: 30px; margin-top: 15px;">
         Pillow juga menyediakan <em>filter sharpening</em> bawaan seperti 
         <code>ImageFilter.SHARPEN</code> dan 
@@ -136,11 +138,13 @@
 (function() {
   const currentSlug = 'ringkasan6';
   const nextBtn = document.getElementById('btn-selanjutnya');
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
 
   function saveAndNavigate(e) {
     e.preventDefault(); 
     const targetUrl = nextBtn.getAttribute('href');
-    const sudahSelesai = "{{ selesai_slugs|safe }}".includes(currentSlug);
+    const sudahSelesai = selesaiSlugs.includes(currentSlug);
 
     if (sudahSelesai) {
       window.location.href = targetUrl;
@@ -156,10 +160,10 @@
       },
       body: JSON.stringify({ slug: currentSlug })
     })
-    .then(response => {
+    .then(() => {
       window.location.href = targetUrl;
     })
-    .catch(error => {
+    .catch(() => {
       window.location.href = targetUrl;
     });
   }

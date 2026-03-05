@@ -240,7 +240,7 @@
                     <th style="text-align: center;">Nama Mahasiswa</th>
                     <th class="col-nim">NIM</th>
                     <th class="col-kelas">Kelas</th>
-                    <th>K1</th><th>K2</th><th>K3</th><th>K4</th><th>K5</th><th>K6</th>
+                    <th>K1</th><th>K2</th><th>K3</th><th>K4</th><th>K5</th>
                     <th>Evaluasi</th>
                     <th style="width:80px">Riwayat</th>
                 </tr>
@@ -257,7 +257,6 @@
                     <td class="score {% if mhs.nilai_rekap.k3 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k3 }}</td>
                     <td class="score {% if mhs.nilai_rekap.k4 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k4 }}</td>
                     <td class="score {% if mhs.nilai_rekap.k5 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k5 }}</td>
-                    <td class="score {% if mhs.nilai_rekap.k6 >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.k6 }}</td>
                     <td class="score {% if mhs.nilai_rekap.evaluasi >= kkm %}good{% else %}low{% endif %}">{{ mhs.nilai_rekap.evaluasi }}</td>
                     <td>
                         <span class="action-link" onclick="openHistory('modal-{{ mhs.id }}')">
@@ -267,7 +266,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="12" class="py-4 text-muted text-center">Belum ada data mahasiswa</td>
+                    <td colspan="11" class="py-4 text-muted text-center">Belum ada data mahasiswa</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -317,7 +316,7 @@
             </span>
         </div>
 
-        {% for n in "1234567"|make_list %}
+        {% for n in "123457"|make_list %}
         <div class="history-card">
             <div class="history-title">
                 {% if n == "7" %}EVALUASI AKHIR (20 SOAL){% else %}KUIS {{ n }}{% endif %}
@@ -392,8 +391,6 @@
                                 {% for p in mhs.persentase_k4 %}<td class="text-center">{{ p }}%</td>{% endfor %}
                             {% elif n == "5" %}
                                 {% for p in mhs.persentase_k5 %}<td class="text-center">{{ p }}%</td>{% endfor %}
-                            {% elif n == "6" %}
-                                {% for p in mhs.persentase_k6 %}<td class="text-center">{{ p }}%</td>{% endfor %}
                             {% elif n == "7" %}
                                 {% for p in mhs.persentase_evaluasi %}<td class="text-center">{{ p }}%</td>{% endfor %}
                             {% endif %}

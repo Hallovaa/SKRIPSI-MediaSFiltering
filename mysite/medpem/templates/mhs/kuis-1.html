@@ -497,6 +497,10 @@
                         document.getElementById('statusText').innerText = 'LULUS';
                         document.getElementById('statusText').className = 'text-success fw-bold';
                         document.getElementById('lulusBox').classList.remove('hidden');
+                        
+                        if (typeof unlockNextContent === "function") {
+                            unlockNextContent("pengertian-spatial");
+                        }
                     } else {
                         document.getElementById('statusText').innerText = 'TIDAK LULUS';
                         document.getElementById('statusText').className = 'text-danger fw-bold';

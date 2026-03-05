@@ -4,6 +4,7 @@
 {% block title %}Subbab 1 - Pengertian Citra Digital{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
@@ -193,10 +194,14 @@
   </a>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function() {
   const currentSlug = 'pengertian-citra';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const questions = [
     {
       q: 'Citra digital tersusun dari elemen-elemen kecil yang membentuk gambar utuh. Elemen tersebut disebut ….',
@@ -237,9 +242,24 @@
   const btnNextQuiz = document.getElementById('next-quiz-btn');
   const btnNavNext = document.getElementById('nav-next-materi');
 
+  function unlockNextMateri() {
+    if (btnNavNext) {
+      btnNavNext.classList.remove('disabled');
+      btnNavNext.style.opacity = '1';
+      btnNavNext.style.pointerEvents = 'auto';
+    }
+    if (typeof unlockNextContent === "function") {
+      unlockNextContent('jenis-citra');
+    }
+  }
+
   function renderQuestion(idx) {
+    if (!questions[idx]) return; 
+
     const item = questions[idx];
-    document.getElementById('question-counter').textContent = `Soal ${idx + 1} / ${questions.length}`;
+    const counter = document.getElementById('question-counter');
+    if (counter) counter.textContent = `Soal ${idx + 1} / ${questions.length}`;
+    
     qText.textContent = item.q;
     optsCont.innerHTML = '';
     feedback.innerHTML = '';
@@ -256,35 +276,36 @@
           child.style.background = '#fff';
           child.style.borderColor = 'rgba(16,32,58,0.1)';
         });
-        feedback.innerHTML = '';
 
         if (opt === item.ans) {
           btn.style.background = '#e9f2ff';
           btn.style.borderColor = '#3b7be3';
-          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar! — ${item.explain}</div>`;
+          feedback.innerHTML = `<div style="color:green;font-weight:700;margin-top:10px;">Benar! — ${item.explain}</div>`;
           btnNextQuiz.disabled = false;
           Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
         } else {
           btn.style.background = '#fff0f0';
           btn.style.borderColor = '#f5c6c6';
-          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Belum tepat, coba lagi.</div>';
+          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700;margin-top:10px;">Belum tepat, coba lagi.</div>';
         }
       };
       optsCont.appendChild(btn);
     });
   }
 
-  btnNextQuiz.onclick = () => {
-    currentIdx++;
-    if (currentIdx < questions.length) {
-      renderQuestion(currentIdx);
-    } else {
-      updateProgressDatabase();
-    }
-  };
+  if (btnNextQuiz) {
+    btnNextQuiz.onclick = () => {
+      currentIdx++;
+      if (currentIdx < questions.length) {
+        renderQuestion(currentIdx);
+      } else {
+        updateProgressDatabase();
+      }
+    };
+  }
 
   function updateProgressDatabase() {
-    fetch("/api/update-progres/", {
+    fetch("{% url 'update_progres' %}", {
       method: "POST",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
@@ -293,41 +314,31 @@
       },
       body: JSON.stringify({ slug: currentSlug })
     })
-    .then(async response => {
-        const contentType = response.headers.get("content-type");
-        if (!response.ok || !contentType || !contentType.includes("application/json")) {
-            throw new Error('Sesi berakhir atau URL tidak ditemukan. Silakan login kembali.');
-        }
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
       if (data.status === 'success') {
         Swal.fire({
           title: 'Luar Biasa!',
           text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
           icon: 'success',
-          confirmButtonText: 'OK',
           confirmButtonColor: '#3b7be3'
         }).then(() => {
-          btnNavNext.classList.remove('disabled');
-          btnNavNext.style.opacity = '1';
-          btnNavNext.style.pointerEvents = 'auto';
-          
-          feedback.innerHTML = '<b style="color:blue">Aktivitas Selesai. Anda tetap bisa mencoba kuis lagi.</b>';
-
-          currentIdx = 0;
-          renderQuestion(0);
+          unlockNextMateri();
         });
-      } else {
-        throw new Error(data.message);
       }
     })
     .catch(err => {
-        console.error(err);
-        Swal.fire('Gagal Simpan', err.message, 'error');
+      console.error('Error updating progress:', err);
+      unlockNextMateri();
     });
   }
+
+  if (selesaiSlugs.includes(currentSlug)) {
+    unlockNextMateri();
+  }
+  
   renderQuestion(0);
+
 })();
 </script>
 {% endblock %}

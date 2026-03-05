@@ -4,6 +4,7 @@
 {% block title %}Subbab 2 - Pengertian Spatial Filtering{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
@@ -246,6 +247,9 @@
 <script>
 (function() {
   const currentSlug = 'pengertian-spatial';
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const questions = [
     {
       q: "Tujuan utama penggunaan spatial filtering dalam pemrosesan citra digital adalah ….",
@@ -279,7 +283,6 @@
     }
   ];
 
-
   let currentIdx = 0;
   const qText = document.getElementById('question-text');
   const optsCont = document.getElementById('options-container');
@@ -287,9 +290,23 @@
   const btnNextQuiz = document.getElementById('next-quiz-btn');
   const btnNavNext = document.getElementById('nav-next-materi');
 
+  
+  function unlockNavigation() {
+    if (btnNavNext) {
+      btnNavNext.classList.remove('disabled');
+      btnNavNext.style.opacity = '1';
+      btnNavNext.style.pointerEvents = 'auto';
+    }
+    if (typeof unlockNextContent === "function") {
+      unlockNextContent('spatial-frequency');
+    }
+  }
+
   function renderQuestion(idx) {
     const item = questions[idx];
-    document.getElementById('question-counter').textContent = `Soal ${idx + 1} / ${questions.length}`;
+    const counter = document.getElementById('question-counter');
+    if (counter) counter.textContent = `Soal ${idx + 1} / ${questions.length}`;
+    
     qText.textContent = item.q;
     optsCont.innerHTML = '';
     feedback.innerHTML = '';
@@ -331,7 +348,7 @@
   };
 
   function updateProgressDatabase() {
-    fetch("/api/update-progres/", {
+    fetch("{% url 'update_progres' %}", {
       method: "POST",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
@@ -356,18 +373,7 @@
           confirmButtonText: 'OK',
           confirmButtonColor: '#3b7be3'
         }).then(() => {
-          btnNavNext.classList.remove('disabled');
-          btnNavNext.style.opacity = '1';
-          btnNavNext.style.pointerEvents = 'auto';
-          
-          
-          const sidebarLink = document.querySelector(`a[href*="spatial_frequency"]`);
-          if (sidebarLink) {
-              sidebarLink.classList.remove('locked');
-              sidebarLink.style.pointerEvents = 'auto';
-              sidebarLink.style.opacity = '1';
-          }
-          
+          unlockNavigation();
           currentIdx = 0;
           renderQuestion(0);
         });
@@ -379,11 +385,8 @@
     });
   }
 
-  const sudahSelesai = "{{ selesai_slugs|safe }}".includes(currentSlug);
-  if (sudahSelesai) {
-    btnNavNext.classList.remove('disabled');
-    btnNavNext.style.opacity = '1';
-    btnNavNext.style.pointerEvents = 'auto';
+  if (selesaiSlugs.includes(currentSlug)) {
+    unlockNavigation();
   }
   
   renderQuestion(0);

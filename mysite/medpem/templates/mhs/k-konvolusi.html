@@ -4,6 +4,8 @@
 {% block title %}Subbab 3 - Konsep Konvolusi{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
+
 <style>
   .card-section {
     border: 2px solid #bcccdc;
@@ -753,6 +755,15 @@
   </div>
 </section>
 
+<div class="material-nav">
+  <a href="{% url 'ringkasan2' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a id="nav-next-materi" href="{% url 't_padding' %}" 
+     class="btn btn-primary {% if 'k-konvolusi' not in selesai_slugs %}disabled{% endif %}" 
+     style="{% if 'k-konvolusi' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
+    Selanjutnya <i class="bi bi-chevron-right"></i>
+  </a>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script>
@@ -781,10 +792,9 @@ function fromPixel(coord, val, hName, hVal, label) {
 function toggleFullCalc() {
     const area = document.getElementById('fullCalcArea');
     if (!area) return;
+    area.style.display = (area.style.display === 'block') ? 'none' : 'block';
+    
     if (area.style.display === 'block') {
-        area.style.display = 'none';
-    } else {
-        area.style.display = 'block';
         const data = [
             {h: 'h(0,0)', hv: 0, f: 'f(x+1, y+1)', fv: 108},
             {h: 'h(0,1)', hv: -1, f: 'f(x+1, y)', fv: 108},
@@ -816,6 +826,10 @@ function toggleFullCalc() {
 
 (function() {
     const currentSlug = 'k-konvolusi';
+
+    const dataElement = document.getElementById('selesai-slugs-data');
+    const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
     const btnNavNext = document.getElementById('nav-next-materi');
     const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
     const kernel = [[0,-1,0],[-1,4,-1],[0,-1,0]];
@@ -871,9 +885,12 @@ function toggleFullCalc() {
     function processStep() {
         if (step >= positions.length) {
             clearInterval(intervalId);
-            document.getElementById("nextBtn").style.display = "none";
-            document.getElementById("pauseBtn").style.display = "none";
-            document.getElementById("resetBtn").style.display = "inline-block";
+            const nextBtnEl = document.getElementById("nextBtn");
+            const pauseBtnEl = document.getElementById("pauseBtn");
+            const resetBtnEl = document.getElementById("resetBtn");
+            if(nextBtnEl) nextBtnEl.style.display = "none";
+            if(pauseBtnEl) pauseBtnEl.style.display = "none";
+            if(resetBtnEl) resetBtnEl.style.display = "inline-block";
             return;
         }
 
@@ -893,151 +910,167 @@ function toggleFullCalc() {
             }
         }
 
-        calcText.innerHTML = `${detail.join(" + ")} = <b>${sum}</b>`;
+        if(calcText) calcText.innerHTML = `${detail.join(" + ")} = <b>${sum}</b>`;
         outputTable.rows[x].cells[y].textContent = sum;
         outputTable.rows[x].cells[y].classList.add("output-highlight");
         step++;
     }
 
-    document.getElementById("startBtn").onclick = () => {
-        document.getElementById("startBtn").style.display = "none";
-        document.getElementById("autoBtn").style.display = "none";
-        document.getElementById("nextBtn").style.display = "inline-block";
-        document.getElementById("resetBtn").style.display = "inline-block";
-        processStep();
-    };
+    const startBtn = document.getElementById("startBtn");
+    if(startBtn) {
+        startBtn.onclick = () => {
+            startBtn.style.display = "none";
+            document.getElementById("autoBtn").style.display = "none";
+            document.getElementById("nextBtn").style.display = "inline-block";
+            document.getElementById("resetBtn").style.display = "inline-block";
+            processStep();
+        };
+    }
 
-    document.getElementById("autoBtn").onclick = () => {
-        document.getElementById("startBtn").style.display = "none";
-        document.getElementById("autoBtn").style.display = "none";
-        document.getElementById("pauseBtn").style.display = "inline-block";
-        document.getElementById("resetBtn").style.display = "inline-block";
-        processStep();
-        intervalId = setInterval(() => {
-            if (!isPaused) processStep();
-        }, 1000);
-    };
+    const autoBtn = document.getElementById("autoBtn");
+    if(autoBtn) {
+        autoBtn.onclick = () => {
+            document.getElementById("startBtn").style.display = "none";
+            autoBtn.style.display = "none";
+            document.getElementById("pauseBtn").style.display = "inline-block";
+            document.getElementById("resetBtn").style.display = "inline-block";
+            processStep();
+            intervalId = setInterval(() => {
+                if (!isPaused) processStep();
+            }, 1000);
+        };
+    }
 
-    document.getElementById("pauseBtn").onclick = function() {
-        isPaused = !isPaused;
-        this.textContent = isPaused ? "Resume" : "Pause";
-    };
+    const pauseBtn = document.getElementById("pauseBtn");
+    if(pauseBtn) {
+        pauseBtn.onclick = function() {
+            isPaused = !isPaused;
+            this.textContent = isPaused ? "Resume" : "Pause";
+        };
+    }
 
-    document.getElementById("nextBtn").onclick = processStep;
+    const nextBtn = document.getElementById("nextBtn");
+    if(nextBtn) nextBtn.onclick = processStep;
 
-    document.getElementById("resetBtn").onclick = () => {
-        clearInterval(intervalId);
-        step = 0;
-        isPaused = false;
-        initTables();
-        calcText.textContent = "Belum ada perhitungan";
-        document.getElementById("startBtn").style.display = "inline-block";
-        document.getElementById("autoBtn").style.display = "inline-block";
-        document.getElementById("nextBtn").style.display = "none";
-        document.getElementById("pauseBtn").style.display = "none";
-        document.getElementById("resetBtn").style.display = "none";
-    };
+    const resetBtn = document.getElementById("resetBtn");
+    if(resetBtn) {
+        resetBtn.onclick = () => {
+            clearInterval(intervalId);
+            step = 0;
+            isPaused = false;
+            initTables();
+            if(calcText) calcText.textContent = "Belum ada perhitungan";
+            document.getElementById("startBtn").style.display = "inline-block";
+            document.getElementById("autoBtn").style.display = "inline-block";
+            document.getElementById("nextBtn").style.display = "none";
+            document.getElementById("pauseBtn").style.display = "none";
+            resetBtn.style.display = "none";
+        };
+    }
 
     initTables();
 
     const inputDataQuiz = [[79, 77, 102, 208], [84, 79, 106, 118], [89, 112, 114, 114], [83, 99, 90, 109]];
     const kernelQuiz = [[0, -1, 0], [-1, 5, -1], [0, -1, 0]];
-    const positionsQuiz = [[1, 1], [1, 2], [2, 1], [2, 2]];
-    const correctAnswers = positionsQuiz.map(([x, y]) => {
-        let sum = 0;
-        for (let i = -1; i <= 1; i++)
-            for (let j = -1; j <= 1; j++) sum += inputDataQuiz[x + i][y + j] * kernelQuiz[i + 1][j + 1];
-        return sum;
-    });
+    const correctAnswers = [16, 117, 179, 148]; 
 
     const inputs = [...document.querySelectorAll(".quiz-input")];
 
-    document.getElementById("checkAnswers").onclick = () => {
-        let allCorrect = true;
-        const anyEmpty = inputs.some(inp => inp.value.trim() === "");
-
-        if (anyEmpty) {
-            Swal.fire({
-                title: 'Belum Lengkap!',
-                text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.',
-                icon: 'warning',
-                confirmButtonColor: '#f39c12'
-            });
-            return;
+    function unlockNextMateri() {
+        if (btnNavNext) {
+            btnNavNext.classList.remove('disabled');
+            btnNavNext.style.opacity = '1';
+            btnNavNext.style.pointerEvents = 'auto';
         }
 
-        inputs.forEach((inp, i) => {
-            const val = parseInt(inp.value.trim());
-            if (val === correctAnswers[i]) {
-                inp.parentElement.style.background = "#4f71be";
-                inp.style.color = "white";
-            } else {
-                inp.parentElement.style.background = "#c0392b";
-                inp.style.color = "white";
-                allCorrect = false;
-            }
-        });
-
-        if (allCorrect) {
-            updateProgressDatabase();
-        } else {
-            Swal.fire({
-                title: 'Coba Lagi!',
-                text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.',
-                icon: 'error',
-                confirmButtonColor: '#c0392b'
-            });
+        const sidebarLink = document.querySelector('a[href*="t-padding"]');
+        if (sidebarLink) {
+            sidebarLink.classList.remove('locked');
+            sidebarLink.style.pointerEvents = 'auto';
+            sidebarLink.style.opacity = '1';
+            const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+            if (lockIcon) lockIcon.remove();
         }
-    };
-
-    function updateProgressDatabase() {
-        fetch("/api/update-progres/", {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({ slug: currentSlug })
-        })
-        .then(async response => {
-            const contentType = response.headers.get("content-type");
-            if (!response.ok || !contentType || !contentType.includes("application/json")) {
-                throw new Error('Sesi berakhir atau URL tidak ditemukan. Silakan login kembali.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    title: 'Luar Biasa!',
-                    text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#3b7be3'
-                }).then(() => {
-                    if (btnNavNext) {
-                        btnNavNext.classList.remove('disabled');
-                        btnNavNext.style.opacity = '1';
-                        btnNavNext.style.pointerEvents = 'auto';
-                    }
-                });
-            } else {
-                throw new Error(data.message);
-            }
-        })
-        .catch(err => {
-            Swal.fire('Gagal Simpan', err.message, 'error');
-        });
     }
 
-    document.getElementById("resetAnswers").onclick = () => {
-        inputs.forEach(i => {
-            i.value = "";
-            i.parentElement.style.background = "#fff9ee";
-            i.style.color = "#0b2540";
-        });
-    };
+    const checkBtn = document.getElementById("checkAnswers");
+    if(checkBtn) {
+        checkBtn.onclick = () => {
+            let allCorrect = true;
+            const anyEmpty = inputs.some(inp => inp.value.trim() === "");
+
+            if (anyEmpty) {
+                Swal.fire({
+                    title: 'Belum Lengkap!',
+                    text: 'Silakan lengkapi seluruh kolom jawaban.',
+                    icon: 'warning',
+                    confirmButtonColor: '#f39c12'
+                });
+                return;
+            }
+
+            inputs.forEach((inp, i) => {
+                const val = parseInt(inp.value.trim());
+                if (val === correctAnswers[i]) {
+                    inp.parentElement.style.background = "#4f71be";
+                    inp.style.color = "white";
+                } else {
+                    inp.parentElement.style.background = "#c0392b";
+                    inp.style.color = "white";
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                fetch("{% url 'update_progres' %}", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify({ slug: currentSlug })
+                })
+                .then(async response => {
+                    if (!response.ok) throw new Error('Gagal menyimpan.');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            title: 'Luar Biasa!',
+                            text: 'Semua jawaban benar. Materi selanjutnya telah terbuka.',
+                            icon: 'success',
+                            confirmButtonColor: '#3b7be3'
+                        }).then(unlockNextMateri);
+                    }
+                })
+                .catch(err => Swal.fire('Error', err.message, 'error'));
+            } else {
+                Swal.fire({
+                    title: 'Coba Lagi!',
+                    text: 'Beberapa jawaban masih salah.',
+                    icon: 'error',
+                    confirmButtonColor: '#c0392b'
+                });
+            }
+        };
+    }
+
+    const resetQuizBtn = document.getElementById("resetAnswers");
+    if(resetQuizBtn) {
+        resetQuizBtn.onclick = () => {
+            inputs.forEach(i => {
+                i.value = "";
+                i.parentElement.style.background = "#fff9ee";
+                i.style.color = "#0b2540";
+            });
+        };
+    }
+
+    if (selesaiSlugs.includes(currentSlug)) {
+        unlockNextMateri();
+    }
 })();
 </script>
 {% endblock %}

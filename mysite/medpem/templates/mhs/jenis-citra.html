@@ -4,6 +4,7 @@
 {% block title %}Subbab 1 - Jenis Citra Digital{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
@@ -386,8 +387,9 @@
 <script>
 (function() {
   const currentSlug = 'jenis-citra';
-
-  // Bagian 1: Interaktif Grid Matriks
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+  
   const matrixData = [
     [190,203,209,211,213,212,209,202], [204,219,223,224,226,221,225,220],
     [216,227,229,232,214,174,199,229], [223,231,231,234,190,97,135,228],
@@ -457,9 +459,22 @@
   const btnNextQuiz = document.getElementById('next-quiz-btn');
   const btnNavNext = document.getElementById('nav-next-materi');
 
+  function unlockNavigation() {
+    if (btnNavNext) {
+      btnNavNext.classList.remove('disabled');
+      btnNavNext.style.opacity = '1';
+      btnNavNext.style.pointerEvents = 'auto';
+    }
+    if (typeof unlockNextContent === "function") {
+      unlockNextContent('ringkasan-citra');
+    }
+  }
+
   function renderQuestion(idx) {
     const item = quizData[idx];
-    document.getElementById('question-counter').textContent = `Soal ${idx + 1} / ${quizData.length}`;
+    const counter = document.getElementById('question-counter');
+    if (counter) counter.textContent = `Soal ${idx + 1} / ${quizData.length}`;
+    
     qText.textContent = item.q;
     optsCont.innerHTML = '';
     feedback.innerHTML = '';
@@ -504,7 +519,7 @@
   };
 
   function updateProgressDatabase() {
-    fetch("/api/update-progres/", {
+    fetch("{% url 'update_progres' %}", {
       method: "POST",
       headers: {
         "X-CSRFToken": "{{ csrf_token }}",
@@ -516,7 +531,7 @@
     .then(async response => {
         const contentType = response.headers.get("content-type");
         if (!response.ok || !contentType || !contentType.includes("application/json")) {
-            throw new Error('Sesi berakhir atau URL tidak ditemukan.');
+            throw new Error('Sesi berakhir atau URL tidak ditemukan. Silakan login kembali.');
         }
         return response.json();
     })
@@ -526,23 +541,15 @@
           title: 'Luar Biasa!',
           text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
           icon: 'success',
+          confirmButtonText: 'OK',
           confirmButtonColor: '#3b7be3'
         }).then(() => {
-          btnNavNext.classList.remove('disabled');
-          btnNavNext.style.opacity = '1';
-          btnNavNext.style.pointerEvents = 'auto';
-        
-          
-          const sidebarLink = document.querySelector('a[href*="ringkasan_citra"]');
-          if (sidebarLink) {
-              sidebarLink.classList.remove('locked');
-              sidebarLink.style.pointerEvents = 'auto';
-              sidebarLink.style.opacity = '1';
-          }
-
+          unlockNavigation();
           currentIdx = 0;
           renderQuestion(0);
         });
+      } else {
+        throw new Error(data.message);
       }
     })
     .catch(err => {
@@ -551,7 +558,10 @@
     });
   }
 
-  // Initial Load
+  if (selesaiSlugs.includes(currentSlug)) {
+    unlockNavigation();
+  }
+
   renderQuestion(0);
 })();
 </script>

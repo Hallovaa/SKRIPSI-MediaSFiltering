@@ -4,6 +4,7 @@
 {% block title %}Subbab 7 - Praktikum Sharpening{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
@@ -584,6 +585,17 @@ function handleInput(el) {
     feedback.style.display = "none";
 }
 
+function unlockSidebarNext() {
+    const sidebarLink = document.querySelector('a[href*="ringkasan6"]');
+    if (sidebarLink) {
+        sidebarLink.classList.remove('locked');
+        sidebarLink.style.pointerEvents = 'auto';
+        sidebarLink.style.opacity = '1';
+        const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+        if (lockIcon) lockIcon.remove();
+    }
+}
+
 function validateQuiz() {
     const a1 = document.getElementById('ans-1').value.trim().toLowerCase();
     const a2 = document.getElementById('ans-2').value.trim().toLowerCase();
@@ -631,15 +643,24 @@ function updateProgressDatabase() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            const navBtn = document.getElementById('nextBtnMaterial');
-            navBtn.classList.remove('disabled');
-            navBtn.style.opacity = '1';
-            navBtn.style.pointerEvents = 'auto';
-            const badge = document.getElementById('quiz-badge');
-            badge.innerText = 'Selesai';
-            badge.className = 'badge bg-success';
+            enableNavigation();
+            unlockSidebarNext();
         }
     });
+}
+
+function enableNavigation() {
+    const navBtn = document.getElementById('nextBtnMaterial');
+    if (navBtn) {
+        navBtn.classList.remove('disabled');
+        navBtn.style.opacity = '1';
+        navBtn.style.pointerEvents = 'auto';
+    }
+    const badge = document.getElementById('quiz-badge');
+    if (badge) {
+        badge.innerText = 'Selesai';
+        badge.className = 'badge bg-success';
+    }
 }
 
 async function initPyodide() {
@@ -767,7 +788,7 @@ document.getElementById("image-upload").addEventListener("change", (e) => {
                 document.getElementById("input-display").src = url;
                 notebookCells.forEach(cell => {
                     let current = editors[cell.id].getValue();
-                    const updated = current.replace(/Image\\.open\\s*\\(\\s*["']([^"']*)["']\\s*\\)/g, `Image.open("${file.name}")`);
+                    const updated = current.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
                     editors[cell.id].setValue(updated);
                 });
             };
@@ -784,7 +805,17 @@ function clearFiles() {
     document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
 }
 
-initPyodide();
+document.addEventListener("DOMContentLoaded", function() {
+    const currentSlug = 'prak-sharp';
+    const dataElement = document.getElementById('selesai-slugs-data');
+    const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
+    if (selesaiSlugs.includes(currentSlug)) {
+        enableNavigation();
+        unlockSidebarNext();
+    }
+    initPyodide();
+});
 </script>
 
 {% endblock %}

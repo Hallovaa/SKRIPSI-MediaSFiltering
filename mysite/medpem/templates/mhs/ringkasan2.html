@@ -4,6 +4,7 @@
 {% block title %}Subbab 2 - Ringkasan{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <style>
   .card-section {
@@ -121,34 +122,58 @@
   const currentSlug = 'ringkasan2';
   const btnNavNext = document.getElementById('nav-next');
 
-  btnNavNext.addEventListener('click', function(e) {
-    const isAlreadyDone = "{{ selesai_slugs|safe }}".includes(currentSlug);
-    
-    if (!isAlreadyDone) {
-      e.preventDefault();
-      const targetUrl = this.href;
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
 
-      fetch("/api/update-progres/", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ slug: currentSlug })
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      })
-      .then(data => {
-        window.location.href = targetUrl;
-      })
-      .catch(error => {
-        window.location.href = targetUrl;
-      });
+  function unlockSidebarNext() {
+    const sidebarLink = document.querySelector('a[href*="kuis-2"]'); 
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) lockIcon.remove();
     }
-  });
+  }
+
+  if (btnNavNext) {
+    btnNavNext.addEventListener('click', function(e) {
+      const isAlreadyDone = selesaiSlugs.includes(currentSlug);
+      
+      if (!isAlreadyDone) {
+        e.preventDefault();
+        const targetUrl = this.href;
+
+        fetch("{% url 'update_progres' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ slug: currentSlug })
+        })
+        .then(async response => {
+          const contentType = response.headers.get("content-type");
+          if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Sesi berakhir');
+          }
+          return response.json();
+        })
+        .then(() => {
+          unlockSidebarNext(); 
+          window.location.href = targetUrl;
+        })
+        .catch(() => {
+          window.location.href = targetUrl;
+        });
+      }
+    });
+  }
+
+  if (selesaiSlugs.includes(currentSlug)) {
+      unlockSidebarNext();
+  }
 })();
 </script>
 

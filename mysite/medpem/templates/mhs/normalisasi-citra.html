@@ -4,6 +4,8 @@
 {% block title %}Subbab 3 - Normalisasi Citra{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
+
 <style>
 .card-section {
     border: 2px solid #bcccdc;
@@ -338,14 +340,37 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 (function(){
+  const currentSlug = 'normalisasi-citra';
+
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
   const defaultInput = [[162, 87, 59, 187], [92, 56, 41, 157], [172, -2, -21, -64], [-24, -56, -4, 77]];
   let inputDataSim = JSON.parse(JSON.stringify(defaultInput));
   let outputDataSim = Array.from({length:4},()=>Array(4).fill(''));
-  let stepSim = 0, isAutoplay = false, intervalId = null, isPaused = false;
+  let stepSim = 0, intervalId = null, isPaused = false;
+  
   const inTable = document.getElementById('inputMatrixSim'), outTable = document.getElementById('outputMatrixSim');
   const calcText = document.getElementById('calculationTextSim');
+  const btnNavNext = document.getElementById('nextBtnMaterial');
   const startBtn = document.getElementById('startSimBtn'), autoBtn = document.getElementById('autoPlayBtn');
   const nextBtn = document.getElementById('nextSimBtn'), resetBtn = document.getElementById('resetSimBtn'), pauseBtn = document.getElementById('pauseSimBtn');
+
+  function unlockNextMateri() {
+    if (btnNavNext) {
+      btnNavNext.classList.remove('disabled');
+      btnNavNext.style.opacity = '1';
+      btnNavNext.style.pointerEvents = 'auto';
+    }
+    const sidebarLink = document.querySelector('a[href*="ringkasan3"]');
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) lockIcon.remove();
+    }
+  }
 
   function renderTable(data, table, editable=false) {
     table.innerHTML = '';
@@ -370,19 +395,21 @@
 
   function runStep() {
     const pos = []; for(let i=0;i<4;i++) for(let j=0;j<4;j++) pos.push([i,j]);
-    const [r,c] = pos[stepSim];
-    const flat = inputDataSim.flat().filter(v => v !== null);
-    
-    if(flat.length === 0) {
+    if(stepSim >= pos.length) {
       clearInterval(intervalId);
-      Swal.fire('Peringatan', 'Silakan isi nilai pada tabel input terlebih dahulu!', 'warning');
+      nextBtn.style.display = pauseBtn.style.display = 'none';
       return;
     }
 
-    const pMin = Math.min(...flat);
-    const pMax = Math.max(...flat);
-    const P = inputDataSim[r][c];
+    const [r,c] = pos[stepSim];
+    const flat = inputDataSim.flat().filter(v => v !== null);
+    if(flat.length === 0) {
+      clearInterval(intervalId);
+      Swal.fire('Peringatan', 'Isi nilai tabel input terlebih dahulu!', 'warning');
+      return;
+    }
 
+    const pMin = Math.min(...flat), pMax = Math.max(...flat), P = inputDataSim[r][c];
     Array.from(inTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
     Array.from(outTable.querySelectorAll('td')).forEach(td => td.classList.remove('output-highlight'));
     inTable.rows[r].cells[c].classList.add('active-highlight');
@@ -391,85 +418,57 @@
       outTable.rows[r].cells[c].textContent = '-';
       calcText.innerHTML = `Piksel kosong, dilewati.`;
     } else if (P < 0 || P > 255) {
-      const pembilang = P - pMin;
-      const penyebut = pMax - pMin || 1;
-      const hasilBagi = (pembilang / penyebut).toFixed(4);
+      const pembilang = P - pMin, penyebut = pMax - pMin || 1;
       const res = Math.round(255 * (pembilang / penyebut));
-      
       outputDataSim[r][c] = res;
       outTable.rows[r].cells[c].textContent = res;
-      
-      calcText.innerHTML = `
-        255 &times; ((${P} - (${pMin})) / (${pMax} - (${pMin}))) = 
-        255 &times; (${pembilang} / ${penyebut}) = 
-        255 &times; (${hasilBagi}) 
-        <b> &nbsp;= ${res} </b>
-      `;
+      calcText.innerHTML = `255 &times; ((${P} - (${pMin})) / (${pMax} - (${pMin}))) = &nbsp;<b>${res}</b>`;
     } else {
       outputDataSim[r][c] = P;
       outTable.rows[r].cells[c].textContent = P;
-      calcText.innerHTML = `Nilai <b>&nbsp;${P}&nbsp;</b> tetap karena sudah berada dalam rentang 0-255.`;
+      calcText.innerHTML = `Nilai &nbsp; <b>${P}</b> &nbsp; tetap (sudah 0-255).`;
     }
 
     outTable.rows[r].cells[c].classList.add('output-highlight');
     stepSim++;
-
-    if(stepSim >= pos.length) {
-      clearInterval(intervalId);
-      nextBtn.style.display = pauseBtn.style.display = 'none';
-      return;
-    }
   }
 
-  function startProcess(auto) {
-    stepSim = 0; isAutoplay = auto; isPaused = false;
+  startBtn.onclick = () => {
+    stepSim = 0; isPaused = false;
     renderTable(Array.from({length:4},()=>Array(4).fill('')), outTable);
-    startBtn.style.display = 'none';
-    autoBtn.style.display = 'none';
-    resetBtn.style.display = 'inline-block';
+    startBtn.style.display = autoBtn.style.display = 'none';
+    resetBtn.style.display = nextBtn.style.display = 'inline-block';
+    runStep();
+  };
 
-    if(isAutoplay) {
-      nextBtn.style.display = 'none'; 
-      pauseBtn.style.display = 'inline-block'; 
-      pauseBtn.textContent = "Pause";
-      intervalId = setInterval(() => { if(!isPaused) runStep(); }, 1500);
-    } else {
-      nextBtn.style.display = 'inline-block'; 
-      pauseBtn.style.display = 'none'; 
-      runStep();
-    }
-  }
+  autoBtn.onclick = () => {
+    stepSim = 0; isPaused = false;
+    renderTable(Array.from({length:4},()=>Array(4).fill('')), outTable);
+    startBtn.style.display = autoBtn.style.display = 'none';
+    resetBtn.style.display = pauseBtn.style.display = 'inline-block';
+    intervalId = setInterval(() => { if(!isPaused) runStep(); }, 1200);
+  };
 
-  startBtn.onclick = () => startProcess(false);
-  autoBtn.onclick = () => startProcess(true);
-  nextBtn.onclick = runStep;
   pauseBtn.onclick = () => { isPaused = !isPaused; pauseBtn.textContent = isPaused ? "Resume" : "Pause"; };
+  
   resetBtn.onclick = () => {
     clearInterval(intervalId); stepSim = 0; isPaused = false;
-    startBtn.style.display = 'inline-block';
-    autoBtn.style.display = 'inline-block';
-    nextBtn.style.display = 'none';
-    pauseBtn.style.display = 'none';
-    resetBtn.style.display = 'none';
+    startBtn.style.display = autoBtn.style.display = 'inline-block';
+    nextBtn.style.display = pauseBtn.style.display = resetBtn.style.display = 'none';
     calcText.textContent = 'Belum ada perhitungan';
     renderTable(Array.from({length:4},()=>Array(4).fill('')), outTable);
     Array.from(inTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
   };
 
   document.getElementById('inputModeSim').onchange = (e) => {
-    if(e.target.value === 'custom') {
-      inputDataSim = Array.from({length:4},()=>Array(4).fill(null));
-      renderTable(inputDataSim, inTable, true);
-    } else {
-      inputDataSim = JSON.parse(JSON.stringify(defaultInput));
-      renderTable(inputDataSim, inTable, false);
-    }
+    inputDataSim = e.target.value === 'custom' ? Array.from({length:4},()=>Array(4).fill(null)) : JSON.parse(JSON.stringify(defaultInput));
+    renderTable(inputDataSim, inTable, e.target.value === 'custom');
     resetBtn.click();
   };
-  renderTable(inputDataSim, inTable); renderTable(outputDataSim, outTable);
-})();
 
-(function(){
+  renderTable(inputDataSim, inTable); 
+  renderTable(outputDataSim, outTable);
+
   const m = [[76, 48, 17, 404],[89, 16, 117, 44],[77, 179, 148, 115],[61, 111, 38, 123]];
   const flat = m.flat(), pMin = Math.min(...flat), pMax = Math.max(...flat);
   const eO = 404, eN = Math.round(255 * (eO - pMin) / (pMax - pMin));
@@ -480,100 +479,52 @@
     gt.appendChild(tr);
   });
 
-  function updateProgressDatabase() {
-    fetch("/api/update-progres/", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": "{{ csrf_token }}",
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({ slug: 'normalisasi-citra' })
-    })
-    .then(async response => {
-        const contentType = response.headers.get("content-type");
-        if (!response.ok || !contentType || !contentType.includes("application/json")) {
-            throw new Error('Gagal memperbarui progres. Silakan login kembali.');
-        }
-        return response.json();
-    })
-    .then(data => {
-      if (data.status === 'success') {
-        Swal.fire({
-          title: 'Luar Biasa!',
-          text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
-          icon: 'success',
-          confirmButtonText: 'Lanjutkan',
-          confirmButtonColor: '#3b7be3'
-        }).then(() => {
-          const navBtn = document.getElementById('nextBtnMaterial');
-          navBtn.classList.remove('disabled');
-          navBtn.style.opacity = '1';
-          navBtn.style.pointerEvents = 'auto';
-        });
-      } else {
-        throw new Error(data.message);
-      }
-    })
-    .catch(err => {
-        Swal.fire('Progres Gagal', err.message, 'error');
-    });
-  }
-
   document.getElementById('checkActBtn').onclick = () => {
     const elO = document.getElementById('fillOriginal'), elN = document.getElementById('fillNormalized');
     const uO = elO.value.trim(), uN = elN.value.trim();
 
     if(uO === "" || uN === "") {
-        Swal.fire({
-            title: 'Belum Lengkap!',
-            text: 'Silakan isi kedua kolom jawaban terlebih dahulu.',
-            icon: 'warning',
-            confirmButtonColor: '#f39c12'
-        });
+        Swal.fire({ title: 'Belum Lengkap!', text: 'Isi kedua kolom jawaban.', icon: 'warning', confirmButtonColor: '#f39c12' });
         return;
     }
 
-    let isCorrect = true;
-    const numO = parseInt(uO), numN = parseInt(uN);
-
-    if(numO === eO) {
-        elO.style.backgroundColor = '#4f71be';
-        elO.style.color = 'white';
-    } else {
-        elO.style.backgroundColor = '#c0392b';
-        elO.style.color = 'white';
-        isCorrect = false;
-    }
-
-    if(numN === eN) {
-        elN.style.backgroundColor = '#4f71be';
-        elN.style.color = 'white';
-    } else {
-        elN.style.backgroundColor = '#c0392b';
-        elN.style.color = 'white';
-        isCorrect = false;
-    }
+    let isCorrect = (parseInt(uO) === eO && parseInt(uN) === eN);
+    [elO, elN].forEach((el, i) => {
+        const correct = i === 0 ? eO : eN;
+        el.style.backgroundColor = (parseInt(el.value) === correct) ? '#4f71be' : '#c0392b';
+        el.style.color = 'white';
+    });
 
     if(isCorrect) {
-        updateProgressDatabase();
+        fetch("{% url 'update_progres' %}", {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ slug: currentSlug })
+        })
+        .then(async response => {
+            if (!response.ok) throw new Error('Gagal memperbarui progres.');
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({ title: 'Luar Biasa!', text: 'Jawaban benar. Materi selanjutnya terbuka.', icon: 'success', confirmButtonColor: '#3b7be3' })
+                .then(unlockNextMateri);
+            }
+        })
+        .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Coba Lagi!', 
-            text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', 
-            confirmButtonColor: '#c0392b' 
-        });
+        Swal.fire({ icon: 'error', title: 'Coba Lagi!', text: 'Jawaban belum tepat.', confirmButtonColor: '#c0392b' });
     }
   };
 
   document.getElementById('resetActBtn').onclick = () => {
     const elO = document.getElementById('fillOriginal'), elN = document.getElementById('fillNormalized');
-    elO.value = ''; 
-    elN.value = '';
-    elO.removeAttribute('style');
-    elN.removeAttribute('style');
+    elO.value = elN.value = '';
+    elO.removeAttribute('style'); elN.removeAttribute('style');
   };
+
+  if (selesaiSlugs.includes(currentSlug)) unlockNextMateri();
+  nextBtn.onclick = runStep;
 })();
 </script>
 {% endblock %}

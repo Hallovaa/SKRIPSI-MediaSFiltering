@@ -4,6 +4,7 @@
 {% block title %}Subbab 1 - Ringkasan{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <style>
   .card-section {
@@ -123,38 +124,55 @@
   const currentSlug = 'ringkasan-citra';
   const nextBtn = document.getElementById('nav-next-kuis');
 
-  nextBtn.addEventListener('click', function(e) {
-    const isAlreadyDone = "{{ selesai_slugs|safe }}".includes(currentSlug);
-    
-    if (!isAlreadyDone) {
-      e.preventDefault();
+  const dataElement = document.getElementById('selesai-slugs-data');
+  const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
+
+  function unlockSidebarNext() {
+    const sidebarLink = document.querySelector('a[href*="kuis-1"]');
+    if (sidebarLink) {
+      sidebarLink.classList.remove('locked');
+      sidebarLink.style.pointerEvents = 'auto';
+      sidebarLink.style.opacity = '1';
+      const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+      if (lockIcon) lockIcon.remove();
+    }
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function(e) {
+      const isAlreadyDone = selesaiSlugs.includes(currentSlug);
       const targetUrl = this.href;
 
-      fetch("/api/update-progres/", {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": "{{ csrf_token }}",
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ slug: currentSlug })
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-      })
-      .then(data => {
-        if (data.status === 'success') {
+      if (!isAlreadyDone) {
+        e.preventDefault();
+        fetch("{% url 'update_progres' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ slug: currentSlug })
+        })
+        .then(response => {
+          if (!response.ok) throw new Error('Network response error');
+          return response.json();
+        })
+        .then(() => {
+          unlockSidebarNext();
           window.location.href = targetUrl;
-        } else {
+        })
+        .catch(() => {
           window.location.href = targetUrl;
-        }
-      })
-      .catch(error => {
-        window.location.href = targetUrl;
-      });
-    }
-  });
+        });
+      }
+    });
+  }
+
+  if (selesaiSlugs.includes(currentSlug)) {
+    unlockSidebarNext();
+  }
 })();
 </script>
 

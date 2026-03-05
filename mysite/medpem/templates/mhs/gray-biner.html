@@ -4,6 +4,7 @@
 {% block title %}Subbab 6 - Grayscale & Biner{% endblock %}
 
 {% block content %}
+{{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
@@ -714,6 +715,17 @@ function resetStyle(element) {
     document.getElementById(feedbackId).style.display = "none";
 }
 
+function unlockSidebarNext() {
+    const sidebarLink = document.querySelector('a[href*="prak-konvolusi"]');
+    if (sidebarLink) {
+        sidebarLink.classList.remove('locked');
+        sidebarLink.style.pointerEvents = 'auto';
+        sidebarLink.style.opacity = '1';
+        const lockIcon = sidebarLink.querySelector('.bi-lock-fill');
+        if (lockIcon) lockIcon.remove();
+    }
+}
+
 function updateProgressDatabase() {
     fetch("/api/update-progres/", {
         method: "POST",
@@ -727,12 +739,17 @@ function updateProgressDatabase() {
     .then(data => {
         if (data.status === 'success') {
             const navBtn = document.getElementById('nextBtnMaterial');
-            navBtn.classList.remove('disabled');
-            navBtn.style.opacity = '1';
-            navBtn.style.pointerEvents = 'auto';
+            if (navBtn) {
+                navBtn.classList.remove('disabled');
+                navBtn.style.opacity = '1';
+                navBtn.style.pointerEvents = 'auto';
+            }
             const progress = document.getElementById('quiz-progress');
-            progress.innerText = 'Selesai';
-            progress.classList.replace('bg-primary', 'bg-success');
+            if (progress) {
+                progress.innerText = 'Selesai';
+                progress.classList.replace('bg-primary', 'bg-success');
+            }
+            unlockSidebarNext();
         }
     });
 }
@@ -953,6 +970,24 @@ function clearFiles() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    const currentSlug = 'gray-biner';
+    const dataElement = document.getElementById('selesai-slugs-data');
+    const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
+
+    if (selesaiSlugs.includes(currentSlug)) {
+        const navBtn = document.getElementById('nextBtnMaterial');
+        if (navBtn) {
+            navBtn.classList.remove('disabled');
+            navBtn.style.opacity = '1';
+            navBtn.style.pointerEvents = 'auto';
+        }
+        const progress = document.getElementById('quiz-progress');
+        if (progress) {
+            progress.innerText = 'Selesai';
+            progress.classList.replace('bg-primary', 'bg-success');
+        }
+        unlockSidebarNext();
+    }
     initPyodide();
 });
 </script>
