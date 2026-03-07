@@ -614,21 +614,21 @@ function validateQuiz() {
     document.getElementById('ans-4').className = isCorrect4 ? "quiz-input correct" : "quiz-input wrong";
 
     if (isCorrect1 && isCorrect2 && isCorrect3 && isCorrect4) {
-        feedback.innerHTML = "✓ Rumus Benar!";
+        feedback.innerHTML = "Benar - Highboost filtering dihitung dengan rumus image + k x (image - blur). Metode ini menambahkan detail (mask) dari selisih citra asli dan citra blur untuk mempertajam citra.";
         feedback.className = "feedback-msg feedback-success";
         feedback.style.display = "block";
 
         Swal.fire({
             title: 'Luar Biasa!',
-            text: 'Logika Highboost Anda benar. Subbab selanjutnya telah terbuka.',
+            text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
             icon: 'success',
-            confirmButtonText: 'Siap!',
-            confirmButtonColor: '#3b82f6'
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3b7be3'
         }).then(() => {
             updateProgressDatabase();
         });
     } else {
-        feedback.innerHTML = "✗ Ada bagian rumus yang salah. Rumus Highboost: image + k * (image - blur)";
+        feedback.innerHTML = "Masih ada jawaban yang belum tepat. Silakan periksa kembali dan coba lagi";
         feedback.className = "feedback-msg feedback-error";
         feedback.style.display = "block";
     }

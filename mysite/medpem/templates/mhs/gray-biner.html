@@ -791,14 +791,14 @@ function checkStep2() {
         feedback.className = "feedback-msg feedback-success";
         feedback.style.display = "block";
         Swal.fire({
-            icon: 'success', title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.', confirmButtonText: 'OK', confirmButtonColor: '#3b82f6'
+            icon: 'success', title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.', confirmButtonText: 'OK', confirmButtonColor: '#3b7be3'
         }).then(() => {
             inputA.disabled = true; inputB.disabled = true; inputC.disabled = true;
             document.getElementById('btn-finish-quiz').disabled = true;
             updateProgressDatabase();
         });
     } else {
-        feedback.innerText = "Masih ada jawaban yang belum tepat. Periksa kembali.";
+        feedback.innerText = "Masih ada jawaban yang belum tepat. Silakan periksa kembali dan coba lagi";
         feedback.className = "feedback-msg feedback-error";
         feedback.style.display = "block";
     }

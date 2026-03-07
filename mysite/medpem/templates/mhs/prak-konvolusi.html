@@ -715,7 +715,7 @@ function validateQuiz() {
     q3.className = check3 ? "quiz-input correct" : "quiz-input wrong";
 
     if (check1 && check2 && check3) {
-        feedback.innerText = "Benar!";
+        feedback.innerText = 'Benar - Fungsi convolve2d digunakan untuk melakukan konvolusi antara citra dan kernel. Parameter mode="same" membuat ukuran hasil sama dengan citra input, sedangkan boundary="symm" menangani piksel di tepi citra dengan reflect padding.';
         feedback.className = "feedback-msg feedback-success";
         feedback.style.display = "block";
 
@@ -723,8 +723,8 @@ function validateQuiz() {
             title: 'Luar Biasa!',
             text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
             icon: 'success',
-            confirmButtonText: 'Siap!',
-            confirmButtonColor: '#3b82f6'
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3b7be3'
         }).then(() => {
             q1.disabled = true;
             q2.disabled = true;
@@ -732,7 +732,7 @@ function validateQuiz() {
             updateProgressDatabase();
         });
     } else {
-        feedback.innerText = "Masih ada jawaban yang belum tepat. Periksa kembali.";
+        feedback.innerText = "Masih ada jawaban yang belum tepat. Silakan periksa kembali dan coba lagi";
         feedback.className = "feedback-msg feedback-error";
         feedback.style.display = "block";
     }

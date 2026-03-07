@@ -606,7 +606,7 @@ function validateQuiz() {
     document.getElementById('ans-param').className = isCorrect2 ? "quiz-input correct" : "quiz-input wrong";
 
     if (isCorrect1 && isCorrect2) {
-        feedback.innerHTML = "✓ Jawaban Benar!";
+        feedback.innerHTML = "Benar - filter() digunakan untuk menerapkan filter pada citra, sedangkan ImageFilter.SMOOTH_MORE melakukan penghalusan citra yang lebih kuat.";
         feedback.className = "feedback-msg feedback-success";
         feedback.style.display = "block";
 
@@ -615,12 +615,12 @@ function validateQuiz() {
             text: 'Semua jawaban kamu benar. Lanjutkan ke materi berikutnya.',
             icon: 'success',
             confirmButtonText: 'OK',
-            confirmButtonColor: '#3b82f6'
+            confirmButtonColor: '#3b7be3'
         }).then(() => {
             updateProgressDatabase();
         });
     } else {
-        feedback.innerHTML = "Masih ada jawaban yang belum tepat. Periksa kembali.";
+        feedback.innerHTML = "Masih ada jawaban yang belum tepat. Silakan periksa kembali dan coba lagi";
         feedback.className = "feedback-msg feedback-error";
         feedback.style.display = "block";
     }

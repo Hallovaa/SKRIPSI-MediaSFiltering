@@ -64,14 +64,34 @@
   .active-highlight { background:#d9eafd !important; color:#0b2540; font-weight:800; }
   .output-highlight { background:#003049 !important; color:#fff !important; font-weight:800; }
   .kernel-cell { background:#d9eafd !important; padding:0; font-weight:800; text-align:center; }
-  .calc-wrapper { width: 100%; max-width: 950px; margin: 15px auto; text-align: center; }
-  .calc-title { font-weight: 800; font-size: 14px; color: #0b2540; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
-  .calculation {
-    background-color: #faf9f7; border-radius: 10px; border: 1px solid #edf4fe;
-    padding: 16px 20px; text-align:center; font-family: 'Courier New', monospace; color:#333; 
-    min-height:60px; line-height: 1.8; word-break: normal; overflow-wrap: anywhere;
-    font-size: 17px; font-weight: 800;
+  .calc-wrapper {
+    width: 100%;
+    max-width: 850px;
+    margin-top: 10px;
   }
+  .calc-title {
+    font-weight: 800;
+    color: #003049;
+    margin-bottom: 5px;
+    text-align: center;
+    font-size: 15px;
+  }
+  .calculation {
+    background-color: #faf9f7;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px #edf4fe;
+    padding: 20px 24px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    min-height: 60px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.6;
+    border: 1px solid #eee;
+  }
+
+  .eq-val { color: var(--primary-500); font-weight: 800; }
   .select-row {
     display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; width: 100%; align-items: flex-end;
   }
@@ -577,8 +597,8 @@
 
   const inputData = [[84,86,80,89],[88,93,86,89],[83,56,41,24],[17,9,19,30]];
   const kernelConfigs = {
-    mean: { plainScale: "1/9", matrix: [[1,1,1],[1,1,1],[1,1,1]], divider: 9 },
-    gaussian: { plainScale: "1/16", matrix: [[1,2,1],[2,4,2],[1,2,1]], divider: 16 },
+    mean: { plainScale: '1/9', matrix: [[1,1,1],[1,1,1],[1,1,1]], divider: 9 },
+    gaussian: { plainScale: '1/16', matrix: [[1,2,1],[2,4,2],[1,2,1]], divider: 16 },
   };
   let currentConfig = JSON.parse(JSON.stringify(kernelConfigs.mean));
   let paddingType = 'zero';
@@ -672,14 +692,21 @@
         const val = getPaddedValue(ox+i, oy+j);
         const k = currentConfig.matrix[i+1][j+1];
         rawSum += (val * k);
-        details.push(`(${k}×${val})`);
+        details.push(`(<span class="eq-val">${k}</span>×${val})`);
       }
     }
     let finalVal = rawSum / currentConfig.divider;
     outputData[ox][oy] = finalVal;
     createTable(outputData, outputTable, 'output-cell');
     outputTable.rows[ox].cells[oy].classList.add('output-highlight');
-    calcText.innerHTML = `${currentConfig.plainScale} × (${details.join('+')}) =&nbsp;<b>${Math.floor(finalVal + 0.5)}</b>`;
+    
+    let blueScale = `<span class="eq-val">${currentConfig.plainScale}</span>`;
+    
+    calcText.innerHTML = `
+      ${blueScale} × (${details.join(' + ')}) <br>
+      = ${blueScale} × (${rawSum}) = <b>${Math.floor(finalVal + 0.5)}</b>
+    `;
+    
     step++;
     if(step >= 16){
       clearInterval(intervalId);
@@ -717,7 +744,7 @@
   document.getElementById('kernelSelect').onchange = (e) => {
     currentConfig = JSON.parse(JSON.stringify(kernelConfigs[e.target.value]));
     let tex = e.target.value === 'mean' ? "\\frac{1}{9}" : "\\frac{1}{16}";
-    kernelFractionSim.innerHTML = `<span style="font-size:20px;">\\(${tex}\\)</span>`;
+    kernelFractionSim.innerHTML = `<span style="font-size:20px; color:#333;">\\(${tex}\\)</span>`;
     if (window.MathJax) MathJax.typesetPromise([kernelFractionSim]);
     createTable(currentConfig.matrix, kernelTable, 'kernel-cell');
   };
@@ -776,8 +803,9 @@
     if(inputs.some(inp => inp.value.trim() === "")) {
         return Swal.fire({ 
             title: 'Belum Lengkap!', 
-            text: 'Silakan lengkapi seluruh kolom jawaban.', 
-            icon: 'warning' 
+            text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.', 
+            icon: 'warning',
+            confirmButtonColor: '#f39c12'
         });
     }
 
@@ -797,7 +825,7 @@
       }).then(() => {
         Swal.fire({ 
             title: 'Luar Biasa!', 
-            text: 'Jawaban benar. Materi konvolusi telah terbuka.', 
+            text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.', 
             icon: 'success', 
             confirmButtonColor: '#3b7be3' 
         }).then(unlockNextMateri);
@@ -805,7 +833,7 @@
     } else {
         Swal.fire({ 
             title: 'Coba Lagi!', 
-            text: 'Masih ada jawaban yang belum tepat.', 
+            text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', 
             icon: 'error', 
             confirmButtonColor: '#c0392b' 
         });

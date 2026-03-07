@@ -1002,7 +1002,7 @@ function toggleFullCalc() {
             if (anyEmpty) {
                 Swal.fire({
                     title: 'Belum Lengkap!',
-                    text: 'Silakan lengkapi seluruh kolom jawaban.',
+                    text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.',
                     icon: 'warning',
                     confirmButtonColor: '#f39c12'
                 });
@@ -1039,7 +1039,7 @@ function toggleFullCalc() {
                     if (data.status === 'success') {
                         Swal.fire({
                             title: 'Luar Biasa!',
-                            text: 'Semua jawaban benar. Materi selanjutnya telah terbuka.',
+                            text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
                             icon: 'success',
                             confirmButtonColor: '#3b7be3'
                         }).then(unlockNextMateri);
@@ -1049,7 +1049,7 @@ function toggleFullCalc() {
             } else {
                 Swal.fire({
                     title: 'Coba Lagi!',
-                    text: 'Beberapa jawaban masih salah.',
+                    text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.',
                     icon: 'error',
                     confirmButtonColor: '#c0392b'
                 });

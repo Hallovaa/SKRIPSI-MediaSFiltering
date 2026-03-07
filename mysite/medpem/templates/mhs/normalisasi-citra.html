@@ -81,7 +81,7 @@
   border: 1px solid #edf4fe;
   padding: 20px;
   width: 100%;
-  max-width: 850px;
+  max-width: 700px;
   text-align:center;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color:#333;
@@ -395,6 +395,20 @@
 
   function runStep() {
     const pos = []; for(let i=0;i<4;i++) for(let j=0;j<4;j++) pos.push([i,j]);
+    
+    const hasEmptyCell = inputDataSim.some(row => row.some(val => val === null || val === ''));
+    if(hasEmptyCell) {
+      clearInterval(intervalId);
+      Swal.fire({
+        title: 'Peringatan!',
+        text: 'Silakan isi semua nilai pada input citra terlebih dahulu.',
+        icon: 'warning',
+        confirmButtonColor: '#f39c12'
+      });
+      resetBtn.click();
+      return;
+    }
+
     if(stepSim >= pos.length) {
       clearInterval(intervalId);
       nextBtn.style.display = pauseBtn.style.display = 'none';
@@ -403,26 +417,19 @@
 
     const [r,c] = pos[stepSim];
     const flat = inputDataSim.flat().filter(v => v !== null);
-    if(flat.length === 0) {
-      clearInterval(intervalId);
-      Swal.fire('Peringatan', 'Isi nilai tabel input terlebih dahulu!', 'warning');
-      return;
-    }
-
     const pMin = Math.min(...flat), pMax = Math.max(...flat), P = inputDataSim[r][c];
+    
     Array.from(inTable.querySelectorAll('td')).forEach(td => td.classList.remove('active-highlight'));
     Array.from(outTable.querySelectorAll('td')).forEach(td => td.classList.remove('output-highlight'));
     inTable.rows[r].cells[c].classList.add('active-highlight');
 
-    if (P === null) {
-      outTable.rows[r].cells[c].textContent = '-';
-      calcText.innerHTML = `Piksel kosong, dilewati.`;
-    } else if (P < 0 || P > 255) {
-      const pembilang = P - pMin, penyebut = pMax - pMin || 1;
+    if (P < 0 || P > 255) {
+      const pembilang = P - pMin;
+      const penyebut = pMax - pMin || 1;
       const res = Math.round(255 * (pembilang / penyebut));
       outputDataSim[r][c] = res;
       outTable.rows[r].cells[c].textContent = res;
-      calcText.innerHTML = `255 &times; ((${P} - (${pMin})) / (${pMax} - (${pMin}))) = &nbsp;<b>${res}</b>`;
+      calcText.innerHTML = `255 &times; ((${P} - (${pMin})) / (${pMax} - (${pMin}))) &nbsp; = &nbsp; 255 &times; (${pembilang} / ${penyebut}) &nbsp; = &nbsp; <b>${res}</b>`;
     } else {
       outputDataSim[r][c] = P;
       outTable.rows[r].cells[c].textContent = P;
@@ -484,7 +491,7 @@
     const uO = elO.value.trim(), uN = elN.value.trim();
 
     if(uO === "" || uN === "") {
-        Swal.fire({ title: 'Belum Lengkap!', text: 'Isi kedua kolom jawaban.', icon: 'warning', confirmButtonColor: '#f39c12' });
+        Swal.fire({ title: 'Belum Lengkap!', text: 'Silakan lengkapi dua kolom jawaban terlebih dahulu.', icon: 'warning', confirmButtonColor: '#f39c12' });
         return;
     }
 
@@ -507,13 +514,13 @@
         })
         .then(data => {
             if (data.status === 'success') {
-                Swal.fire({ title: 'Luar Biasa!', text: 'Jawaban benar. Materi selanjutnya terbuka.', icon: 'success', confirmButtonColor: '#3b7be3' })
+                Swal.fire({ title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.', icon: 'success', confirmButtonColor: '#3b7be3' })
                 .then(unlockNextMateri);
             }
         })
         .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
-        Swal.fire({ icon: 'error', title: 'Coba Lagi!', text: 'Jawaban belum tepat.', confirmButtonColor: '#c0392b' });
+        Swal.fire({ icon: 'error', title: 'Coba Lagi!', text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', confirmButtonColor: '#c0392b' });
     }
   };
 

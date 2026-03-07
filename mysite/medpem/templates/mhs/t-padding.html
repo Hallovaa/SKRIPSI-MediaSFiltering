@@ -133,7 +133,7 @@
   }
   .calc-wrapper {
     width: 100%;
-    max-width: 800px;
+    max-width: 850px;
     margin-top: 10px;
   }
   .calc-title {
@@ -144,23 +144,22 @@
     font-size: 15px;
   }
   .calculation { 
-    background-color: #faf9f7; 
-    border-radius: 10px; 
-    box-shadow: 0 6px 18px #edf4fe; 
-    padding: 15px; 
-    text-align:center; 
-    font-family: 'Courier New', monospace; 
-    color:#333; 
-    min-height:50px; 
-    border: 1px solid #eee; 
-    font-size: 1.1rem; 
+    background-color: #faf9f7;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px #edf4fe;
+    padding: 20px 24px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    min-height: 60px;
+    font-size: 18px;
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1.6;
+    border: 1px solid #eee;
   }
-  .eq-val {
-    color: #3b7be3;
-    font-weight: 800;
-  }
+
+  .eq-val { color: var(--primary-500); font-weight: 800; }
+
   .quiz-input {
     width: 60px;
     height: 50px;
@@ -782,14 +781,14 @@ document.addEventListener('DOMContentLoaded', function () {
         let val = getPaddedValue(ox+i, oy+j);
         let kVal = currentKernel[i+1][j+1];
         sum += val * kVal;
-        detail.push(`(${kVal}×${val})`);
+        detail.push(`(<span class="eq-val">${kVal}</span>×${val})`);
       }
     }
     
     outputData[ox][oy] = sum;
     createTable(outputData, outputTable, 'output-cell');
     outputTable.rows[ox].cells[oy].classList.add('output-highlight');
-    calcText.innerHTML = `${detail.join("+")} = <b>${sum}</b>`;
+    calcText.innerHTML = `${detail.join(" + ")} = <b>${sum}</b>`;
     step++;
   }
 
@@ -911,7 +910,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const empty = allInp.some(inp => inp.value.trim() === "" || isNaN(parseInt(inp.value)));
 
     if (empty) {
-      Swal.fire({ title: 'Belum Lengkap!', text: 'Silakan lengkapi seluruh kolom jawaban.', icon: 'warning', confirmButtonColor: '#f39c12' });
+      Swal.fire({ title: 'Belum Lengkap!', text: 'Silakan lengkapi seluruh kolom jawaban terlebih dahulu.', icon: 'warning', confirmButtonColor: '#f39c12' });
       return;
     }
 
@@ -943,13 +942,13 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .then(data => {
             if (data.status === 'success') {
-                Swal.fire({ title: 'Luar Biasa!', text: 'Jawaban benar. Materi konvolusi telah terbuka.', icon: 'success', confirmButtonColor: '#3b7be3' })
+                Swal.fire({ title: 'Luar Biasa!', text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.', icon: 'success', confirmButtonColor: '#3b7be3' })
                 .then(unlockNextMateri);
             }
         })
         .catch(err => Swal.fire('Error', err.message, 'error'));
     } else {
-        Swal.fire({ title: 'Coba Lagi!', text: 'Masih ada jawaban yang belum tepat.', icon: 'error', confirmButtonColor: '#c0392b' });
+        Swal.fire({ title: 'Coba Lagi!', text: 'Masih ada jawaban yang belum tepat, silakan periksa kembali.', icon: 'error', confirmButtonColor: '#c0392b' });
     }
   };
 
