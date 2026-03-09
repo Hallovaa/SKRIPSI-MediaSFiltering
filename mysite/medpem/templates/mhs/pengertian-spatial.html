@@ -325,13 +325,13 @@
         if (opt === item.ans) {
           btn.style.background = '#e9f2ff';
           btn.style.borderColor = '#3b7be3';
-          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar, ${item.explain}</div>`;
+          feedback.innerHTML = `<div style="color:green;font-weight:700">Benar - ${item.explain}</div>`;
           btnNextQuiz.disabled = false;
           Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
         } else {
           btn.style.background = '#fff0f0';
           btn.style.borderColor = '#f5c6c6';
-          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Belum tepat, coba lagi.</div>';
+          feedback.innerHTML = '<div style="color:#c0392b;font-weight:700">Belum tepat - coba lagi.</div>';
         }
       };
       optsCont.appendChild(btn);

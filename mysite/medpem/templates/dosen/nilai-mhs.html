@@ -310,10 +310,14 @@
             </div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 d-flex align-items-center gap-3">
             <span class="badge bg-warning-subtle text-dark px-3 py-2">
                 <strong>KKM:</strong> {{ kkm }}
             </span>
+            <small class="text-muted">
+                <i class="bi bi-info-circle-fill text-warning"></i> 
+                Jika kuis atau evaluasi dikerjakan lebih dari satu kali, nilai maksimal yang dapat diperoleh adalah {{ kkm }} (sesuai KKM). 
+            </small>
         </div>
 
         {% for n in "123457"|make_list %}
@@ -325,11 +329,11 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th style="width:80px;">Percobaan</th>
+                            <th style="width:80px;">Pengerjaan</th>
                             <th style="width:120px;">Tanggal</th>
                             <th style="width:110px;">Mulai</th>
                             <th style="width:110px;">Selesai</th>
-                            <th style="width:70px;">Nilai</th>
+                            <th style="width:90px;">Nilai</th>
                             <th style="width:100px;">Status</th>
                             {% if n == "7" %}
                                 {% for i in "12345678901234567890"|make_list %}

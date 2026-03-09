@@ -489,7 +489,7 @@ def export_nilai_excel(request):
 def get_user_progress(user):
     if hasattr(user, 'mahasiswa_profile'):
         return list(ProgresAktivitas.objects.filter(
-            mahasiswa=user.mahasiswa_profile,
+            mahasiswa=user.mahasiswa_profile, 
             status_selesai=True
         ).values_list('aktivitas__slug', flat=True))
     return []
@@ -497,64 +497,98 @@ def get_user_progress(user):
 def get_kuis_status(mhs):
     config = get_config()
     status = {}
-    for i in range(1, 6):
-        lulus = HasilKuis.objects.filter(
+    for i in range(1, 7): 
+        lulus_skor = HasilKuis.objects.filter(
             mahasiswa=mhs,
-            nomor_kuis=i,  
+            nomor_kuis=i,
             skor__gte=config.kkm
         ).exists()
-        status[f'kuis_{i}'] = lulus 
+                
+        lulus_admin = ProgresAktivitas.objects.filter(
+            mahasiswa=mhs,
+            aktivitas__slug=f'kuis-{i}',
+            status_selesai=True
+        ).exists()
+        
+        status[f'kuis_{i}'] = lulus_skor or lulus_admin
     return status
 
-def is_materi_accessible(mhs, nomor_kuis_sebelumnya, current_slug):
-    if ProgresAktivitas.objects.filter(mahasiswa=mhs, aktivitas__slug=current_slug, status_selesai=True).exists():
-        return True
-    if nomor_kuis_sebelumnya == 0:
-        return True
-    return check_lulus(mhs, nomor_kuis_sebelumnya)
+def is_materi_accessible(mhs, kuis_sebelumnya_nomor, current_slug):
+    status_kuis = get_kuis_status(mhs)
+    return status_kuis.get(f'kuis_{kuis_sebelumnya_nomor}', False)
 
 def check_lulus(mhs, nomor_kuis):
     config = get_config()
     kkm = config.kkm
-    override_admin = ProgresAktivitas.objects.filter(mahasiswa=mhs, aktivitas__slug=f'kuis-{nomor_kuis}', status_selesai=True).exists()
+
+    slug_kuis = f'kuis-{nomor_kuis}'
+    override_admin = ProgresAktivitas.objects.filter(
+        mahasiswa=mhs, 
+        aktivitas__slug=slug_kuis, 
+        status_selesai=True
+    ).exists()
+    
     if override_admin:
         return True
-    return HasilKuis.objects.filter(mahasiswa=mhs, nomor_kuis=nomor_kuis, skor__gte=kkm).exists()
+        
+    return HasilKuis.objects.filter(
+        mahasiswa=mhs, 
+        nomor_kuis=nomor_kuis, 
+        skor__gte=kkm
+    ).exists()
 
 @login_required
 def dash_mhs(request):
     if request.user.role != User.IS_MAHASISWA:
         return redirect('landing')
+    
     mhs = request.user.mahasiswa_profile
     config = get_config()
+    
+    nilai_kuis = {f'kuis_{i}': 0 for i in range(1, 6)}
+    lulus_kuis = {f'kuis_{i}': False for i in range(1, 6)}
+    nilai_evaluasi = 0  
+    lulus_evaluasi = False 
+    
     semua_hasil = HasilKuis.objects.filter(mahasiswa=mhs)
-    nilai_kuis = {f'kuis_{i}': 0 for i in range(1, 7)}
-    lulus_kuis = {f'kuis_{i}': False for i in range(1, 7)}
-    nilai_evaluasi = 0
-    lulus_evaluasi = False
+    
     rekap_nilai = semua_hasil.values('nomor_kuis').annotate(skor_max=Max('skor'))
+    
     for item in rekap_nilai:
         nomor = item['nomor_kuis']
         skor_tertinggi = item['skor_max']
         is_lulus = skor_tertinggi >= config.kkm
+        
         if nomor == 7:
             nilai_evaluasi = skor_tertinggi
             lulus_evaluasi = is_lulus
         else:
             key = f'kuis_{nomor}'
-            nilai_kuis[key] = skor_tertinggi
-            lulus_kuis[key] = is_lulus
+            if key in nilai_kuis:
+                nilai_kuis[key] = skor_tertinggi
+                lulus_kuis[key] = is_lulus
+
+    percobaan_counts = semua_hasil.values('nomor_kuis').annotate(jumlah=Count('id'))
+    dict_percobaan = {item['nomor_kuis']: item['jumlah'] for item in percobaan_counts}
+
+    selesai_slugs = ProgresAktivitas.objects.filter(
+        mahasiswa=mhs, 
+        status_selesai=True
+    ).values_list('aktivitas__slug', flat=True)
+
     total_aktivitas = Aktivitas.objects.count()
-    aktivitas_selesai = ProgresAktivitas.objects.filter(mahasiswa=mhs, status_selesai=True).count()
+    aktivitas_selesai = len(selesai_slugs)
     progress_percent = int((aktivitas_selesai / total_aktivitas * 100)) if total_aktivitas > 0 else 0
-    selesai_slugs = ProgresAktivitas.objects.filter(mahasiswa=mhs, status_selesai=True).values_list('aktivitas__slug', flat=True)
+    
     context = {
         'nilai_kuis': nilai_kuis,
         'lulus_kuis': lulus_kuis,
         'nilai_evaluasi': nilai_evaluasi,
         'lulus_evaluasi': lulus_evaluasi,
         'progress_percent': progress_percent,
-        'selesai_slugs': selesai_slugs,
+        'kkm': config.kkm,
+        'dict_percobaan': dict_percobaan,
+        'selesai_slugs': selesai_slugs, 
     }
     return render(request, 'mhs/dash-mhs.html', context)
 
@@ -587,17 +621,22 @@ def pengertian_spatial(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 1, 'pengertian-spatial'):
+    
+    if not status_kuis.get('kuis_1'):
         messages.warning(request, "Selesaikan Kuis 1 terlebih dahulu!")
         return redirect('dash_mhs')
-    return render(request, 'mhs/pengertian-spatial.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+    
+    return render(request, 'mhs/pengertian-spatial.html', {
+        'selesai_slugs': get_user_progress(request.user), 
+        'lulus_kuis': status_kuis
+    })
 
 @login_required
 def spatial_frequency(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 1, 'spatial-frequency'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
     return render(request, 'mhs/spatial-frequency.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -605,7 +644,7 @@ def ringkasan2(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 1, 'ringkasan2'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan2.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -613,7 +652,7 @@ def kuis_2(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 1, 'kuis-2'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
     return render(request, 'mhs/kuis-2.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -621,17 +660,22 @@ def k_konvolusi(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 2, 'k-konvolusi'):
+    
+    if not status_kuis.get('kuis_2'):
         messages.warning(request, "Selesaikan Kuis 2 terlebih dahulu!")
         return redirect('dash_mhs')
-    return render(request, 'mhs/k-konvolusi.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+        
+    return render(request, 'mhs/k-konvolusi.html', {
+        'selesai_slugs': get_user_progress(request.user), 
+        'lulus_kuis': status_kuis
+    })
 
 @login_required
 def t_padding(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 2, 't-padding'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     return render(request, 'mhs/t-padding.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -639,7 +683,7 @@ def normalisasi_citra(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 2, 'normalisasi-citra'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     return render(request, 'mhs/normalisasi-citra.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -647,7 +691,7 @@ def ringkasan3(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 2, 'ringkasan3'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan3.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -655,7 +699,7 @@ def kuis_3(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 2, 'kuis-3'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     return render(request, 'mhs/kuis-3.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -663,17 +707,22 @@ def sl_filters(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 3, 'sl-filters'):
+    
+    if not status_kuis.get('kuis_3'):
         messages.warning(request, "Selesaikan Kuis 3 terlebih dahulu!")
         return redirect('dash_mhs')
-    return render(request, 'mhs/sl-filters.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+        
+    return render(request, 'mhs/sl-filters.html', {
+        'selesai_slugs': get_user_progress(request.user), 
+        'lulus_kuis': status_kuis
+    })
 
 @login_required
 def sn_filters(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 3, 'sn-filters'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
     return render(request, 'mhs/sn-filters.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -681,7 +730,7 @@ def ringkasan4(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 3, 'ringkasan4'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan4.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -689,7 +738,7 @@ def kuis_4(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 3, 'kuis-4'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
     return render(request, 'mhs/kuis-4.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -697,17 +746,22 @@ def sharp_citra(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 4, 'sharp-citra'):
+    
+    if not status_kuis.get('kuis_4'):
         messages.warning(request, "Selesaikan Kuis 4 terlebih dahulu!")
         return redirect('dash_mhs')
-    return render(request, 'mhs/sharp-citra.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+        
+    return render(request, 'mhs/sharp-citra.html', {
+        'selesai_slugs': get_user_progress(request.user), 
+        'lulus_kuis': status_kuis
+    })
 
 @login_required
 def um_highboost(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 4, 'um-highboost'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_4'): return redirect('dash_mhs')
     return render(request, 'mhs/um-highboost.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -715,7 +769,7 @@ def ringkasan5(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 4, 'ringkasan5'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_4'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan5.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -723,7 +777,7 @@ def kuis_5(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 4, 'kuis-5'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_4'): return redirect('dash_mhs')
     return render(request, 'mhs/kuis-5.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -731,17 +785,22 @@ def gray_biner(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 5, 'gray-biner'):
+    
+    if not status_kuis.get('kuis_5'):
         messages.warning(request, "Selesaikan Kuis 5 terlebih dahulu!")
         return redirect('dash_mhs')
-    return render(request, 'mhs/gray-biner.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+        
+    return render(request, 'mhs/gray-biner.html', {
+        'selesai_slugs': get_user_progress(request.user), 
+        'lulus_kuis': status_kuis
+    })
 
 @login_required
 def prak_konvolusi(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 5, 'prak-konvolusi'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_5'): return redirect('dash_mhs')
     return render(request, 'mhs/prak-konvolusi.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -749,7 +808,7 @@ def prak_smooth(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 5, 'prak-smooth'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_5'): return redirect('dash_mhs')
     return render(request, 'mhs/prak-smooth.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -757,7 +816,7 @@ def prak_sharp(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 5, 'prak-sharp'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_5'): return redirect('dash_mhs')
     return render(request, 'mhs/prak-sharp.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -765,7 +824,7 @@ def ringkasan6(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not is_materi_accessible(mhs, 5, 'ringkasan6'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_5'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan6.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -774,6 +833,7 @@ def evaluasi(request):
     mhs = request.user.mahasiswa_profile
     return render(request, 'mhs/evaluasi.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': get_kuis_status(mhs)})
 
+@csrf_exempt
 @login_required
 def update_progres(request, slug=None):
     if request.method == 'POST':
@@ -789,7 +849,6 @@ def update_progres(request, slug=None):
                 return JsonResponse({'status': 'error', 'message': 'Profil mahasiswa tidak ditemukan'}, status=403)
                 
             aktivitas = get_object_or_404(Aktivitas, slug=slug)
-            # Mencatat progres aktivitas dari JavaScript materi
             progres, created = ProgresAktivitas.objects.update_or_create(
                 mahasiswa=mhs, 
                 aktivitas=aktivitas, 
@@ -819,7 +878,18 @@ def kalkulasi_skor_v2(jawaban_siswa, kunci_jawaban):
 def simpan_hasil_kuis_v2(mhs, nomor, skor, detail_jwb, mulai, selesai):
     config = get_config()
     kkm = config.kkm if config else 70
-    lulus = skor >= kkm
+    
+    percobaan_sebelumnya = HasilKuis.objects.filter(
+        mahasiswa=mhs, 
+        nomor_kuis=nomor
+    ).exists()
+
+    skor_final = skor
+    if percobaan_sebelumnya and skor >= kkm:
+        skor_final = kkm
+    
+    lulus_skor = skor_final >= kkm
+
     def safe_parse(dt_str):
         if not dt_str or not isinstance(dt_str, str):
             return timezone.now()
@@ -827,17 +897,40 @@ def simpan_hasil_kuis_v2(mhs, nomor, skor, detail_jwb, mulai, selesai):
             return parse_datetime(dt_str.replace(' ', 'T')) or timezone.now()
         except:
             return timezone.now()
+
     dt_mulai = safe_parse(mulai)
     dt_selesai = safe_parse(selesai)
+    
     limit_soal = 20 if nomor == 7 else 10
     detail_jwb_fixed = detail_jwb[:limit_soal]
-    HasilKuis.objects.create(mahasiswa=mhs, nomor_kuis=nomor, skor=skor, detail_jawaban=json.dumps(detail_jwb_fixed), waktu_mulai=dt_mulai, waktu_selesai=dt_selesai)
-    if lulus:
-        slug_kuis = f'kuis-{nomor}' if nomor < 7 else 'evaluasi'
+    
+    HasilKuis.objects.create(
+        mahasiswa=mhs, 
+        nomor_kuis=nomor, 
+        skor=skor_final, 
+        detail_jawaban=json.dumps(detail_jwb_fixed), 
+        waktu_mulai=dt_mulai, 
+        waktu_selesai=dt_selesai
+    )
+    
+    slug_kuis = f'kuis-{nomor}' if nomor < 7 else 'evaluasi'
+    
+    if lulus_skor:
         aktivitas = Aktivitas.objects.filter(slug=slug_kuis).first()
         if aktivitas:
-            ProgresAktivitas.objects.update_or_create(mahasiswa=mhs, aktivitas=aktivitas, defaults={'status_selesai': True, 'tgl_selesai': timezone.now()})
-    return lulus
+            ProgresAktivitas.objects.update_or_create(
+                mahasiswa=mhs, 
+                aktivitas=aktivitas, 
+                defaults={'status_selesai': True, 'tgl_selesai': timezone.now()}
+            )
+    
+    lulus_admin = ProgresAktivitas.objects.filter(
+        mahasiswa=mhs,
+        aktivitas__slug=slug_kuis,
+        status_selesai=True
+    ).exists()
+            
+    return lulus_skor or lulus_admin
 
 @csrf_exempt
 @login_required
