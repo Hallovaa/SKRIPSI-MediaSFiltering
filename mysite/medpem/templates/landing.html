@@ -24,6 +24,8 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            min-height: 100%;
+            scroll-behavior: smooth;
         }
 
         .preloader {
@@ -139,9 +141,11 @@
             position: relative;
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            justify-content: center;
             width: 100%;
             overflow: hidden;
+            padding: 100px 0;
         }
 
         .hero-bg-image {
@@ -163,11 +167,11 @@
         }
 
         .hero-content h1 {
-            font-size: 65px;
+            font-size: clamp(32px, 5vw, 65px);
             font-weight: 800;
             color: var(--dark-blue);
-            line-height: 1.2;
-            margin-bottom: 10px;
+            line-height: 1.1;
+            margin-bottom: 20px;
         }
 
         .hero-content p {
@@ -198,11 +202,116 @@
             max-width: 550px;
             height: auto;
             filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1));
-            transform: translateY(40px);
+        }
+
+        .features-section {
+            padding: 100px 0;
+            background: #f8fbff;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 45px 30px;
+            border-radius: 24px;
+            border: 1px solid rgba(47, 128, 237, 0.1);
+            transition: var(--transition);
+            height: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(47, 128, 237, 0.08);
+            border-color: var(--primary-blue);
+        }
+
+        .feature-img-wrapper {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .feature-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .feature-card h4 {
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-weight: 800;
+            color: var(--dark-blue);
+            position: relative;
+            display: inline-block;
+            padding-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
+
+        .site-footer {
+            padding: 20px 0;
+            background: #fff;
+            border-top: 1px solid #eee;
+            text-align: center;
+        }
+
+        .site-footer p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        .footer-brand {
+            color: var(--primary-blue);
+            font-weight: 700;
         }
 
         @media (max-width: 991px) {
-            .hero-section-wrapper-5 { padding: 120px 0 60px; }
+            .hero-section-wrapper-5 { 
+                padding: 120px 0 60px;
+                height: auto;
+                min-height: 100vh;
+            }
             .navbar-collapse {
                 background: white;
                 padding: 20px;
@@ -215,7 +324,6 @@
             .hero-content { text-align: center; }
             .hero-content p { margin-left: auto; margin-right: auto; }
             .hero-image { text-align: center !important; margin-top: 40px; }
-            .hero-image img { transform: translateY(0); }
             .btn-daftar { margin-right: 0; margin-bottom: 10px; }
         }
     </style>
@@ -262,30 +370,77 @@
         </div>
     </header>
 
-    <main class="hero-section-wrapper-5">
-        <div class="hero-bg-image"></div>
-        
-        <section class="hero-style-5">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-lg-6">
-                        <div class="hero-content"><br><br>
-                            <h1>MEDIA <br>PEMBELAJARAN<br> INTERAKTIF <em>SPATIAL FILTERING</em></h1>
-                            <p>Media ini dirancang untuk membantu kamu memahami konsep dan penerapan <em>spatial filtering</em> dengan lebih mudah melalui fitur interaktif dan kode editor yang dapat digunakan secara langsung.</p>
-                            <a href="{% url 'login' %}" class="btn-mulai">
-                                Mulai Belajar <i class="bi bi-chevron-right"></i>
-                            </a>
+    <main>
+        <section class="hero-section-wrapper-5">
+            <div class="hero-bg-image"></div>
+            
+            <div class="hero-style-5">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6">
+                            <div class="hero-content">
+                                <h1>MEDIA <br>PEMBELAJARAN<br> INTERAKTIF <em>SPATIAL FILTERING</em></h1>
+                                <p>Media ini dirancang untuk membantu kamu memahami konsep dan penerapan <em>Spatial Filtering</em> dengan lebih mudah melalui fitur interaktif dan kode editor yang dapat digunakan secara langsung.</p>
+                                <a href="{% url 'login' %}" class="btn-mulai">
+                                    Mulai Belajar <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="hero-image text-lg-end">
+                                <img src="{% static 'assets/img/hero/hero-5/fkipA.png' %}" alt="Landing Image">
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
-                        <div class="hero-image text-lg-end">
-                            <img src="{% static 'assets/img/hero/hero-5/fkipA.png' %}" alt="Landing Image">
+                </div>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="container">
+                <div class="row justify-content-center mb-5">
+                    <div class="col-lg-7 text-center">
+                        <h2 class="section-title mb-3">FITUR UNGGULAN</h2>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-img-wrapper">
+                                <img src="{% static 'assets/img/hero/hero-5/materi.png' %}" alt="Materi Interaktif">
+                            </div>
+                            <h4>Materi Interaktif</h4>
+                            <p>Pelajari konsep <em>Spatial Filtering</em> melalui materi interaktif yang memungkinkan kamu mencoba contoh dan percobaan secara langsung.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-img-wrapper">
+                                <img src="{% static 'assets/img/hero/hero-5/code.png' %}" alt="Code Editor">
+                            </div>
+                            <h4>Code Editor</h4>
+                            <p>Tulis dan jalankan kode Python untuk mencoba <em>filter</em> pada citra dan melihat hasilnya secara langsung.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <div class="feature-img-wrapper">
+                                <img src="{% static 'assets/img/hero/hero-5/kuis.png' %}" alt="Kuis & Evaluasi">
+                            </div>
+                            <h4>Kuis & Evaluasi</h4>
+                            <p>Uji pemahamanmu melalui kuis interaktif dan lihat perkembangan belajarmu.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 <span class="footer-brand">SFiltering</span>. Pendidikan Komputer.</p>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

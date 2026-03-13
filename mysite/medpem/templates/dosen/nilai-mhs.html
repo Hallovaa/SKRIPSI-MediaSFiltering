@@ -2,7 +2,7 @@
 {% load static %}
 {% load custom_filters %}
 
-{% block title %}Nilai Mahasiswa — Dashboard Dosen{% endblock %}
+{% block title %}Data Nilai Mahasiswa{% endblock %}
 
 {% block content %}
 
@@ -323,7 +323,7 @@
         {% for n in "123457"|make_list %}
         <div class="history-card">
             <div class="history-title">
-                {% if n == "7" %}EVALUASI AKHIR (20 SOAL){% else %}KUIS {{ n }}{% endif %}
+                {% if n == "7" %}EVALUASI AKHIR{% else %}KUIS {{ n }}{% endif %}
             </div>
             <div class="table-scroll">
                 <table class="table table-bordered">

@@ -875,6 +875,7 @@ def kalkulasi_skor_v2(jawaban_siswa, kunci_jawaban):
     skor = int((benar_count / len(kunci_jawaban)) * 100)
     return skor, benar_list
 
+
 def simpan_hasil_kuis_v2(mhs, nomor, skor, detail_jwb, mulai, selesai):
     config = get_config()
     kkm = config.kkm if config else 70
@@ -1013,10 +1014,23 @@ def cek_nilai_evaluasi(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            kunci = [1, 4, 3, 1, 2, 4, 0, 3, 2, 2, 0, 4, 1, 0, 0, 1, 3, 2, 3, 4]
+            kunci = [1, 4, 3, 1, 2, 4, 0, 3, 2, 2, 0, 4, 1, 0, 1, 1, 3, 2, 3, 4]
             mhs = request.user.mahasiswa_profile
+            
+            def kalkulasi_skor_v2(jawaban_siswa, kunci_jawaban):
+                benar = 0
+                detail = []
+                for i in range(len(kunci_jawaban)):
+                    js = jawaban_siswa[i] if i < len(jawaban_siswa) else None
+                    is_benar = (js == kunci_jawaban[i])
+                    if is_benar: benar += 1
+                    detail.append({'no': i+1, 'jawaban': js, 'benar': is_benar})
+                skor = int((benar / len(kunci_jawaban)) * 100)
+                return skor, detail
+
             skor, detail = kalkulasi_skor_v2(data.get('jawaban_siswa'), kunci)
             lulus = simpan_hasil_kuis_v2(mhs, 7, skor, detail, data.get('waktu_mulai'), data.get('waktu_selesai'))
+            
             return JsonResponse({'skor': skor, 'lulus': lulus})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
