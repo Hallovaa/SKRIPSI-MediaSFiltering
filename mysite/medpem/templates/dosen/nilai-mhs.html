@@ -166,6 +166,17 @@
 }
 .modal-title { font-size: 22px; font-weight: 800; }
 .modal-close { cursor: pointer; font-size: 22px; color: #6b7280; }
+
+.badge-kkm {
+    background-color: #fef3c7;
+    color: #1e293b;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 800;
+    display: inline-block;
+    white-space: nowrap;
+}
+
 .history-card {
     border: 1px solid #e5e7eb;
     border-radius: 14px;
@@ -173,12 +184,90 @@
     margin-bottom: 24px;
 }
 .history-title { font-weight: 800; font-size: 18px; margin-bottom: 12px; color: #1e293b; }
-.table-scroll { width: 100%; overflow-x: auto; }
+.table-scroll { width: 100%; overflow-x: auto; position: relative; }
 .table-scroll table { min-width: 1200px; }
 .row-percentage {
     background-color: #f8fafc;
     font-weight: bold;
     color: #1e293b;
+}
+
+.th-question {
+    cursor: pointer;
+    background-color: #f1f5f9 !important;
+    transition: all 0.2s;
+}
+.th-question:hover {
+    background-color: #2563eb !important;
+    color: white !important;
+}
+
+.modal-soal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+.modal-soal-box {
+    background: #fff;
+    width: 90%;
+    max-width: 650px;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+    position: relative;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+.opt-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+.opt-item {
+    padding: 12px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.opt-correct {
+    background-color: #eff6ff;
+    border-color: #2563eb;
+    color: #1e40af;
+    font-weight: 700;
+}
+.opt-label {
+    width: 28px;
+    height: 28px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.opt-correct .opt-label {
+    background: #2563eb;
+    color: white;
+}
+.soal-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 15px 0;
+    border: 1px solid #e2e8f0;
+}
+.opt-img {
+    max-height: 80px;
+    border-radius: 4px;
 }
 </style>
 
@@ -310,14 +399,22 @@
             </div>
         </div>
 
-        <div class="mb-3 d-flex align-items-center gap-3">
-            <span class="badge bg-warning-subtle text-dark px-3 py-2">
-                <strong>KKM:</strong> {{ kkm }}
-            </span>
-            <small class="text-muted">
-                <i class="bi bi-info-circle-fill text-warning"></i> 
-                Jika kuis atau evaluasi dikerjakan lebih dari satu kali, nilai maksimal yang dapat diperoleh adalah {{ kkm }} (sesuai KKM). 
-            </small>
+        <div class="mb-4">
+            <div class="mb-2">
+                <div class="badge-kkm">KKM: {{ kkm }}</div>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-info-circle-fill text-warning"></i>
+                <small class="text-muted">
+                    Jika kuis atau evaluasi <strong>dikerjakan lebih dari satu kali</strong>, nilai maksimal yang dapat diperoleh adalah <strong>{{ kkm }}</strong> (sesuai KKM).
+                </small>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle-fill text-primary"></i>
+                <small class="text-muted">Klik pada <strong>S1, S2, dan seterusnya</strong> untuk melihat detail soal.</small>
+            </div>
         </div>
 
         {% for n in "123457"|make_list %}
@@ -337,11 +434,11 @@
                             <th style="width:100px;">Status</th>
                             {% if n == "7" %}
                                 {% for i in "12345678901234567890"|make_list %}
-                                <th style="width:35px;">S{{ forloop.counter }}</th>
+                                <th style="width:35px;" class="th-question" onclick="openSoalModal({{ forloop.counter0 }}, '7')">S{{ forloop.counter }}</th>
                                 {% endfor %}
                             {% else %}
                                 {% for i in "1234567890"|make_list %}
-                                <th style="width:40px;">S{{ forloop.counter }}</th>
+                                <th style="width:40px;" class="th-question" onclick="openSoalModal({{ forloop.counter0 }}, '{{ n }}')">S{{ forloop.counter }}</th>
                                 {% endfor %}
                             {% endif %}
                         </tr>
@@ -408,17 +505,166 @@
 </div>
 {% endfor %}
 
+<div class="modal-soal-overlay" id="modalSoal">
+    <div class="modal-soal-box">
+        <div class="modal-header">
+            <div class="modal-title" id="soalTitle">Detail Soal</div>
+            <div class="modal-close" onclick="closeSoalModal()">
+                <i class="bi bi-x-lg"></i>
+            </div>
+        </div>
+        <div id="soalImageContainer"></div>
+        <div id="soalContent" style="font-size: 16px; line-height: 1.6; color: #334155; font-weight: 500;"></div>
+        <div class="opt-list" id="optionsContent"></div>
+    </div>
+</div>
+
 <script>
+    const STATIC_URL = "{% static '' %}";
+    
+    const kuisRepo = {
+        "1": [
+            {q:"Jika citra memiliki resolusi 128×128, maka jumlah total piksel yang membentuk citra tersebut adalah ….", o:["256","12.800","16.384","32.768","128.128"], k:2},
+            {q:"Dalam citra digital semakin besar nilai piksel berarti ….", o:["warna semakin gelap","warna semakin terang","warna semakin jenuh","citra semakin hitam","piksel semakin kecil"], k:1},
+            {q:"Citra dengan resolusi rendah seperti 32×32 biasanya tampak ….", o:["lebih kabur atau blur","lebih tajam","lebih berwarna","lebih gelap","lebih cerah"], k:0},
+            {q:"Semakin tinggi jumlah piksel pada citra, maka ….", o:["citra akan terlihat buram","ukuran file menjadi lebih kecil","warna menjadi hitam-putih","komputer sulit membacanya","detail citra semakin tajam dan jelas"], k:4},
+            {q:"Citra RGB disebut citra 24-bit karena ….", o:["terdiri dari 24 warna utama","total pikselnya 24 buah","dihitung dengan rumus 8×3 piksel","setiap channel menyimpan 8 bit data","memiliki 24 tingkat kecerahan"], k:3},
+            {q:"Jika R=100, G=150, B=200, maka nilai grayscale rata-rata adalah ….", o:["125","150","175","200","225"], k:1},
+            {q:"Dengan rumus luminansi, jika R=100, G=150, B=200, maka nilai grayscale mendekati ….", o:["120","121","140","141","142"], k:3},
+            {q:"Nilai ambang (threshold) digunakan untuk ….", o:["menentukan batas terang-gelap pada citra grayscale","mengubah ukuran piksel","mengatur kontras gambar","mengatur warna RGB","menghapus latar belakang"], k:0},
+            {q:"Seorang mahasiswa ingin menghemat ruang penyimpanan citra untuk aplikasi deteksi bentuk sederhana. Jenis citra apa yang paling efisien digunakan adalah ….", o:["RGB, karena warnanya lengkap","grayscale, karena tidak perlu tiga channel","biner, karena hanya membutuhkan 1 bit per piksel","RGB, karena resolusinya tinggi","grayscale, karena warnanya paling jelas"], k:2},
+            {q:"Seorang peneliti ingin mengurangi ukuran file citra tanpa kehilangan struktur objek penting. Strategi yang paling efisien adalah ….", o:["mengubah citra RGB menjadi grayscale","mengubah citra RGB menjadi biner","menurunkan resolusi","menghapus sebagian piksel","mengompresi tanpa kehilangan data"], k:4}
+        ],
+        "2": [
+            {q:"Pada spatial domain proses pemrosesan citra dilakukan dengan cara ….", o:["memodifikasi nilai intensitas piksel secara langsung","mengubah citra ke spektrum frekuensi","menyaring citra menggunakan fast fourier transform","menghilangkan domain spasial","menghitung amplitudo frekuensi"], k:0},
+            {q:"Noise salt and pepper pada citra ditandai dengan ….", o:["perubahan warna secara acak","bintik hitam dan putih acak pada citra","munculnya garis-garis horizontal","perubahan resolusi citra","hilangnya seluruh detail objek"], k:1},
+            {q:"Transformasi yang umum digunakan untuk memindahkan citra ke frequency domain adalah ….", o:["median transform","laplacian transform","fast fourier transform","thresholding","smoothing"], k:2},
+            {q:"Perbedaan utama antara spatial domain dan frequency domain terletak pada ….", o:["ukuran file citra","cara citra diproses","format penyimpanan","jumlah piksel","jenis warna"], k:1},
+            {q:"Proses inverse transformation pada frequency domain bertujuan untuk ….", o:["mengubah citra ke spektrum frekuensi","menyaring frekuensi rendah","menampilkan histogram citra","mendeteksi noise","mengembalikan citra ke domain spasial"], k:4},
+            {q:"Urutan proses yang benar pada frequency domain adalah ….", o:["filtering → inverse transform → transform","inverse transform → filtering → transform","filtering → transform → inverse transform","transform → filtering → inverse transform","transform → thresholding → filtering"], k:3},
+            {q:"Neighbourhood operation merupakan proses yang memanfaatkan….", o:["piksel pusat dan piksel-piksel tetangganya","satu piksel pusat saja","nilai frekuensi tinggi citra","histogram citra","transformasi balik"], k:0},
+            {q:"Hasil filtering pada frequency domain tidak dapat langsung ditampilkan karena ….", o:["noise pada citra belum sepenuhnya dihilangkan","intensitas warna citra berubah secara acak","kontras citra menjadi terlalu rendah","tepi objek citra menghilang seluruhnya","hasil filtering masih berupa komponen frekuensi, bukan nilai piksel citra"], k:4},
+            {q:"Perbedaan utama spatial domain dan frequency domain adalah ….", o:["spatial menggunakan warna, frequency menggunakan ukuran piksel","keduanya sama persis","spatial memproses piksel langsung, frequency memproses komponen frekuensi","spatial memerlukan fast fourier transform","frequency hanya bekerja di citra berwarna"], k:2},
+            {q:"Invers FFT diperlukan setelah filtering di domain frekuensi karena ….", o:["untuk mengubah warna citra menjadi lebih jelas","untuk memperkecil ukuran file citra setelah proses filtering","untuk meningkatkan tingkat kecerahan dan saturasi citra","untuk mengembalikan citra hasil filtering ke domain spasial agar dapat ditampilkan","untuk menukar posisi piksel agar menghasilkan citra baru"], k:3}
+        ],
+        "3": [
+            {q:"Alasan utama penggunaan konvolusi dalam pemrosesan citra adalah karena ….", o:["satu piksel tidak cukup untuk memahami struktur citra","citra harus selalu diubah ke domain frekuensi","konvolusi hanya digunakan untuk citra berwarna","kernel selalu berukuran besar","nilai piksel pusat tidak berpengaruh"], k:0},
+            {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut ….", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"], k:2},
+            {q:"Kernel Gaussian pada proses konvolusi umumnya digunakan untuk ….", o:["menonjolkan garis tepi","menghaluskan citra dan mengurangi noise","mendeteksi sudut","memperbesar resolusi citra","mengubah citra menjadi biner"], k:1},
+            {q:"Ukuran kernel pada proses konvolusi harus bernilai ganjil karena ….", o:["mempermudah komputasi","agar kernel dapat digeser lebih cepat","mengikuti standar pemrosesan citra","harus memiliki satu piksel pusat yang jelas","mengurangi jumlah piksel tetangga"], k:3},
+            {q:"Kernel berukuran 3×3 melibatkan jumlah piksel tetangga sebanyak ….", o:["delapan piksel","enam piksel","empat piksel","sembilan piksel","dua belas piksel"], k:0},
+            {q:"Teknik padding digunakan dalam konvolusi dengan tujuan utama untuk ….", o:["mempercepat proses filtering","memperkecil ukuran citra","menghilangkan noise secara langsung","menormalkan nilai piksel","memungkinkan piksel tepi ikut diproses"], k:4},
+            {q:"Jenis padding yang mengisi tepi citra dengan menyalin nilai piksel terdekat disebut ….", o:["zero padding","constant padding","replicate padding","wrap padding","reflect padding"], k:2},
+            {q:"Tujuan utama dari normalisasi citra setelah konvolusi adalah ….", o:["meningkatkan resolusi citra","menyesuaikan nilai piksel ke rentang 0–255","menambahkan padding baru","menghilangkan kernel","memperbesar ukuran citra"], k:1},
+            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk -12, -25, dan -8 adalah ….", o:["14, 0, dan 18","14, 0, dan 19","14, 0, dan 20","15, 0, dan 19","15, 0, dan 20"], k:3, img: STATIC_URL + "assets/img/kuis/k3-9.png"},
+            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk 270 dan 256 adalah ….", o:["255 dan 255","255 dan 230","255 dan 231","255 dan 240","255 dan 241"], k:4, img: STATIC_URL + "assets/img/kuis/k3-10.png"}
+        ],
+        "4": [
+            {q: "Tujuan utama proses smoothing pada citra digital adalah ….", o: ["menajamkan tepi objek", "meningkatkan resolusi citra", "mengurangi noise dan membuat citra tampak lebih halus", "mengubah citra ke domain frekuensi", "memisahkan objek dari latar belakang"], k:2},
+            {q: "Order-statistic filtering menentukan nilai piksel baru berdasarkan ….", o: ["hasil transformasi fourier", "rata-rata seluruh piksel citra", "ukuran resolusi citra", "urutan nilai intensitas piksel dalam area filter", "jumlah kanal warna citra"], k:3},
+            {q: "Mean filter bekerja dengan cara ….", o: ["memilih nilai terbesar pada area filter", "mengganti nilai piksel pusat dengan nilai rata-rata piksel tetangganya", "mempertahankan nilai piksel pusat", "mengurutkan nilai piksel lalu memilih nilai tengah", "memilih nilai terkecil pada area filter"], k:1},
+            {q: "Dampak utama penggunaan kernel mean filter berukuran besar adalah ….", o: ["noise semakin jelas terlihat", "detail citra semakin tajam", "citra tidak mengalami perubahan", "tepi citra semakin kontras", "citra menjadi lebih halus, namun detail-detail kecil ikut berkurang"], k:4},
+            {q: "Perbedaan utama weighted averaging filter dibandingkan mean filter adalah ….", o: ["tidak menggunakan konvolusi", "hanya bekerja pada citra biner", "memberi bobot lebih besar pada piksel yang dekat dengan pusat", "tidak mengurangi noise", "menggunakan bobot yang sama untuk semua piksel"], k:2},
+            {q: "Smoothing nonlinier berbeda dari smoothing linier karena ….", o: ["selalu menggunakan kernel berbobot", "hanya dapat digunakan pada citra berwarna", "tidak melibatkan piksel tetangga", "tidak menggunakan operasi konvolusi berbobot", "selalu menghasilkan citra kabur"], k:3},
+            {q: "Filter yang paling sesuai untuk mengurangi bintik putih kecil (salt noise) adalah ….", o: ["min filter", "max filter", "median filter", "mean filter", "weighted averaging filter"], k:0},
+            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil max filter untuk nilai piksel pusat adalah ….", o: ["18", "20", "33", "45", "90"], k:4, img: STATIC_URL + "assets/img/kuis/k4-8.png"},
+            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil min filter untuk nilai piksel pusat adalah ….", o: ["9", "14", "17", "18", "22"], k:0, img: STATIC_URL + "assets/img/kuis/k4-9.png"},
+            {q: "Perhatikan matriks 3×3 di bawah ini! Hasil median filter untuk nilai piksel pusat adalah ….", o: ["8", "10", "12", "15", "20"], k:1, img: STATIC_URL + "assets/img/kuis/k4-10.png"}
+        ],
+        "5": [
+            {q: "Tujuan utama proses sharpening pada citra digital adalah ....", o: ["mengurangi noise acak", "menonjolkan perbedaan intensitas agar tepi dan detail objek lebih jelas", "mengubah citra ke domain frekuensi", "menghaluskan seluruh citra", "memperkecil ukuran citra"], k:1},
+            {q: "Kernel Laplacian dengan nilai pusat 8 menghasilkan penajaman yang lebih kuat karena ....", o: ["hanya memperhitungkan piksel horizontal", "tidak menggunakan nilai negatif", "ukuran kernel lebih kecil", "tidak melibatkan piksel pusat", "seluruh piksel tetangga termasuk diagonal ikut dihitung"], k:4},
+            {q: "Syarat utama agar area citra yang permukaannya rata tidak berubah setelah sharpening adalah ....", o: ["jumlah seluruh nilai kernel sama dengan nol", "kernel harus berukuran besar", "citra harus berwarna", "hanya piksel pusat yang diproses", "semua bobot kernel bernilai positif"], k:0},
+            {q: "Bagian citra yang memiliki intensitas seragam setelah proses sharpening akan ....", o: ["menjadi lebih buram", "mengalami peningkatan noise", "berubah drastis", "relatif tidak mengalami perubahan", "menjadi lebih gelap"], k:3},
+            {q: "Perbedaan utama antara smoothing dan sharpening adalah ....", o: ["sharpening menegaskan tepi, smoothing meratakan nilai piksel", "smoothing bekerja di domain frekuensi", "sharpening mengurangi noise", "smoothing tidak memproses piksel tetangga", "sharpening hanya untuk citra berwarna"], k:0},
+            {q: "Highboost filtering berbeda dari unsharp masking karena ....", o: ["tidak menggunakan citra hasil smoothing", "hanya menggunakan kernel laplacian", "bekerja pada domain frekuensi", "faktor penguatan k bernilai lebih dari 1", "tidak menggunakan mask"], k:3},
+            {q: "Unsharp masking melakukan penajaman citra dengan cara ....", o: ["langsung menerapkan kernel laplacian", "menurunkan kontras citra", "menambahkan mask hasil selisih citra asli dan citra hasil smoothing", "hanya menggunakan citra hasil smoothing", "menghilangkan seluruh frekuensi rendah"], k:2},
+            {q: "Pada sebuah citra grayscale, terdapat bagian permukaan yang rata dan bagian lain yang memiliki perubahan terang–gelap yang cukup jelas. Setelah proses sharpening dilakukan, batas antara kedua bagian tersebut terlihat lebih tegas, sementara area yang rata hampir tidak berubah. Kondisi ini menunjukkan bahwa sharpening bekerja dengan cara ....", o: ["menghaluskan seluruh permukaan citra", "mengurangi perbedaan intensitas antar piksel", "menegaskan batas perubahan intensitas pada citra", "menyamakan nilai piksel di seluruh area citra", "menghilangkan detail objek pada citra"], k:2},
+            {q: "Perhatikan citra grayscale dan citra blur 4×4 di bawah ini! Berdasarkan citra asli dan hasil Gaussian blur yang diberikan, matriks mask yang benar adalah ....", o: [STATIC_URL + "assets/img/kuis/k5-9-a.png", STATIC_URL + "assets/img/kuis/k5-9-b.png", STATIC_URL + "assets/img/kuis/k5-9-c.png", STATIC_URL + "assets/img/kuis/k5-9-d.png", STATIC_URL + "assets/img/kuis/k5-9-e.png"], k:4, img: STATIC_URL + "assets/img/kuis/k5-9.png"},
+            {q: "Perhatikan citra grayscale 4×4 di bawah ini! Nilai mask yang telah diperkuat dengan faktor k = 2 untuk piksel pusat (ditandai warna biru) adalah ....", o: ["1", "2", "3", "4", "5"], k:3, img: STATIC_URL + "assets/img/kuis/k5-10.png"}
+        ],
+        "7": [
+            { q: "Citra digital direpresentasikan dalam bentuk matriks karena .…", o: ["memudahkan penyimpanan file", "setiap elemen matriks mewakili satu piksel", "warna hanya bisa disimpan dalam array", "ukuran citra selalu berbentuk persegi", "citra tidak memiliki dimensi"], k:1 },
+            { q: "Faktor utama yang memengaruhi ketajaman detail visual pada citra digital adalah .…", o: ["format file", "jumlah channel warna", "ukuran kernel", "jenis padding", "resolusi (jumlah piksel)"], k:4 },
+            { q: "Neighbourhood operation pada Spatial Filtering dilakukan dengan cara .…", o: ["mengubah satu piksel saja", "memproses seluruh citra sekaligus", "menghilangkan piksel tepi", "menggunakan piksel pusat dan tetangganya", "memproses citra di domain frekuensi"], k:3 },
+            { q: "Kernel dalam Spatial Filtering berfungsi sebagai .…", o: ["penentu format file", "matriks bobot pemrosesan piksel", "penyimpan citra", "penentu resolusi", "pembagi warna"], k:1 },
+            { q: "Pada konvolusi citra 5×5 dengan kernel 3×3 tanpa padding dan stride 1, ukuran hasil konvolusi adalah ….", o: ["1x1", "2x2", "3x3", "4x4", "5x5"], k:2 },
+            { q: "Nilai piksel pusat pertama hasil konvolusi matriks 4x4 dengan kernel mean 3x3 adalah ….", o: ["20", "30", "40", "50", "60"], k:4, img: STATIC_URL + "assets/img/kuis/e6.png" },
+            { q: "Sebuah citra 5×5 dikonvolusi menggunakan kernel 3×3 dan ingin menghasilkan citra output dengan ukuran sama. Maka padding yang dibutuhkan adalah ….", o: ["1", "2", "3", "4", "5"], k:0 },
+            { q: "Berdasarkan area piksel 3×3 yang diberikan, nilai piksel pusat setelah dilakukan median filtering adalah ....", o: ["4", "5", "6", "7", "8"], k:3, img: STATIC_URL + "assets/img/kuis/e8.png" },
+            { q: "Kernel berikut memenuhi syarat penajaman karena ....", o: ["semua elemennya positif", "kernel simetris", "jumlah seluruh elemen bernilai nol", "ukuran kernel kecil", "tidak membutuhkan padding"], k:2, img: STATIC_URL + "assets/img/kuis/e9.png" },
+            { q: "Jika hasil konvolusi dilakukan normalisasi ke rentang 0–255, nilai hasil normalisasi untuk piksel −20 dan 100 adalah ….", o: ["0 dan 128", "0 dan 140", "0 dan 153", "20 dan 153", "20 dan 180"], k:2, img: STATIC_URL + "assets/img/kuis/e10.png" },
+            { q: "Kernel Smoothing berikut yang memberikan bobot terbesar pada piksel pusat dan mengecil ke arah tepi adalah ....", o: [STATIC_URL + "assets/img/kuis/e11-a.png", STATIC_URL + "assets/img/kuis/e11-b.png", STATIC_URL + "assets/img/kuis/e11-c.png", STATIC_URL + "assets/img/kuis/e11-d.png", STATIC_URL + "assets/img/kuis/e11-e.png"], k:0 },
+            { q: "Dampak yang paling mungkin terjadi jika resolusi citra diperkecil dari 256×256 menjadi 64×64 adalah ….", o: ["citra menjadi lebih tajam", "detail citra meningkat", "kontras citra bertambah", "warna citra menjadi lebih cerah", "citra tampak lebih buram"], k:4 },
+            { q: "Nilai grayscale menggunakan metode rata-rata untuk piksel RGB (R=120, G=150, B=90) adalah ….", o: ["110", "120", "130", "140", "150"], k:1 },
+            { q: "Berdasarkan matriks 3x3 yang diberikan, jika threshold = 125, maka nilai piksel pusat pada citra biner adalah ….", o: ["0", "1", "120", "125", "255"], k:0, img: STATIC_URL + "assets/img/kuis/e14.png" },
+            { q: "Jika matriks citra diberikan replicate padding sebanyak 1 piksel, maka hasil matriks yang benar adalah ….", o: [STATIC_URL + "assets/img/kuis/e15-a.png", STATIC_URL + "assets/img/kuis/e15-b.png", STATIC_URL + "assets/img/kuis/e15-c.png", STATIC_URL + "assets/img/kuis/e15-d.png", STATIC_URL + "assets/img/kuis/e15-e.png"], k:1, img: STATIC_URL + "assets/img/kuis/e15.png" },
+            { q: "Mask pada unsharp masking diperoleh dari operasi ….", o: ["citra blur − citra asli", "citra asli − citra blur", "citra asli + citra blur", "citra median − citra asli", "citra asli ÷ citra blur"], k:1 },
+            { q: "Perbedaan utama antara highboost filtering dan unsharp masking adalah ….", o: ["highboost tidak menggunakan blur", "unsharp masking bekerja di domain frekuensi", "unsharp masking tidak menggunakan mask", "highboost menggunakan faktor penguatan k > 1", "highboost hanya untuk citra warna"], k:3 },
+            { q: "Berdasarkan matriks citra asli dan blur yang diberikan, jika dilakukan highboost filtering dengan k=2, nilai piksel pusatnya adalah ....", o: ["50", "55", "60", "65", "70"], k:2, img: STATIC_URL + "assets/img/kuis/e18.png" },
+            { q: "Proses mengubah citra grayscale menjadi hitam-putih agar objek dan latar belakang mudah dipisahkan disebut ….", o: ["smoothing", "sharpening", "normalisasi", "thresholding", "padding"], k:3 },
+            { q: "Proses memperbaiki foto lama bintik hitam putih dengan memanfaatkan nilai piksel tetangga secara langsung disebut ….", o: ["histogram equalization", "frequency filtering", "image compression", "image resizing", "spatial filtering"], k:4 }
+        ]
+    };
+
+    function openSoalModal(index, kuisId) {
+        const listSoal = kuisRepo[kuisId];
+        if (!listSoal) return;
+        
+        const data = listSoal[index];
+        if (!data) return;
+
+        const labelKuis = kuisId === '7' ? 'Evaluasi Akhir' : `Kuis ${kuisId}`;
+        document.getElementById('soalTitle').innerText = `${labelKuis} - Soal Nomor ${index + 1}`;
+        document.getElementById('soalContent').innerText = data.q;
+        
+        const imgContainer = document.getElementById('soalImageContainer');
+        imgContainer.innerHTML = '';
+        if (data.img) {
+            imgContainer.innerHTML = `<img src="${data.img}" class="soal-img" alt="Soal Image">`;
+        }
+
+        let optHtml = '';
+        const labels = ['A', 'B', 'C', 'D', 'E'];
+        data.o.forEach((opt, i) => {
+            const isCorrect = i === data.k;
+            const isImgOpt = opt.toString().includes('.png') || opt.toString().includes('.jpg');
+            
+            optHtml += `
+                <div class="opt-item ${isCorrect ? 'opt-correct' : ''}">
+                    <div class="opt-label">${labels[i]}</div>
+                    <div>
+                        ${isImgOpt ? `<img src="${opt}" class="opt-img" alt="Option Image">` : opt}
+                    </div>
+                </div>`;
+        });
+        document.getElementById('optionsContent').innerHTML = optHtml;
+        document.getElementById('modalSoal').style.display = 'flex';
+    }
+
+    function closeSoalModal() {
+        document.getElementById('modalSoal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        const modalSoal = document.getElementById('modalSoal');
+        if (event.target == modalSoal) {
+            closeSoalModal();
+        }
+    }
+
     let timeout = null;
     const searchInput = document.getElementById('searchInput');
     const filterForm = document.getElementById('filterForm');
 
-    searchInput.addEventListener('keyup', function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-            filterForm.submit();
-        }, 600);
-    });
+    if(searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                filterForm.submit();
+            }, 600);
+        });
+    }
 
     function openHistory(id){
         document.getElementById(id).style.display="flex";
