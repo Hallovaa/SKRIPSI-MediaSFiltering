@@ -22,11 +22,21 @@
   padding: 22px;
 }
 
+/* Perbaikan Filter Bar agar responsif */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .filter-left {
   display: flex;
   align-items: center;
   gap: 16px;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .filter-group {
@@ -209,6 +219,59 @@
 .status-active { color: #f59e0b; }
 .status-lock { color: #9ca3af; }
 .status-icon { font-size: 16px; }
+
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-left {
+        width: 100%;
+        flex-direction: column; 
+        gap: 16px;
+    }
+
+    .filter-group {
+        width: 100%;
+        display: flex;
+        flex-direction: row; 
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-group select {
+        flex: 1; 
+        width: auto !important; 
+        min-width: 0 !important;
+    }
+
+    .filter-group span {
+        white-space: nowrap; 
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .pagination-wrapper {
+        flex-direction: column; 
+        gap: 16px;              
+        text-align: center;     
+        justify-content: center;
+    }
+
+    .page-info {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .pagination-btns {
+        width: 100%;
+        justify-content: center; 
+        flex-wrap: wrap;         
+    }
+}
 </style>
 
 <div class="hero">
@@ -218,7 +281,7 @@
 
 <div class="card-section">
   <form method="GET" action="{% url 'progres_mhs' %}" id="filterForm">
-    <div class="d-flex justify-content-between align-items-center mb-4 gap-3 flex-wrap">
+    <div class="filter-bar">
       <div class="filter-left">
         <div class="filter-group">
           <span>Tampilkan</span>
@@ -232,7 +295,7 @@
 
         <div class="filter-group">
           <span>Pilih Kelas:</span>
-          <select name="kelas" class="form-select" style="min-width:220px;" onchange="this.form.submit()">
+          <select name="kelas" class="form-select" style="min-width:200px;" onchange="this.form.submit()">
             <option value="">Semua Kelas</option>
             {% for k in daftar_kelas %}
               <option value="{{ k.id }}" {% if request.GET.kelas == k.id|stringformat:"s" %}selected{% endif %}>

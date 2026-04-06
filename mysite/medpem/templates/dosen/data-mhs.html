@@ -30,12 +30,17 @@
   align-items: flex-end;
   margin-bottom: 20px;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
 .filter-left, .filter-right {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.filter-right {
+  align-items: flex-end;
 }
 
 .filter-group {
@@ -142,6 +147,66 @@
   cursor: not-allowed;
   background: #f1f5f9;
 }
+
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-left, .filter-right {
+        width: 100%;
+        flex-direction: column; 
+        gap: 16px;
+    }
+
+    .filter-group {
+        width: 100%;
+        display: flex;
+        flex-direction: row; 
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-group select {
+        flex: 1; 
+        width: auto !important; 
+        min-width: 0 !important;
+    }
+
+    .filter-group span {
+        white-space: nowrap; 
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .filter-right a {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .pagination-wrapper {
+        flex-direction: column; 
+        gap: 16px;              
+        text-align: center;     
+        justify-content: center;
+    }
+
+    .page-info {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .pagination-btns {
+        width: 100%;
+        justify-content: center; 
+        flex-wrap: wrap;         
+    }
+}
 </style>
 
 <div class="hero">
@@ -165,7 +230,7 @@
 
         <div class="filter-group">
           <span>Pilih Kelas:</span>
-          <select name="kelas" class="form-select" style="min-width:220px;" onchange="this.form.submit()">
+          <select name="kelas" class="form-select" style="min-width:200px;" onchange="this.form.submit()">
             <option value="">Semua Kelas</option>
             {% for k in daftar_kelas %}
               <option value="{{ k.id }}" {% if request.GET.kelas == k.id|stringformat:"s" %}selected{% endif %}>
@@ -176,8 +241,8 @@
         </div>
       </div>
 
-      <div class="filter-right align-items-end">
-        <a href="{% url 'export_mhs_excel' %}?kelas={{ request.GET.kelas }}&q={{ request.GET.q }}" class="btn btn-success" style="width: fit-content;">
+      <div class="filter-right">
+        <a href="{% url 'export_mhs_excel' %}?kelas={{ request.GET.kelas }}&q={{ request.GET.q }}" class="btn btn-success">
             <i class="bi bi-filetype-xlsx fs-5"></i> Export Excel
         </a>
         <div class="search-wrapper">
