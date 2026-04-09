@@ -909,7 +909,7 @@ def simpan_hasil_kuis_v2(mhs, nomor, skor, detail_jwb, mulai, selesai):
         mahasiswa=mhs, 
         nomor_kuis=nomor, 
         skor=skor_final, 
-        detail_jawaban=json.dumps(detail_jwb_fixed), 
+        detail_jawaban=detail_jwb_fixed, 
         waktu_mulai=dt_mulai, 
         waktu_selesai=dt_selesai
     )
