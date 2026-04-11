@@ -74,17 +74,10 @@
     color: white !important;
   }
   .option-label { font-weight: 800; margin-right: 10px; color: #000000; }
-  .material-nav {
-    display:flex;
-    gap:12px;
-    justify-content:flex-end;
-    margin-top:18px;
-    margin-bottom:34px;
-  }
+  .material-nav { display:flex; gap:12px; justify-content:flex-end; margin: 34px 0; }
   @media (max-width:767px){
     .card-section-header { font-size:16px; }
     .card-section-body { padding:16px; font-size:15.5px; }
-    .material-nav { justify-content:stretch; flex-direction:column-reverse; }
   }
 </style>
 
@@ -115,15 +108,15 @@
 
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Dalam kehidupan sehari-hari kita mungkin pernah melihat gambar yang tampak buram, terlalu gelap, atau dipenuhi bintik-bintik kecil seperti debu pada foto lama. 
-      Kondisi tersebut menunjukkan bahwa kualitas citra kurang baik sehingga diperlukan pemrosesan citra agar tampilannya menjadi lebih jernih dan mudah dikenali. 
+      Dalam kehidupan sehari-hari, kita mungkin pernah melihat gambar yang tampak buram, terlalu gelap, atau dipenuhi bintik-bintik kecil seperti debu pada foto lama. 
+      Kondisi tersebut menunjukkan bahwa kualitas citra kurang baik sehingga diperlukan pemrosesan citra agar tampilannya menjadi lebih jelas dan mudah dikenali. 
       Salah satu pendekatan yang umum digunakan dalam pemrosesan citra digital untuk tujuan tersebut adalah <em>spatial filtering</em>.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
       <strong><em>Spatial filtering</em></strong> dapat diibaratkan seperti membersihkan kaca jendela yang kotor. 
       Pendekatan ini bekerja pada <em>spatial domain</em>, yaitu dengan memproses langsung nilai intensitas piksel pada area citra yang sedang diproses. 
-      Ketika kaca jendela dipenuhi debu, pemandangan di luar terlihat buram. Setelah dibersihkan, pemandangan menjadi lebih jelas dan nyaman dilihat. 
+      Ketika kaca jendela dipenuhi debu, pemandangan di luar terlihat buram. Setelah dibersihkan, pemandangan menjadi lebih jelas. 
       Prinsip ini serupa dengan <em>smoothing filter</em> yang digunakan untuk mengurangi <em>noise</em> atau gangguan kecil pada citra (lihat Gambar B.1).
     </p>
 
@@ -136,21 +129,21 @@
 
     <p style="text-align: justify; text-indent: 30px;">
       Setelah citra menjadi lebih bersih, terkadang diperlukan proses penajaman agar detail penting seperti tepi objek, bentuk daun, atau pagar terlihat lebih jelas. 
-      Pada tahap ini digunakan <em>sharpening filter</em> untuk menonjolkan tepi dan detail sehingga citra tampak lebih tajam dan informatif. 
+      Pada tahap ini digunakan <em>sharpening filter</em> untuk menonjolkan tepi dan detail sehingga citra tampak lebih tajam dan mudah dikenali. 
       Dengan demikian, <strong><em>spatial filtering</em> tidak hanya berfungsi untuk menghaluskan citra, tetapi juga untuk meningkatkan ketajaman detail visual</strong>.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Secara teknis, <em>spatial filtering</em> bekerja dengan memperhatikan nilai suatu piksel dan piksel-piksel di sekitarnya. 
-      <strong>Nilai piksel dapat berubah karena dipengaruhi oleh nilai tetangganya. Proses ini dikenal sebagai <em>neighbourhood operation</em></strong>, 
-      yaitu operasi yang menentukan nilai piksel baru berdasarkan nilai piksel-piksel tetangga di sekitar piksel pusat. 
-      Melalui teknik tersebut, citra baru dihasilkan sesuai dengan tujuan pemrosesan, baik untuk mengurangi <em>noise</em>, menghaluskan tampilan, maupun menajamkan detail objek.
+      Secara teknis, <em>spatial filtering</em> bekerja dengan memperhatikan nilai suatu piksel beserta piksel-piksel di sekitarnya. 
+      <strong>Nilai piksel dapat berubah karena dipengaruhi oleh nilai piksel di sekitarnya. Proses ini dikenal sebagai <em>neighbourhood operation</em></strong>, 
+      yaitu operasi yang menentukan nilai piksel baru berdasarkan nilai piksel tetangga di sekitar piksel pusat. 
+      Melalui teknik tersebut, citra baru dihasilkan sesuai dengan tujuan pemrosesan, baik untuk mengurangi <em>noise</em>, menghaluskan citra, maupun menajamkan detail objek.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
       Sebagai ilustrasi, pada Gambar B.2 ditunjukkan contoh citra berukuran 6×6 yang terdiri atas nilai intensitas piksel. 
-      Piksel yang berada di tengah disebut sebagai piksel pusat, yaitu piksel yang sedang diproses, sedangkan piksel-piksel di sekelilingnya merupakan piksel tetangga yang memengaruhi hasil perhitungan. 
-      Dengan memanfaatkan nilai-nilai piksel tersebut, proses <em>spatial filtering</em> dapat menghasilkan citra baru sesuai tujuan pemrosesan.
+      Piksel yang berada di tengah disebut sebagai piksel pusat, yaitu piksel yang sedang diproses, sedangkan piksel di sekelilingnya merupakan piksel tetangga yang memengaruhi hasil perhitungan. 
+      Dengan memanfaatkan nilai piksel tersebut, proses <em>spatial filtering</em> dapat menghasilkan citra baru sesuai dengan tujuan pemrosesan.
     </p>
 
     <figure style="margin:20px 0;">

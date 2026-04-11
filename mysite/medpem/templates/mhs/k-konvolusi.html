@@ -352,10 +352,10 @@
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
       Salah satu teknik utama yang digunakan pada <strong><em>spatial domain</em></strong> adalah 
-      <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) yang memanfaatkan nilai piksel pusat dan piksel-piksel di sekitarnya</strong>. 
-      Konvolusi digunakan karena melihat satu piksel saja tidak cukup untuk memahami isi sebuah gambar. 
-      Sebuah piksel hanya menunjukkan seberapa terang atau gelap titik tersebut, tetapi tidak memberi tahu apa yang ada di sekitarnya. 
-      Jika kita hanya melihat satu titik, kita tidak bisa memastikan apakah titik tersebut bagian dari suatu objek, bagian latar belakang, atau hanya gangguan kecil pada gambar.
+      <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) yang memanfaatkan nilai piksel pusat dan piksel di sekitarnya</strong>. 
+      Konvolusi digunakan karena melihat satu piksel saja tidak cukup untuk memahami isi sebuah citra. 
+      Sebuah piksel hanya menunjukkan tingkat kecerahan pada titik tersebut, tetapi tidak memberikan informasi tentang piksel di sekitarnya. 
+      Jika hanya melihat satu piksel, kita tidak dapat memastikan apakah piksel tersebut bagian dari suatu objek, bagian latar belakang, atau hanya gangguan kecil pada gambar.
     </p>
 
     <figure style="margin:20px 0;">
@@ -366,23 +366,23 @@
     </figure>
 
   <p style="text-align: justify; text-indent: 30px;">
-    Pada Gambar C.1 terlihat bahwa <strong>satu nilai piksel saja belum cukup untuk memahami sebuah gambar, sehingga perlu diperhatikan piksel-piksel di sekitarnya</strong>. 
-    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel-piksel di sekitarnya disebut piksel tetangga. 
-    Dengan membandingkan nilai piksel pusat dan piksel-piksel tetangganya barulah dapat diketahui bahwa pada area tersebut terdapat perbedaan tingkat gelap dan terang yang cukup kontras, sehingga menandakan adanya perubahan intensitas yang tajam. 
+    Pada Gambar C.1 terlihat bahwa <strong>satu nilai piksel saja belum cukup untuk memahami sebuah citra sehingga perlu diperhatikan piksell di sekitarnya</strong>. 
+    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel di sekitarnya disebut piksel tetangga. 
+    Dengan membandingkan nilai piksel pusat dan piksel tetangganya, barulah dapat diketahui bahwa pada area tersebut terdapat perbedaan tingkat gelap dan terang yang cukup kontras, sehingga menandakan adanya perubahan intensitas yang tajam. 
     Perubahan intensitas yang tajam inilah yang menunjukkan bahwa area tersebut merupakan area tepi (<em>edge</em>) pada citra.
   </p>
 
 
   <p style="text-align: justify; text-indent: 30px;">
     <strong><em>Filtering</em></strong> bertujuan untuk menghasilkan citra sesuai dengan kebutuhan. 
-    Dengan menggunakan konvolusi, <em>filtering</em> dapat menghasilkan citra baru yang 
+    Dengan menggunakan konvolusi, proses <em>filtering</em> dapat menghasilkan citra baru yang 
     <strong>lebih halus, lebih tajam, atau dengan tepi objek yang lebih jelas</strong>. Pada proses konvolusi digunakan sebuah <strong><em>kernel</em></strong>, yaitu 
-    <strong>matriks kecil berisi nilai bobot</strong> yang dapat dibayangkan seperti jendela kecil yang digeser di atas gambar dari satu piksel ke piksel lainnya.
+    <strong>matriks kecil berisi nilai bobot</strong> yang dapat dibayangkan seperti jendela kecil yang digeser di atas citra dari satu piksel ke piksel lainnya.
   </p>
 
   <p style="text-align: justify; text-indent: 30px;">
-    Saat <em>kernel</em> digeser, nilai piksel pusat dan piksel-piksel di sekitarnya dikalikan dengan bobot pada <em>kernel</em>, kemudian seluruh hasil perkalian tersebut dijumlahkan untuk menghasilkan nilai baru bagi piksel pusat. 
-    Proses ini diterapkan pada seluruh citra sehingga tampilan gambar berubah sesuai dengan tujuan <em>filtering</em>. 
+    Saat <em>kernel</em> digeser, nilai piksel pusat dan piksel di sekitarnya dikalikan dengan bobot pada <em>kernel</em>, kemudian seluruh hasil perkalian tersebut dijumlahkan untuk menghasilkan nilai baru bagi piksel pusat. 
+    Proses ini diterapkan pada seluruh citra sehingga tampilan citra berubah sesuai dengan tujuan <em>filtering</em>. 
   </P>
   </div>
 </section>
@@ -428,10 +428,10 @@
 
     <p style="text-align: justify; text-indent: 30px;">
       Pada dua jenis <em>kernel</em> di atas memiliki ukuran yang sama yaitu 3×3, tetapi memiliki nilai bobot yang berbeda. 
-      Nilai bobot inilah yang menentukan bagaimana piksel di sekitar ikut dihitung. 
-      Pada <em>kernel</em> Laplacian nilai bobotnya dibuat agar perbedaan antara piksel gelap dan terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk menonjolkan tepi gambar. 
-      Sebaliknya, pada <em>kernel</em> Gaussian nilai bobotnya dibuat lebih merata sehingga nilai piksel di sekitar saling diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang. 
-      Dengan demikian, meskipun ukuran <em>kernel</em> sama, perbedaan nilai bobot di dalam <em>kernel</em> menghasilkan tampilan citra yang berbeda.
+      Nilai bobot tersebut menentukan bagaimana piksel di sekitarnya ikut diperhitungkan dalam proses konvolusi. 
+      Pada <em>kernel</em> Laplacian, nilai bobot disusun agar perbedaan antara piksel gelap dan terang menjadi lebih terlihat, sehingga <em>kernel</em> ini cocok untuk digunakan untuk menonjolkan tepi pada citra. 
+      Sebaliknya, pada <em>kernel</em> Gaussian nilai bobotnya disusun lebih merata sehingga nilai piksel di sekitarnya diratakan dan citra menjadi lebih halus serta <em>noise</em> berkurang. 
+      Dengan demikian, meskipun ukuran <em>kernel</em> sama, perbedaan nilai bobot di dalam <em>kernel</em> dapat menghasilkan tampilan citra yang berbeda.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
@@ -476,7 +476,7 @@
 
     <p style="text-align: justify; text-indent: 30px;">
       Pada proses konvolusi, setiap bobot pada <em>kernel</em> \( h(j,k) \) dikalikan dengan nilai piksel citra yang berada pada posisi yang sesuai, yaitu \( f(x-j,y-k) \). 
-      Setelah semua nilai dikalikan, hasilnya dijumlahkan untuk mendapatkan nilai piksel baru pada posisi \( g(x,y) \). 
+      Setelah semua nilai dikalikan, hasilnya dijumlahkan untuk memperoleh nilai piksel baru pada posisi \( g(x,y) \). 
       Bentuk \( (x-j, y-k) \) menunjukkan bahwa <em>kernel</em> dibalik atau diputar 180° sebelum dikalikan dengan citra. 
       Artinya, bobot yang berada di kiri atas <em>kernel</em> akan dikalikan dengan piksel citra yang berada di kanan bawah terhadap piksel pusat, dan sebaliknya.
     </p>
@@ -485,7 +485,7 @@
       Selain itu, terdapat operasi korelasi yang cara kerjanya hampir sama dengan konvolusi karena sama-sama menggunakan <em>kernel</em> yang digeser di atas citra. 
       Perbedaannya terletak pada pembalikan <em>kernel</em>, di mana pada korelasi <em>kernel</em> tidak diputar 180° dan langsung digunakan sesuai posisinya. 
       Namun, jika <em>kernel</em> yang digunakan bersifat simetris, seperti <em>kernel</em> Laplacian atau Gaussian, maka proses pembalikan tersebut tidak akan mengubah bentuk maupun bobotnya. 
-      Hal ini karena susunan angkanya sudah seimbang terhadap pusatnya, sehingga tetap sama meskipun dibalik.
+      Hal ini karena susunan nilainya simetris terhadap pusat kernel sehingga tetap sama meskipun dibalik.
     </p>
 
     <div class="sub-card">
@@ -494,14 +494,14 @@
 
         <div class="card-section-body">
           <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
-            Untuk memahami proses tersebut, arahkan kursor ke salah satu elemen pada matriks <em>kernel</em> atau <em>input</em> citra di bawah ini. 
+            Untuk memahami proses tersebut, arahkan kursor ke salah satu elemen pada matriks <em>kernel</em> atau citra <em>input</em> di bawah ini. 
             Amati bagaimana setiap bobot \( h(j,k) \) dikalikan dengan piksel \( f(x-j,y-k) \), karena dalam konvolusi <em>kernel</em> diputar 180° sebelum digunakan.
           </p>
 
           <div class="instruction">
             <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur:</strong>
             <ul>
-              <li>Arahkan kursor ke salah satu angka pada tabel <em>kernel</em> Laplacian (\( h \)) atau input citra (\( f \)).</li>
+              <li>Arahkan kursor ke salah satu angka pada tabel <em>kernel</em> Laplacian (\( h \)) atau citra input (\( f \)).</li>
               <li>Perhatikan bagian <strong>Detail Operasi</strong> untuk melihat bagaimana bobot \( h(j,k) \) dikalikan dengan piksel \( f(x-j,y-k) \).</li>
               <li>Klik tombol <strong>Tampilkan Uraian Lengkap</strong> untuk melihat seluruh proses perhitungan konvolusi.</li>
             </ul>

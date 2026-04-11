@@ -133,10 +133,10 @@
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
       <strong>Citra berwarna</strong> adalah citra yang setiap pikselnya menyimpan informasi warna melalui 
-      <strong>tiga <em>channel</em></strong> utama, yaitu R (<em>Red</em>/merah), G (<em>Green</em>/hijau), dan B (<em>Blue</em>/biru), yang sering disebut sebagai <strong>RGB</strong>. 
-      Setiap piksel pada citra RGB tidak hanya menyimpan satu nilai, tetapi menyimpan tiga nilai sekaligus yang menunjukkan seberapa kuat warna merah, hijau, dan biru pada piksel tersebut. 
-      Citra RGB dapat dibayangkan sebagai sebuah matriks besar, di mana setiap kotaknya merepresentasikan 
-      <strong>satu piksel yang memiliki tiga informasi warna di dalamnya</strong> seperti ditunjukkan pada Gambar A.4 dan Gambar A.5.
+      <strong>tiga <em>channel</em></strong> utama, yaitu R (<em>Red</em>/merah), G (<em>Green</em>/hijau), dan B (<em>Blue</em>/biru), yang dikenal sebagai <strong>RGB</strong>. 
+      Setiap  piksel pada citra RGB tidak hanya menyimpan satu nilai, tetapi menyimpan tiga nilai sekaligus yang menunjukkan intensitas warna merah, hijau, dan biru pada piksel tersebut. 
+      Citra RGB dapat dibayangkan sebagai sebuah matriks yang tersusun dalam baris dan kolom, di mana setiap posisinya merepresentasikan  
+      <strong>satu piksel yang memiliki tiga komponen warna</strong>, seperti yang ditunjukkan pada Gambar A.4 dan Gambar A.5.
     </p>
 
     <figure style="margin:30px 0;">
@@ -154,10 +154,10 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Masing-masing warna pada citra RGB disimpan dalam sebuah channel tersendiri. <strong>Setiap channel membutuhkan 8 bit data untuk disimpan</strong>, 
-      sehingga setiap warna memiliki 256 tingkat intensitas yang berbeda, yaitu dari nilai 0 hingga 255. Jika ketiga channel tersebut digabungkan, maka 
+      Masing-masing warna pada citra RGB disimpan dalam <em>channel</em> tersendiri. <strong>Setiap <em>channel</em> membutuhkan 8 bit data</strong>
+      sehingga setiap warna memiliki 256 tingkat intensitas, yaitu dari nilai 0 hingga 255. Jika ketiga <em>channel</em> tersebut digabungkan, maka 
       <strong>satu piksel memerlukan total 24 bit data</strong> yang terdiri dari 8 bit untuk merah (R), 8 bit untuk hijau (G), dan 8 bit untuk biru (B). Dengan demikian, 
-      <strong>warna merah, hijau, dan biru bekerja bersama untuk membentuk satu warna pada setiap piksel</strong>, seperti ditunjukkan pada Gambar A.6.
+      <strong>ketiga <em>channel</em> tersebut bekerja bersama untuk membentuk satu warna pada setiap piksel</strong>, seperti yang ditunjukkan pada Gambar A.6.
     </p>
 
     <figure style="margin:20px 0;">
@@ -168,15 +168,21 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Tingkat kecerahan sebuah piksel dipengaruhi oleh seberapa besar intensitas warna merah (R), hijau (G), dan biru (B) yang dimilikinya. 
-      Sebagai contoh, sebuah piksel dengan nilai (R= 255, G= 0, B= 0) akan tampak berwarna merah murni karena hanya warna merah yang memiliki intensitas tinggi. 
-      Nilai (R= 0, G= 255, B= 0) menghasilkan warna hijau murni, sedangkan (R= 0, G= 0, B= 255) menghasilkan warna biru murni.
+      Pada Gambar A.6 ditunjukkan bahwa satu piksel pada citra RGB terdiri dari tiga nilai biner yang merepresentasikan <em>channel</em> merah (R), hijau (G), 
+      dan biru (B). Setiap <em>channel</em> disimpan menggunakan 8 bit data sehingga setiap piksel memiliki total 24 bit informasi warna. Nilai-nilai biner 
+      tersebut menunjukkan tingkat intensitas warna pada masing-masing <em>channel</em>.
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      <strong>Warna sebuah piksel ditentukan oleh besar intensitas warna</strong> merah (R), hijau (G), dan biru (B) yang dimilikinya. Sebagai contoh, sebuah piksel 
+      dengan nilai (R = 255, G = 0, B = 0) akan tampak berwarna merah murni karena hanya warna merah yang memiliki intensitas tinggi. Nilai 
+      (R = 0, G = 255, B = 0) menghasilkan warna hijau murni, sedangkan (R = 0, G = 0, B = 255) menghasilkan warna biru murni.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
       Jika ketiga <em>channel</em> bernilai 0 maka piksel akan berwarna hitam. Sebaliknya, jika ketiga <em>channel</em> bernilai 255 maka piksel akan berwarna putih. 
       <strong>Dengan mengombinasikan berbagai nilai RGB tersebut, sebuah citra dapat menampilkan jutaan variasi warna yang berbeda</strong> 
-      dan menghasilkan citra berwarna yang kaya serta tampak indah, seperti ditunjukkan pada Gambar A.7.
+      sehingga menghasilkan citra berwarna dengan berbagai variasi warna, seperti yang ditunjukkan pada Gambar A.7.
     </p>
 
     <figure style="margin:20px 0;">
@@ -200,12 +206,12 @@
       <strong>Citra <em>grayscale</em></strong> merupakan citra digital yang hanya memiliki 
       <strong>satu <em>channel</em></strong>, berbeda dengan citra berwarna RGB yang memiliki tiga <em>channel</em>. 
       Karena hanya <strong>menyimpan satu nilai pada setiap piksel</strong>, citra <em>grayscale</em> lebih hemat dalam penggunaan ruang penyimpanan dan lebih sederhana untuk diproses. 
-      Pada citra <em>grayscale</em> informasi yang ditampilkan hanyalah nilai intensitas atau tingkat kecerahan yang sering disebut sebagai <strong>derajat keabuan</strong>.
+      Pada citra <em>grayscale</em>, informasi yang ditampilkan hanya berupa nilai intensitas atau tingkat kecerahan yang sering disebut sebagai <strong>derajat keabuan</strong>.
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Nilai intensitas pada citra <em>grayscale</em> berada dalam rentang 0 hingga 255, di mana nilai 0 merepresentasikan warna hitam dan nilai 255 merepresentasikan warna putih. 
-      Nilai-nilai di antara rentang tersebut menunjukkan berbagai tingkat keabuan. Semakin rendah nilai piksel maka warna yang dihasilkan akan semakin gelap dan mendekati hitam. 
+      Nilai intensitas pada citra <em>grayscale</em> berada pada rentang 0 hingga 255, di mana nilai 0 merepresentasikan warna hitam dan nilai 255 merepresentasikan warna putih. 
+      Nilai di antara rentang tersebut menunjukkan berbagai tingkat keabuan. Semakin rendah nilai piksel maka warna yang dihasilkan akan semakin gelap dan mendekati hitam. 
       Sebaliknya, semakin tinggi nilai piksel maka warna akan semakin terang dan mendekati putih, seperti ditunjukkan pada Gambar A.8.
     </p>
 
@@ -220,9 +226,9 @@
       <div class="sub-card-header"><span>Citra <em>Grayscale</em> dan Nilai Pikselnya</span></div>
       <div class="sub-card-body">
         <p style="text-align: justify; text-indent: 30px;">
-          Perhatikan Gambar A.9 yang menampilkan citra <em>grayscale</em> berukuran 256×256 piksel dan citra hasil <em>resize</em> menjadi ukuran 8×8 piksel. 
+          Perhatikan Gambar A.9 yang menampilkan citra <em>grayscale</em> berukuran 256×256 piksel serta citra hasil <em>resize</em> menjadi ukuran 8×8 piksel. 
           Dengan ukuran citra yang lebih kecil, nilai matriks piksel dan intensitas keabuan dapat diamati dengan lebih mudah. 
-          Hal ini membantu dalam memahami bagaimana nilai numerik pada matriks citra berhubungan langsung dengan tampilan visual citra <em>grayscale</em>.
+          Hal ini membantu dalam memahami hubungan antara nilai numerik pada matriks citra dengan tampilan visual citra <em>grayscale</em>.
         </p>
 
         <figure style="margin:20px 0;">
@@ -254,9 +260,9 @@
     </p>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Tampilan ini meniru cara mata manusia membedakan tingkat terang dan gelap, karena dalam melihat suatu objek,
-      mata manusia sangat peka terhadap perubahan kecerahan, terutama saat mengenali bentuk dan detail. 
-      Oleh sebab itu, citra <em>grayscale</em> sering digunakan dalam berbagai aplikasi pemrosesan 
+      Tampilan ini meniru cara mata manusia membedakan tingkat terang dan gelap. Dalam melihat suatu objek,
+      mata manusia peka terhadap perubahan kecerahan, terutama saat mengenali bentuk dan detail. 
+      Oleh karena itu, citra <em>grayscale</em> sering digunakan dalam berbagai aplikasi pemrosesan 
       citra digital yang memerlukan analisis bentuk, tekstur, dan intensitas cahaya.
     </p>
 
@@ -268,11 +274,9 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Citra RGB dapat dikonversi ke dalam citra <em>grayscale</em> dengan cara menggabungkan informasi dari ketiga <em>channel</em> warna. 
-      Salah satu cara paling sederhana adalah dengan <strong>mengambil nilai rata-rata dari komponen merah, hijau, dan biru pada setiap piksel</strong>. 
-      Metode ini menghasilkan citra <em>grayscale</em> dengan tingkat kecerahan yang cukup baik, 
-      <strong>namun belum sepenuhnya mencerminkan persepsi visual manusia</strong>. 
-      Nilai intensitas citra <em>grayscale</em> pada metode ini dihitung menggunakan persamaan berikut:
+      Citra RGB dapat dikonversi menjadi citra <em>grayscale</em> dengan cara menggabungkan nilai dari tiga <em>channel</em> warna, 
+      yaitu merah, hijau, dan biru pada setiap piksel. Salah satu cara paling sederhana adalah dengan <strong>mengambil 
+      nilai rata-rata dari ketiga <em>channel</em> </strong>tersebut. Proses konversi ini dapat dinyatakan dengan persamaan berikut:
     </p>
 
     <p style="text-align: center; font-size: 28px; margin-top: 30px">
@@ -283,11 +287,10 @@
     </p> 
 
     <p style="text-align: justify; text-indent: 30px;">
-      Selain metode rata-rata terdapat metode konversi lain yang menghasilkan citra <em>grayscale</em> yang lebih realistis, yaitu dengan 
-      <strong>memberikan bobot berbeda pada setiap <em>channel</em> warna sesuai dengan sensitivitas mata manusia</strong>. 
-      Mata manusia cenderung lebih peka terhadap warna hijau dibandingkan warna merah dan biru. 
-      Oleh karena itu dalam perhitungan luminansi, <em>channel</em> hijau diberikan bobot yang lebih besar, sehingga tingkat kecerahan yang dihasilkan lebih mendekati cara manusia melihat cahaya dan warna. 
-      Perhitungan nilai <em>grayscale</em> pada metode luminansi dilakukan menggunakan persamaan berikut:
+      Selain metode rata-rata terdapat metode konversi lain untuk menghasilkan citra <em>grayscale</em> dengan 
+      <strong>memberikan bobot berbeda pada setiap <em>channel</em> warna</strong>. Hal ini didasarkan pada sensitivitas mata manusia 
+      yang lebih peka terhadap warna hijau dibandingkan warna merah dan biru. Oleh karena itu, <em>channel</em> hijau 
+      diberi bobot lebih besar agar tingkat kecerahan citra terlihat lebih jelas. Proses konversi dengan metode luminasi dapat dinyatakan dengan persamaan berikut:
     </p>
 
     <p style="text-align: center; font-size: 28px;">
@@ -316,10 +319,10 @@
   <div class="card-section-body">
 
     <p style="text-align: justify; text-indent: 30px;">
-      <strong>Citra biner</strong> sesuai dengan namanya merupakan citra digital yang 
-      <strong>hanya menyimpan dua nilai yaitu 0 dan 1</strong>. Nilai 0 merepresentasikan warna hitam, sedangkan nilai 1 merepresentasikan warna putih. 
-      Karena hanya memiliki dua kemungkinan nilai, <strong>setiap piksel pada citra biner hanya membutuhkan 1 bit ruang memori</strong>. 
-      Hal ini menjadikan citra biner sebagai jenis citra yang paling sederhana dan paling hemat dalam penggunaan penyimpanan.
+      <strong>Citra biner</strong> merupakan citra digital yang <strong>hanya memiliki dua nilai piksel, yaitu 0 dan 1</strong>. 
+      Nilai 0 merepresentasikan warna hitam, sedangkan nilai 1 merepresentasikan warna putih. Karena hanya memiliki 
+      dua kemungkinan nilai, setiap piksel pada citra biner hanya membutuhkan 1 bit data untuk disimpan. Hal ini menjadikan 
+      citra biner sebagai jenis citra yang paling sederhana dan hemat dalam penggunaan ruang penyimpanan.
     </p>
 
     <figure style="margin:20px 0;">
@@ -330,9 +333,9 @@
     </figure>
 
     <p style="text-align: justify; text-indent: 30px;">
-      Pada Gambar A.12 terlihat bahwa setiap kotak diberi nilai biner. 
-      Piksel berwarna <strong>hitam</strong> memiliki <strong>nilai 0</strong> yang umumnya merepresentasikan <strong>latar belakang</strong>, 
-      sedangkan piksel berwarna <strong>putih</strong> memiliki <strong>nilai 1</strong> yang biasanya merepresentasikan <strong>objek atau bagian yang dianggap penting dalam citra</strong>.
+      Pada Gambar A.12 terlihat bahwa setiap kotak memiliki nilai biner. Piksel berwarna <strong>hitam</strong> <strong>bernilai 0</strong> 
+      yang umumnya merepresentasikan <strong>latar belakang</strong>, sedangkan piksel berwarna <strong>putih</strong> <strong>bernilai 1</strong> yang 
+      biasanya merepresentasikan <strong>objek atau bagian penting dalam citra</strong>.
     </p>
 
     <figure style="margin:20px 0;">
@@ -344,10 +347,10 @@
 
     <p style="text-align: justify; text-indent: 30px;">
       Citra biner umumnya diperoleh dengan mengubah citra <em>grayscale</em> menjadi citra hitam-putih menggunakan suatu 
-      <strong>nilai ambang (<em>threshold</em>)</strong>. Pada proses ini setiap <strong>nilai piksel pada citra <em>grayscale</em> dibandingkan dengan nilai ambang tertentu</strong>. 
-      Jika tingkat kecerahan suatu piksel lebih besar dari nilai ambang tersebut, maka piksel diklasifikasikan sebagai putih (1). 
-      Sebaliknya, jika tingkat kecerahannya lebih kecil atau sama dengan nilai ambang, maka piksel diklasifikasikan sebagai hitam (0). 
-      <strong>Nilai ambang berfungsi sebagai batas pemisah yang menentukan piksel mana yang termasuk ke dalam objek dan mana yang termasuk ke dalam latar belakang</strong>.
+      <strong>nilai ambang (<em>threshold</em>)</strong>. Pada proses ini, <strong>setiap nilai piksel pada citra <em>grayscale</em> dibandingkan dengan nilai ambang tertentu</strong>. 
+      Jika nilai piksel lebih besar dari nilai ambang, maka piksel diklasifikasikan sebagai putih (1). Sebaliknya, 
+      jika nilai piksel lebih kecil atau sama dengan nilai ambang, maka piksel diklasifikasikan sebagai hitam (0). 
+      <strong>Nilai ambang berfungsi sebagai batas pemisah untuk menentukan piksel yang termasuk objek dan piksel yang termasuk latar belakang</strong>.
     </p>
     
   </div>

@@ -124,6 +124,12 @@
             color: var(--dark-blue);
         }
 
+        .materi-link {
+            text-decoration: none;
+            display: block;
+            height: 100%;
+        }
+
         .materi-card {
             background: #fff;
             padding: 25px;
@@ -270,83 +276,95 @@
             
             <div class="row g-4 justify-content-center">
                 <div class="col-lg-4 col-md-6">
-                    <div class="materi-card">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-number">1</div>
-                            <h5 class="materi-title">Pendahuluan</h5>
+                    <a href="{% url 'pengertian_citra' %}" class="materi-link">
+                        <div class="materi-card">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-number">1</div>
+                                <h5 class="materi-title">Pendahuluan</h5>
+                            </div>
+                            <ul class="materi-list">
+                                <li>Pengertian Citra Digital</li>
+                                <li>Jenis Citra Digital</li>
+                            </ul>
                         </div>
-                        <ul class="materi-list">
-                            <li>Pengertian Citra Digital</li>
-                            <li>Jenis Citra Digital</li>
-                        </ul>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="col-lg-4 col-md-6">
-                    <div class="materi-card">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-number">2</div>
-                            <h5 class="materi-title">Pengantar Spatial Filtering</h5>
+                    <a href="{% url 'pengertian_spatial' %}" class="materi-link">
+                        <div class="materi-card">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-number">2</div>
+                                <h5 class="materi-title">Pengantar Spatial Filtering</h5>
+                            </div>
+                            <ul class="materi-list">
+                                <li>Pengertian Spatial Filtering</li>
+                                <li>Spatial Domain vs Frequency Domain</li>
+                            </ul>
                         </div>
-                        <ul class="materi-list">
-                            <li>Pengertian Spatial Filtering</li>
-                            <li>Spatial Domain vs Frequency Domain</li>
-                        </ul>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="col-lg-4 col-md-6">
-                    <div class="materi-card">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-number">3</div>
-                            <h5 class="materi-title">Konvolusi</h5>
+                    <a href="{% url 'k_konvolusi' %}" class="materi-link">
+                        <div class="materi-card">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-number">3</div>
+                                <h5 class="materi-title">Konvolusi</h5>
+                            </div>
+                            <ul class="materi-list">
+                                <li>Konsep Konvolusi</li>
+                                <li>Teknik Padding</li>
+                                <li>Normalisasi Citra</li>
+                            </ul>
                         </div>
-                        <ul class="materi-list">
-                            <li>Konsep Konvolusi</li>
-                            <li>Teknik Padding</li>
-                            <li>Normalisasi Citra</li>
-                        </ul>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="col-lg-4 col-md-6">
-                    <div class="materi-card">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-number">4</div>
-                            <h5 class="materi-title">Smoothing Filters</h5>
+                    <a href="{% url 'sl_filters' %}" class="materi-link">
+                        <div class="materi-card">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-number">4</div>
+                                <h5 class="materi-title">Smoothing Filters</h5>
+                            </div>
+                            <ul class="materi-list">
+                                <li>Smoothing Linear Filters</li>
+                                <li>Order-Statistic (Nonlinear)</li>
+                            </ul>
                         </div>
-                        <ul class="materi-list">
-                            <li>Smoothing Linear Filters</li>
-                            <li>Order-Statistic (Nonlinear)</li>
-                        </ul>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="col-lg-4 col-md-6">
-                    <div class="materi-card">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-number">5</div>
-                            <h5 class="materi-title">Sharpening Filters</h5>
+                    <a href="{% url 'sharp_citra' %}" class="materi-link">
+                        <div class="materi-card">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-number">5</div>
+                                <h5 class="materi-title">Sharpening Filters</h5>
+                            </div>
+                            <ul class="materi-list">
+                                <li>Sharpening pada Citra Digital</li>
+                                <li>Unsharp Making & Highboost Filtering</li>
+                            </ul>
                         </div>
-                        <ul class="materi-list">
-                            <li>Sharpening pada Citra Digital</li>
-                            <li>Unsharp Making & Highboost Filtering</li>
-                        </ul>
-                    </div>
+                    </a>
                 </div>
 
                 <div class="col-lg-4 col-md-6">
-                    <div class="materi-card">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-number">6</div>
-                            <h5 class="materi-title">Praktikum</h5>
+                    <a href="{% url 'gray_biner' %}" class="materi-link">
+                        <div class="materi-card">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-number">6</div>
+                                <h5 class="materi-title">Praktikum</h5>
+                            </div>
+                            <ul class="materi-list">
+                                <li>Citra Grayscale dan Citra Biner</li>
+                                <li>Konvolusi, Padding, dan Normalisasi</li>
+                                <li>Smoothing dan Sharpening</li>
+                            </ul>
                         </div>
-                        <ul class="materi-list">
-                            <li>Citra Grayscale dan Citra Biner</li>
-                            <li>Konvolusi, Padding, dan Normalisasi</li>
-                            <li>Smoothing dan Sharpening</li>
-                        </ul>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
