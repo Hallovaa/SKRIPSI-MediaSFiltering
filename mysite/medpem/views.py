@@ -1014,7 +1014,7 @@ def cek_nilai_evaluasi(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            kunci = [1, 4, 3, 1, 2, 4, 0, 3, 2, 2, 0, 4, 1, 0, 1, 1, 3, 2, 3, 4]
+            kunci = [0, 4, 3, 1, 2, 0, 2, 3, 2, 2, 0, 4, 1, 4, 1, 1, 3, 0, 3, 4]
             mhs = request.user.mahasiswa_profile
             
             def kalkulasi_skor_v2(jawaban_siswa, kunci_jawaban):

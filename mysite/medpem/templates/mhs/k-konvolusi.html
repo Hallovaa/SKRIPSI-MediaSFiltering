@@ -351,25 +351,30 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Salah satu teknik utama yang digunakan pada <strong><em>spatial domain</em></strong> adalah 
-      <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) yang memanfaatkan nilai piksel pusat dan piksel di sekitarnya</strong>. 
-      Konvolusi digunakan karena melihat satu piksel saja tidak cukup untuk memahami isi sebuah citra. 
-      Sebuah piksel hanya menunjukkan tingkat kecerahan pada titik tersebut, tetapi tidak memberikan informasi tentang piksel di sekitarnya. 
-      Jika hanya melihat satu piksel, kita tidak dapat memastikan apakah piksel tersebut bagian dari suatu objek, bagian latar belakang, atau hanya gangguan kecil pada gambar.
+      Salah satu teknik yang paling umum digunakan pada <strong><em>spatial domain</em></strong> adalah <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) 
+      yang memanfaatkan nilai piksel pusat dan piksel di sekitarnya</strong>. Mengapa perlu melibatkan piksel tetangga? Karena nilai satu piksel saja 
+      belum cukup untuk menggambarkan kondisi suatu area citra. Satu piksel hanya menunjukkan tingkat kecerahan pada satu titik saja. 
+    </p>
+
+    <p style="text-align: justify; text-indent: 30px;">
+      Tanpa melihat piksel di sekitarnya, kita sulit mengetahui apakah area tersebut datar, bertekstur, mengandung <em>noise</em>, atau berada pada batas 
+      suatu objek. Ibarat melihat satu keping <em>puzzle</em>, kita tahu warnanya biru, tetapi belum tahu apakah itu bagian langit, air, atau objek lain. 
+      Kita baru dapat memahami bentuk gambar setelah melihat kepingan di sekelilingnya. 
     </p>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/1C.png' %}" style="display:block; margin:auto; width:85%;">
+      <img src="{% static 'assets/img/konten/1c.png' %}" style="display:block; margin:auto; width:85%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
         Gambar C.1 Perbedaan nilai gelap dan terang piksel pada suatu area citra
       </figcaption>
     </figure>
 
   <p style="text-align: justify; text-indent: 30px;">
-    Pada Gambar C.1 terlihat bahwa <strong>satu nilai piksel saja belum cukup untuk memahami sebuah citra sehingga perlu diperhatikan piksell di sekitarnya</strong>. 
-    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel di sekitarnya disebut piksel tetangga. 
-    Dengan membandingkan nilai piksel pusat dan piksel tetangganya, barulah dapat diketahui bahwa pada area tersebut terdapat perbedaan tingkat gelap dan terang yang cukup kontras, sehingga menandakan adanya perubahan intensitas yang tajam. 
-    Perubahan intensitas yang tajam inilah yang menunjukkan bahwa area tersebut merupakan area tepi (<em>edge</em>) pada citra.
+    Pada Gambar C.1 terlihat bahwa <strong>untuk mengetahui informasi pada suatu citra digital perlu memperhatikan nilai piksel di sekitarnya</strong>. 
+    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel di sekelilingnya 
+    disebut piksel tetangga. Dengan membandingkan nilai piksel pusat dan piksel tetangganya, terlihat perbedaan tingkat keabuan yang 
+    cukup besar antara sisi kiri dan kanan. Perbedaan nilai yang tajam ini menunjukkan perubahan intensitas yang kuat, sehingga 
+    menandakan bahwa area tersebut merupakan tepi (<em>edge</em>) pada citra.
   </p>
 
 
@@ -531,7 +536,7 @@
               </div>
 
               <div class="spatial-card">
-                  <h5 class="mb-3" style="font-weight: 700;">Input Citra (f)</h5>
+                  <h5 class="mb-3" style="font-weight: 700;">Citra Input (f)</h5>
                   
                   <div style="display: flex; flex-direction: column; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 5px; font-size: 0.8rem; font-weight: bold; color: #0d6efd; margin-bottom: 8px; margin-left: 30px;">
@@ -656,12 +661,18 @@
       <img src="{% static 'assets/img/konten/contoh.png' %}" style="display:block; margin:auto; width:65%;">
     </figure>
 
+    <p style="text-align: justify; text-indent: 30px; margin-bottom: 30px">
+      Sebelumnya kalian telah memahami bahwa pada proses konvolusi <em>kernel</em> diputar sebesar 180° sebelum digunakan. 
+      Namun pada contoh perhitungan ini digunakan <em>kernel</em> yang bersifat simetris, sehingga untuk mempermudah perhitungan kita dapat 
+      langsung mengalikannya tanpa memutar <em>kernel</em> terlebih dahulu.
+    </p>
+
     <div class="instruction">
       <strong><i class="bi bi-info-circle text-primary"></i> Ikuti langkah-langkah di bawah ini untuk menggunakan fitur konvolusi:</strong>
       <ul>
-        <li>Perhatikan <strong>Input Citra</strong>, <strong>Kernel (Laplacian)</strong>, dan <strong>Hasil</strong> yang ditampilkan.</li>
+        <li>Perhatikan <strong>Citra Input</strong>, <strong>Kernel (Laplacian)</strong>, dan <strong>Hasil</strong> yang ditampilkan.</li>
         <li>Klik tombol <strong>Mulai</strong> untuk memulai proses konvolusi secara bertahap pada satu piksel pusat.</li>
-        <li>Area berwarna biru muda pada <strong>Input Citra</strong> menunjukkan area piksel (3×3) yang sedang diproses oleh kernel.</li>
+        <li>Area berwarna biru muda pada <strong>Citra Input</strong> menunjukkan area piksel (3×3) yang sedang diproses oleh kernel.</li>
         <li>Gunakan tombol <strong>Lanjut</strong> untuk melanjutkan ke langkah perhitungan berikutnya.</li>
         <li>Klik <strong>Auto Play</strong> jika ingin melihat proses konvolusi berjalan secara otomatis.</li>
         <li>Klik <strong>Pause</strong> untuk menghentikan sementara proses yang sedang berlangsung.</li>
@@ -674,7 +685,7 @@
     <div class="conv-container">
       <div class="conv-top">
         <div class="conv-section">
-          <h4>Input Citra (Matriks)</h4>
+          <h4>Citra Input (Matriks)</h4>
           <table id="inputMatrix" class="conv-table"></table>
         </div>
         <div class="conv-section">
