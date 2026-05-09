@@ -226,7 +226,7 @@
             <h2 class="fw-bold text-primary" style="text-align: center;">Petunjuk Pengerjaan Kuis</h2>
             <ul class="mt-3" style="text-align: justify; list-style-position: outside; padding-left: 20px;">
                 <li class="mb-2"><strong>Kuis terdiri</strong> dari 10 soal pilihan ganda, setiap soal memiliki satu jawaban yang benar.</li>
-                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah 30 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah 15 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
                 <li class="mb-2"><strong>Navigasi soal</strong> tersedia di sisi kanan layar. Nomor soal yang sedang dikerjakan ditandai dengan border berwarna biru.</li>
                 <li class="mb-2"><strong>Status pengerjaan</strong> soal ditunjukkan dengan warna: <span class="badge bg-success">Hijau</span> untuk soal yang sudah dijawab, <span class="badge bg-warning text-dark">Kuning</span> untuk soal yang ditandai ragu-ragu, dan <span class="badge bg-secondary">Abu-abu</span> untuk soal yang belum dijawab.</li>
                 <li class="mb-2"><strong>Tombol Ragu-ragu</strong> dapat digunakan jika peserta belum yakin dengan jawabannya dan ingin meninjaunya kembali sebelum kuis selesai.</li>
@@ -244,7 +244,7 @@
             <div class="question-card">
                 <div class="question-header">
                     <strong>Soal <span id="noSoal">1</span> / 10</strong>
-                    <div class="timer">⏱ <span id="timer">30:00</span></div>
+                    <div class="timer">⏱ <span id="timer">15:00</span></div>
                 </div>
                 <h5 class="mb-4" id="teksSoal">Loading...</h5>
                 
@@ -305,7 +305,7 @@
         const STATIC_URL = "{% static '' %}";
         const soal = [
             {q: "Tujuan utama proses smoothing pada citra digital adalah ….", o: ["menajamkan tepi objek", "meningkatkan resolusi citra", "mengurangi noise dan membuat citra tampak lebih halus", "mengubah citra ke domain frekuensi", "memisahkan objek dari latar belakang"]},
-            {q: "Order-statistic filtering menentukan nilai piksel baru berdasarkan ….", o: ["hasil transformasi fourier", "rata-rata seluruh piksel citra", "ukuran resolusi citra", "urutan nilai intensitas piksel dalam area filter", "jumlah kanal warna citra"]},
+            {q: "Order-statistic filtering menentukan nilai piksel baru berdasarkan ….", o: ["hasil transformasi fourier", "rata-rata seluruh piksel citra", "ukuran resolusi citra", "urutan nilai intensitas piksel dalam area filter", "jumlah channel warna citra"]},
             {q: "Mean filter bekerja dengan cara ….", o: ["memilih nilai terbesar pada area filter", "mengganti nilai piksel pusat dengan nilai rata-rata piksel tetangganya", "mempertahankan nilai piksel pusat", "mengurutkan nilai piksel lalu memilih nilai tengah", "memilih nilai terkecil pada area filter"]},
             {q: "Dampak utama penggunaan kernel mean filter berukuran besar adalah ….", o: ["noise semakin jelas terlihat", "detail citra semakin tajam", "citra tidak mengalami perubahan", "tepi citra semakin kontras", "citra menjadi lebih halus, namun detail-detail kecil ikut berkurang"]},
             {q: "Perbedaan utama weighted averaging filter dibandingkan mean filter adalah ….", o: ["tidak menggunakan konvolusi", "hanya bekerja pada citra biner", "memberi bobot lebih besar pada piksel yang dekat dengan pusat", "tidak mengurangi noise", "menggunakan bobot yang sama untuk semua piksel"]},
@@ -319,7 +319,7 @@
         let idx = 0;
         let jawaban = Array(soal.length).fill(null);
         let ragu = Array(soal.length).fill(false);
-        let sisaWaktu = 30 * 60;
+        let sisaWaktu = 15 * 60;
         let timer;
         let waktuMulaiKuis;
         let waktuSelesaiKuis;

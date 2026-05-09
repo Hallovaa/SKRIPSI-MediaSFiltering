@@ -232,7 +232,7 @@
             <h2 class="fw-bold text-primary" style="text-align: center;">Petunjuk Pengerjaan Kuis</h2>
             <ul class="mt-3" style="text-align: justify; list-style-position: outside; padding-left: 20px;">
                 <li class="mb-2"><strong>Kuis terdiri</strong> dari 10 soal pilihan ganda, setiap soal memiliki satu jawaban yang benar.</li>
-                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah 30 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah 15 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
                 <li class="mb-2"><strong>Navigasi soal</strong> tersedia di sisi kanan layar. Nomor soal yang sedang dikerjakan ditandai dengan border berwarna biru.</li>
                 <li class="mb-2"><strong>Status pengerjaan</strong> soal ditunjukkan dengan warna: <span class="badge bg-success">Hijau</span> untuk soal yang sudah dijawab, <span class="badge bg-warning text-dark">Kuning</span> untuk soal yang ditandai ragu-ragu, dan <span class="badge bg-secondary">Abu-abu</span> untuk soal yang belum dijawab.</li>
                 <li class="mb-2"><strong>Tombol Ragu-ragu</strong> dapat digunakan jika peserta belum yakin dengan jawabannya dan ingin meninjaunya kembali sebelum kuis selesai.</li>
@@ -250,7 +250,7 @@
             <div class="question-card">
                 <div class="question-header">
                     <strong>Soal <span id="noSoal">1</span> / 10</strong>
-                    <div class="timer">⏱ <span id="timer">30:00</span></div>
+                    <div class="timer">⏱ <span id="timer">15:00</span></div>
                 </div>
                 <h5 class="mb-4" id="teksSoal">Loading...</h5>
                 
@@ -318,15 +318,15 @@
             {q: "Highboost filtering berbeda dari unsharp masking karena ....", o: ["tidak menggunakan citra hasil smoothing", "hanya menggunakan kernel laplacian", "bekerja pada domain frekuensi", "faktor penguatan k bernilai lebih dari 1", "tidak menggunakan mask"]},
             {q: "Unsharp masking melakukan penajaman citra dengan cara ....", o: ["langsung menerapkan kernel laplacian", "menurunkan kontras citra", "menambahkan mask hasil selisih citra asli dan citra hasil smoothing", "hanya menggunakan citra hasil smoothing", "menghilangkan seluruh frekuensi rendah"]},
             {q: "Pada sebuah citra grayscale, terdapat bagian permukaan yang rata dan bagian lain yang memiliki perubahan terang–gelap yang cukup jelas. Setelah proses sharpening dilakukan, batas antara kedua bagian tersebut terlihat lebih tegas, sementara area yang rata hampir tidak berubah. Kondisi ini menunjukkan bahwa sharpening bekerja dengan cara ....", o: ["menghaluskan seluruh permukaan citra", "mengurangi perbedaan intensitas antar piksel", "menegaskan batas perubahan intensitas pada citra", "menyamakan nilai piksel di seluruh area citra", "menghilangkan detail objek pada citra"]},
-            {q: "Perhatikan citra grayscale dan citra blur 4×4 di bawah ini! Berdasarkan citra asli dan hasil Gaussian blur yang diberikan, matriks mask yang benar adalah ....", o: [STATIC_URL + "assets/img/kuis/k5-9-a.png", STATIC_URL + "assets/img/kuis/k5-9-b.png", STATIC_URL + "assets/img/kuis/k5-9-c.png", STATIC_URL + "assets/img/kuis/k5-9-d.png", STATIC_URL + "assets/img/kuis/k5-9-e.png"], img: STATIC_URL + "assets/img/kuis/k5-9.png"},
-            {q: "Perhatikan citra grayscale 4×4 di bawah ini! Nilai mask yang telah diperkuat dengan faktor k = 2 untuk piksel pusat (ditandai warna biru) adalah ....", o: ["1", "2", "3", "4", "5"], img: STATIC_URL + "assets/img/kuis/k5-10.png"}
+            {q: "Perhatikan citra grayscale dan citra blur 4×4 di bawah ini!, Berdasarkan citra asli dan hasil Gaussian blur yang diberikan, matriks mask yang benar adalah ....", o: [STATIC_URL + "assets/img/kuis/k5-9-a.png", STATIC_URL + "assets/img/kuis/k5-9-b.png", STATIC_URL + "assets/img/kuis/k5-9-c.png", STATIC_URL + "assets/img/kuis/k5-9-d.png", STATIC_URL + "assets/img/kuis/k5-9-e.png"], img: STATIC_URL + "assets/img/kuis/k5-9.png"},
+            {q: "Perhatikan citra grayscale dan citra blur 4x4 di bawah ini!, Nilai mask pada piksel pusat pertama dengan faktor penguat k= 2 adalah ....", o: ["1", "2", "3", "4", "5"], img: STATIC_URL + "assets/img/kuis/k5-9.png"}
             ];
 
 
         let idx = 0;
         let jawaban = Array(soal.length).fill(null);
         let ragu = Array(soal.length).fill(false);
-        let sisaWaktu = 30 * 60;
+        let sisaWaktu = 15 * 60;
         let timer;
         let waktuMulaiKuis;
         let waktuSelesaiKuis;

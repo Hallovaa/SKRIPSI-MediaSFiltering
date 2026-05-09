@@ -72,6 +72,13 @@
     color: #64748b;
     border: 1px dashed #e2e8f0;
   }
+  .attempt-info {
+    font-size: 11px;
+    color: #3b7be3;
+    font-weight: 600;
+    display: block;
+    margin-top: 2px;
+  }
 </style>
 
 <div class="hero-section">
@@ -232,14 +239,20 @@
         <tr>
           <td class="ps-3">
             <div>Kuis 1: Pendahuluan</div>
-            {% if dict_percobaan.1 > 1 %}<small class="text-primary fw-600">Pengerjaan ke-{{ dict_percobaan.1 }}</small>{% endif %}
+            {% if dict_percobaan.1 > 1 and nilai_awal.1 < kkm %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.1 }}</span>
+            {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.1 > 1 %}<span class="text-remidi-center">Remidi</span>{% else %}<span class="text-muted small">-</span>{% endif %}
+            {% if dict_percobaan.1 > 1 and nilai_awal.1 < kkm %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_1|default:"-" }}</span>
-            {% if dict_percobaan.1 > 1 and nilai_kuis.kuis_1 == kkm %}
+            {% if dict_percobaan.1 > 1 and nilai_awal.1 < kkm and nilai_kuis.kuis_1 == kkm %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -257,14 +270,20 @@
         <tr>
           <td class="ps-3">
             <div>Kuis 2: Pengenalan <em>Spatial Filtering</em></div>
-            {% if dict_percobaan.2 > 1 %}<small class="text-primary fw-600">Pengerjaan ke-{{ dict_percobaan.2 }}</small>{% endif %}
+            {% if dict_percobaan.2 > 1 and nilai_awal.2 < kkm %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.2 }}</span>
+            {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.2 > 1 %}<span class="text-remidi-center">Remidi</span>{% else %}<span class="text-muted small">-</span>{% endif %}
+            {% if dict_percobaan.2 > 1 and nilai_awal.2 < kkm %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_2|default:"-" }}</span>
-            {% if dict_percobaan.2 > 1 and nilai_kuis.kuis_2 == kkm %}
+            {% if dict_percobaan.2 > 1 and nilai_awal.2 < kkm and nilai_kuis.kuis_2 == kkm %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -282,14 +301,20 @@
         <tr>
           <td class="ps-3">
             <div>Kuis 3: Konvolusi</div>
-            {% if dict_percobaan.3 > 1 %}<small class="text-primary fw-600">Pengerjaan ke-{{ dict_percobaan.3 }}</small>{% endif %}
+            {% if dict_percobaan.3 > 1 and nilai_awal.3 < kkm %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.3 }}</span>
+            {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.3 > 1 %}<span class="text-remidi-center">Remidi</span>{% else %}<span class="text-muted small">-</span>{% endif %}
+            {% if dict_percobaan.3 > 1 and nilai_awal.3 < kkm %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_3|default:"-" }}</span>
-            {% if dict_percobaan.3 > 1 and nilai_kuis.kuis_3 == kkm %}
+            {% if dict_percobaan.3 > 1 and nilai_awal.3 < kkm and nilai_kuis.kuis_3 == kkm %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -307,14 +332,20 @@
         <tr>
           <td class="ps-3">
             <div>Kuis 4: <em>Smoothing Filters</em></div>
-            {% if dict_percobaan.4 > 1 %}<small class="text-primary fw-600">Pengerjaan ke-{{ dict_percobaan.4 }}</small>{% endif %}
+            {% if dict_percobaan.4 > 1 and nilai_awal.4 < kkm %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.4 }}</span>
+            {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.4 > 1 %}<span class="text-remidi-center">Remidi</span>{% else %}<span class="text-muted small">-</span>{% endif %}
+            {% if dict_percobaan.4 > 1 and nilai_awal.4 < kkm %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_4|default:"-" }}</span>
-            {% if dict_percobaan.4 > 1 and nilai_kuis.kuis_4 == kkm %}
+            {% if dict_percobaan.4 > 1 and nilai_awal.4 < kkm and nilai_kuis.kuis_4 == kkm %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -332,14 +363,20 @@
         <tr>
           <td class="ps-3">
             <div>Kuis 5: <em>Sharpening Filters</em></div>
-            {% if dict_percobaan.5 > 1 %}<small class="text-primary fw-600">Pengerjaan ke-{{ dict_percobaan.5 }}</small>{% endif %}
+            {% if dict_percobaan.5 > 1 and nilai_awal.5 < kkm %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.5 }}</span>
+            {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.5 > 1 %}<span class="text-remidi-center">Remidi</span>{% else %}<span class="text-muted small">-</span>{% endif %}
+            {% if dict_percobaan.5 > 1 and nilai_awal.5 < kkm %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_5|default:"-" }}</span>
-            {% if dict_percobaan.5 > 1 and nilai_kuis.kuis_5 == kkm %}
+            {% if dict_percobaan.5 > 1 and nilai_awal.5 < kkm and nilai_kuis.kuis_5 == kkm %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -357,14 +394,20 @@
         <tr class="table-primary">
           <td class="ps-3">
             <div class="fw-bold">Evaluasi Akhir</div>
-            {% if dict_percobaan.7 > 1 %}<small class="text-primary fw-600">Pengerjaan ke-{{ dict_percobaan.7 }}</small>{% endif %}
+            {% if dict_percobaan.7 > 1 and nilai_awal.7 < kkm %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.7 }}</span>
+            {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.7 > 1 %}<span class="text-remidi-center">Remidi</span>{% else %}<span class="text-muted small">-</span>{% endif %}
+            {% if dict_percobaan.7 > 1 and nilai_awal.7 < kkm %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_evaluasi|default:"-" }}</span>
-            {% if dict_percobaan.7 > 1 and nilai_evaluasi == kkm %}
+            {% if dict_percobaan.7 > 1 and nilai_awal.7 < kkm and nilai_evaluasi == kkm %}
               <br><span class="badge-remidi" style="background:#fff; border-color:#3b7be3; color:#3b7be3;">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -386,7 +429,8 @@
     <i class="bi bi-info-circle-fill me-2 text-primary" style="margin-top: 2px;"></i>
     <div>
       Sistem menampilkan <strong>nilai tertinggi</strong> dari setiap pengerjaan aktivitas. 
-      Jika keterangan aktivitas adalah <strong>remidi</strong>, maka nilai maksimal yang dapat diperoleh adalah KKM ({{ kkm }}).
+      Jika pengerjaan pertama belum memenuhi KKM, maka percobaan berikutnya akan tercatat sebagai <strong>Remidi</strong> dengan batas nilai maksimal setara KKM ({{ kkm }}).
     </div>
   </div>
+</div>
 {% endblock %}

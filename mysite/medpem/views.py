@@ -544,20 +544,21 @@ def dash_mhs(request):
     
     mhs = request.user.mahasiswa_profile
     config = get_config()
+    kkm = config.kkm if config else 70
     
     nilai_kuis = {f'kuis_{i}': 0 for i in range(1, 6)}
     lulus_kuis = {f'kuis_{i}': False for i in range(1, 6)}
+    nilai_awal = {i: 0 for i in range(1, 8)} 
     nilai_evaluasi = 0  
     lulus_evaluasi = False 
     
     semua_hasil = HasilKuis.objects.filter(mahasiswa=mhs)
     
     rekap_nilai = semua_hasil.values('nomor_kuis').annotate(skor_max=Max('skor'))
-    
     for item in rekap_nilai:
         nomor = item['nomor_kuis']
         skor_tertinggi = item['skor_max']
-        is_lulus = skor_tertinggi >= config.kkm
+        is_lulus = skor_tertinggi >= kkm
         
         if nomor == 7:
             nilai_evaluasi = skor_tertinggi
@@ -567,6 +568,11 @@ def dash_mhs(request):
             if key in nilai_kuis:
                 nilai_kuis[key] = skor_tertinggi
                 lulus_kuis[key] = is_lulus
+
+    for i in range(1, 8):
+        pengerjaan_pertama = semua_hasil.filter(nomor_kuis=i).order_by('waktu_selesai').first()
+        if pengerjaan_pertama:
+            nilai_awal[i] = pengerjaan_pertama.skor
 
     percobaan_counts = semua_hasil.values('nomor_kuis').annotate(jumlah=Count('id'))
     dict_percobaan = {item['nomor_kuis']: item['jumlah'] for item in percobaan_counts}
@@ -583,10 +589,11 @@ def dash_mhs(request):
     context = {
         'nilai_kuis': nilai_kuis,
         'lulus_kuis': lulus_kuis,
+        'nilai_awal': nilai_awal, 
         'nilai_evaluasi': nilai_evaluasi,
         'lulus_evaluasi': lulus_evaluasi,
         'progress_percent': progress_percent,
-        'kkm': config.kkm,
+        'kkm': kkm,
         'dict_percobaan': dict_percobaan,
         'selesai_slugs': selesai_slugs, 
     }
