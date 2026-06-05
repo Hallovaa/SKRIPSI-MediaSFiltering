@@ -150,7 +150,7 @@
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class="sidebar-open">
+<body>
 
 <header class="top-navbar">
   <button id="navbarToggle" class="nav-toggle-btn">
@@ -202,6 +202,7 @@
       <a href="{% url 'data_mhs' %}" class="nav-link {% if request.resolver_match.url_name == 'data_mhs' %}active{% endif %}">Data Mahasiswa</a>
       <a href="{% url 'progres_mhs' %}" class="nav-link {% if request.resolver_match.url_name == 'progres_mhs' %}active{% endif %}">Progres Mahasiswa</a>
       <a href="{% url 'nilai_mhs' %}" class="nav-link {% if request.resolver_match.url_name == 'nilai_mhs' %}active{% endif %}">Nilai Mahasiswa</a>
+      <a href="{% url 'pengaturan_sistem' %}" class="nav-link {% if request.resolver_match.url_name == 'pengaturan_sistem' %}active{% endif %}">Pengaturan</a>
     {% else %}
       <a href="{% url 'dash_mhs' %}" class="nav-link {% if request.resolver_match.url_name == 'dash_mhs' %}active{% endif %}">Dashboard</a>
       <a href="{% url 'materi' %}" class="nav-link">Materi Belajar</a>

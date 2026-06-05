@@ -79,10 +79,15 @@
     display: block;
     margin-top: 2px;
   }
+  .quiz-meta-info {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 3px;
+  }
 </style>
 
 <div class="hero-section">
-  <div style="background:rgba(59,123,227,0.08); color:#3b7be3; padding:6px 16px; border-radius:999px; display:inline-block; font-size: 14px; font-weight: 700;">
+  <div style="background:rgba(59,123,227,0.08); color:#3b7be3; padding:6px 16px; border-radius999px; display:inline-block; font-size: 14px; font-weight: 700;">
     Pemrosesan Citra Digital
   </div>
   <h1 class="title mt-3"><em>Spatial</em> <span style="color:#3b7be3"><em>Filtering</em></span></h1>
@@ -188,7 +193,7 @@
     <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_5 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
         <div class="icon-box" style="background: {% if lulus_kuis.kuis_5 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_5 %}bi-lock-fill{% else %}bi-6-square{% endif %}"></i>
+          <i class="bi {% if not lulus_kuis.kuis_4 %}bi-lock-fill{% else %}bi-6-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'gray_biner' %}" class="text-decoration-none text-dark stretched-link">
@@ -236,15 +241,20 @@
         </tr>
       </thead>
       <tbody>
+        
         <tr>
           <td class="ps-3">
-            <div>Kuis 1: Pendahuluan</div>
-            {% if dict_percobaan.1 > 1 and nilai_awal.1 < kkm %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.1 }}</span>
+            <div class="fw-bold">Kuis 1: Pendahuluan</div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_1 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_1 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.1 > 1 and nilai_awal.1 < kkm_kuis.kuis_1 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.1 }}</span>
             {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.1 > 1 and nilai_awal.1 < kkm %}
+            {% if dict_pengerjaan_mhs.1 > 1 and nilai_awal.1 < kkm_kuis.kuis_1 %}
               <span class="text-remidi-center">Remidi</span>
             {% else %}
               <span class="text-muted small">-</span>
@@ -252,7 +262,7 @@
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_1|default:"-" }}</span>
-            {% if dict_percobaan.1 > 1 and nilai_awal.1 < kkm and nilai_kuis.kuis_1 == kkm %}
+            {% if dict_pengerjaan_mhs.1 > 1 and nilai_awal.1 < kkm_kuis.kuis_1 and nilai_kuis.kuis_1 == kkm_kuis.kuis_1 %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -269,13 +279,17 @@
         
         <tr>
           <td class="ps-3">
-            <div>Kuis 2: Pengenalan <em>Spatial Filtering</em></div>
-            {% if dict_percobaan.2 > 1 and nilai_awal.2 < kkm %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.2 }}</span>
+            <div class="fw-bold">Kuis 2: Pengenalan <em>Spatial Filtering</em></div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_2 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_2 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.2 }}</span>
             {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.2 > 1 and nilai_awal.2 < kkm %}
+            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 %}
               <span class="text-remidi-center">Remidi</span>
             {% else %}
               <span class="text-muted small">-</span>
@@ -283,7 +297,7 @@
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_2|default:"-" }}</span>
-            {% if dict_percobaan.2 > 1 and nilai_awal.2 < kkm and nilai_kuis.kuis_2 == kkm %}
+            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 and nilai_kuis.kuis_2 == kkm_kuis.kuis_2 %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -300,13 +314,17 @@
 
         <tr>
           <td class="ps-3">
-            <div>Kuis 3: Konvolusi</div>
-            {% if dict_percobaan.3 > 1 and nilai_awal.3 < kkm %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.3 }}</span>
+            <div class="fw-bold">Kuis 3: Konvolusi</div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_3 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_3 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.3 }}</span>
             {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.3 > 1 and nilai_awal.3 < kkm %}
+            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 %}
               <span class="text-remidi-center">Remidi</span>
             {% else %}
               <span class="text-muted small">-</span>
@@ -314,7 +332,7 @@
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_3|default:"-" }}</span>
-            {% if dict_percobaan.3 > 1 and nilai_awal.3 < kkm and nilai_kuis.kuis_3 == kkm %}
+            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 and nilai_kuis.kuis_3 == kkm_kuis.kuis_3 %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -331,13 +349,17 @@
 
         <tr>
           <td class="ps-3">
-            <div>Kuis 4: <em>Smoothing Filters</em></div>
-            {% if dict_percobaan.4 > 1 and nilai_awal.4 < kkm %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.4 }}</span>
+            <div class="fw-bold">Kuis 4: <em>Smoothing Filters</em></div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_4 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_4 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.4 > 1 and nilai_awal.4 < kkm_kuis.kuis_4 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.4 }}</span>
             {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.4 > 1 and nilai_awal.4 < kkm %}
+            {% if dict_pengerjaan_mhs.4 > 1 and nilai_awal.4 < kkm_kuis.kuis_4 %}
               <span class="text-remidi-center">Remidi</span>
             {% else %}
               <span class="text-muted small">-</span>
@@ -345,7 +367,7 @@
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_4|default:"-" }}</span>
-            {% if dict_percobaan.4 > 1 and nilai_awal.4 < kkm and nilai_kuis.kuis_4 == kkm %}
+            {% if dict_pengerjaan_mhs.4 > 1 and nilai_awal.4 < kkm_kuis.kuis_4 and nilai_kuis.kuis_4 == kkm_kuis.kuis_4 %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -362,13 +384,17 @@
 
         <tr>
           <td class="ps-3">
-            <div>Kuis 5: <em>Sharpening Filters</em></div>
-            {% if dict_percobaan.5 > 1 and nilai_awal.5 < kkm %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.5 }}</span>
+            <div class="fw-bold">Kuis 5: <em>Sharpening Filters</em></div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_5 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_5 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.5 > 1 and nilai_awal.5 < kkm_kuis.kuis_5 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.5 }}</span>
             {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.5 > 1 and nilai_awal.5 < kkm %}
+            {% if dict_pengerjaan_mhs.5 > 1 and nilai_awal.5 < kkm_kuis.kuis_5 %}
               <span class="text-remidi-center">Remidi</span>
             {% else %}
               <span class="text-muted small">-</span>
@@ -376,7 +402,7 @@
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_kuis.kuis_5|default:"-" }}</span>
-            {% if dict_percobaan.5 > 1 and nilai_awal.5 < kkm and nilai_kuis.kuis_5 == kkm %}
+            {% if dict_pengerjaan_mhs.5 > 1 and nilai_awal.5 < kkm_kuis.kuis_5 and nilai_kuis.kuis_5 == kkm_kuis.kuis_5 %}
               <br><span class="badge-remidi">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -394,12 +420,16 @@
         <tr class="table-primary">
           <td class="ps-3">
             <div class="fw-bold">Evaluasi Akhir</div>
-            {% if dict_percobaan.7 > 1 and nilai_awal.7 < kkm %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_percobaan.7 }}</span>
+            <div class="quiz-meta-info text-primary">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.evaluasi }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.evaluasi }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.7 > 1 and nilai_awal.7 < kkm_kuis.evaluasi %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.7 }}</span>
             {% endif %}
           </td>
           <td class="text-center">
-            {% if dict_percobaan.7 > 1 and nilai_awal.7 < kkm %}
+            {% if dict_pengerjaan_mhs.7 > 1 and nilai_awal.7 < kkm_kuis.evaluasi %}
               <span class="text-remidi-center">Remidi</span>
             {% else %}
               <span class="text-muted small">-</span>
@@ -407,7 +437,7 @@
           </td>
           <td class="text-center">
             <span class="fw-bold">{{ nilai_evaluasi|default:"-" }}</span>
-            {% if dict_percobaan.7 > 1 and nilai_awal.7 < kkm and nilai_evaluasi == kkm %}
+            {% if dict_pengerjaan_mhs.7 > 1 and nilai_awal.7 < kkm_kuis.evaluasi and nilai_evaluasi == kkm_kuis.evaluasi %}
               <br><span class="badge-remidi" style="background:#fff; border-color:#3b7be3; color:#3b7be3;">Maksimal KKM</span>
             {% endif %}
           </td>
@@ -428,8 +458,8 @@
   <div class="info-footer mt-3 d-flex align-items-start">
     <i class="bi bi-info-circle-fill me-2 text-primary" style="margin-top: 2px;"></i>
     <div>
-      Sistem menampilkan <strong>nilai tertinggi</strong> dari setiap pengerjaan aktivitas. 
-      Jika pengerjaan pertama belum memenuhi KKM, maka percobaan berikutnya akan tercatat sebagai <strong>Remidi</strong> dengan batas nilai maksimal setara KKM ({{ kkm }}).
+      Sistem menampilkan <strong>nilai hasil pengerjaan aktivitas pertama</strong> yang telah memenuhi KKM.
+      Jika pengerjaan pertama <strong>belum memenuhi KKM</strong> kuis terkait, maka <strong>percobaan berikutnya</strong> akan tercatat sebagai <strong>Remidi</strong> dengan batas nilai maksimal setara dengan KKM kuis tersebut.
     </div>
   </div>
 </div>

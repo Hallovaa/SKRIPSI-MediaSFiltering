@@ -1,7 +1,7 @@
 {% extends "dosen/base.html" %}
 {% load static %}
 
-{% block title %}Dashboard Dosen{% endblock %}
+{% block title %}Dashboard Pemantauan Belajar{% endblock %}
 
 {% block content %}
 
@@ -48,29 +48,51 @@
   background: #ffffff;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
-  padding: 22px;
+  padding: 24px;
   margin-bottom: 26px;
 }
 
-.progress-list li {
-  padding: 14px 0;
-  border-bottom: 1px dashed #e5e7eb;
-}
-
-.progress-list li:last-child {
-  border-bottom: none;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
+.table-dashboard th {
+  background-color: #f8fafc;
+  color: #475569;
   font-weight: 600;
-  margin-bottom: 6px;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  padding: 14px 12px;
+  white-space: nowrap;
+}
+
+.table-dashboard th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.table-dashboard th.sortable:hover {
+  background-color: #f1f5f9;
+}
+
+.table-dashboard th.sortable i.sort-icon {
+  font-size: 0.75rem;
+  margin-left: 6px;
+  color: #94a3b8;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.table-dashboard th.sortable.asc i.sort-icon,
+.table-dashboard th.sortable.desc i.sort-icon {
+  color: #2563eb;
+}
+
+.table-dashboard td {
+  vertical-align: middle;
+  padding: 14px 12px;
 }
 
 .progress-bar-wrapper {
   width: 100%;
-  height: 8px;
+  height: 6px;
   background: #e5e7eb;
   border-radius: 999px;
   overflow: hidden;
@@ -78,12 +100,8 @@
 
 .progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #22c55e, #16a34a);
+  background: #3b7be3;
   border-radius: 999px;
-}
-
-.kkm-card {
-  max-width: 420px;
 }
 </style>
 
@@ -95,7 +113,7 @@
     Dashboard <span class="text-primary">Dosen</span>
   </h1>
   <p class="text-muted mb-0">
-    Ringkasan informasi kelas dan pembelajaran mahasiswa. 
+    Ringkasan informasi kelas dan pembelajaran mahasiswa.
   </p>
 </div>
 
@@ -110,7 +128,7 @@
   <div class="col-md-3">
     <div class="stat-card">
       <div class="value">{{ mhs_selesai|default:0 }}</div>
-      <div class="label">Mahasiswa Selesai</div>
+      <div class="label">Selesai Pembelajaran</div>
     </div>
   </div>
 
@@ -123,23 +141,23 @@
 
   <div class="col-md-3">
     <div class="stat-card">
-      <div class="value">{{ mhs_dibawah_kkm|default:0 }}</div>
-      <div class="label">Mahasiswa < KKM</div>
+      <div class="value">{{ rata_rata_progres|default:0 }}%</div>
+      <div class="label">Rata-rata Progres Kelas</div>
     </div>
   </div>
 </div>
 
-<div class="row g-4">
-  <div class="col-md-7">
+<div class="row">
+  <div class="col-12">
     <div class="card-section">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+      <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-sm-center gap-3 mb-4">
         <div>
-          <strong class="d-block">Progres Terbanyak (5 Mahasiswa)</strong>
-          <small class="text-muted">Berdasarkan penyelesaian tahapan pembelajaran.</small>
+          <strong class="d-block" style="font-size: 1.25rem; color: #1e293b;">Pelacakan Aktivitas Belajar Mahasiswa</strong>
+          <small class="text-muted">Memantau riwayat capaian kuis dan interaksi terakhir mahasiswa secara langsung.</small>
         </div>
         
-        <form method="GET" id="filterForm">
-          <select name="kelas_id" class="form-select form-select-sm" onchange="this.form.submit()">
+        <form method="GET" id="filterForm" class="ms-sm-auto">
+          <select name="kelas_id" class="form-select" onchange="this.form.submit()" style="min-width: 180px;">
             <option value="">Semua Kelas</option>
             {% for k in daftar_kelas %}
             <option value="{{ k.id }}" {% if request.GET.kelas_id == k.id|stringformat:"s" %}selected{% endif %}>
@@ -150,47 +168,84 @@
         </form>
       </div>
 
-      <ul class="list-unstyled progress-list">
-        {% for mhs in top_mahasiswa %}
-        <li>
-          <div class="progress-header">
-            <span>{{ mhs.display_name }}</span> 
-            <span>{{ mhs.progres_persen }}%</span>
-          </div>
-          <div class="progress-bar-wrapper">
-            <div class="progress-bar-fill" style="width:{{ mhs.progres_persen }}%"></div>
-          </div>
-          <small class="text-muted" style="font-size: 11px;">{{ mhs.kelas.nama_kelas }}</small>
-        </li>
-        {% empty %}
-        <li class="text-muted text-center py-4">Belum ada data mahasiswa</li>
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="col-md-5">
-    <div class="card-section kkm-card">
-      <strong>Pengaturan Nilai KKM</strong>
-      <p class="text-muted mb-3">
-        Nilai minimum kelulusan kuis dan evaluasi.
-      </p>
-
-      <form method="POST">
-        {% csrf_token %}
-        <div class="d-flex gap-2 align-items-center">
-          <input type="number" 
-                 name="kkm" 
-                 value="{{ kkm|default:70 }}" 
-                 class="form-control" 
-                 min="0" max="100"
-                 style="max-width:140px;"
-                 required>
-          <button type="submit" name="update_kkm" class="btn btn-success">
-            Simpan KKM
-          </button>
-        </div>
-      </form>
+      <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+        <table class="table table-hover table-dashboard mb-0" id="trackingTable">
+          <thead class="position-sticky top-0 bg-white shadow-sm" style="z-index: 10;">
+            <tr class="border-bottom">
+              <th width="30%" class="sortable" data-sort-type="text">Identitas Mahasiswa<i class="bi bi-arrow-down-up sort-icon"></i></th>
+              <th width="20%" class="text-center sortable" data-sort-type="number">Progres Belajar<i class="bi bi-arrow-down-up sort-icon"></i></th>
+              <th width="25%" class="text-center sortable" data-sort-type="number">Skor & Percobaan Kuis<i class="bi bi-arrow-down-up sort-icon"></i></th>
+              <th width="25%" class="sortable" data-sort-type="date">Aktivitas Akses Terakhir<i class="bi bi-arrow-down-up sort-icon"></i></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for mhs_track in daftar_tracking_mahasiswa %}
+            <tr class="border-bottom" 
+                data-nama="{{ mhs_track.display_name|lower }}"
+                data-progres="{{ mhs_track.progres_persen|default:0 }}"
+                data-skor="{{ mhs_track.skor_tertinggi|default:-1 }}"
+                data-akses="{% if mhs_track.waktu_akses_terakhir %}{{ mhs_track.waktu_akses_terakhir|date:'Y-m-d H:i:s' }}{% else %}1970-01-01 00:00:00{% endif %}">
+              
+              <td>
+                <span class="fw-semibold text-dark d-block" style="font-size: 0.95rem;">{{ mhs_track.display_name }}</span>
+                <small class="text-muted" style="font-size: 12px;"><i class="bi bi-door-open me-1"></i>{{ mhs_track.kelas.nama_kelas }}</small>
+              </td>
+              
+              <td>
+                <div class="d-flex align-items-center justify-content-center gap-2">
+                  <div class="progress-bar-wrapper" style="width: 80px;">
+                    <div class="progress-bar-fill" style="width:{{ mhs_track.progres_persen }}%;"></div>
+                  </div>
+                  <span class="fw-bold text-secondary" style="font-size: 0.85rem;">
+                    {{ mhs_track.progres_persen }}%
+                  </span>
+                </div>
+              </td>
+              
+              <td class="text-center">
+                {% if mhs_track.total_percobaan > 0 %}
+                  <div style="font-size: 0.9rem;">
+                    Skor Max: <strong class="text-success">{{ mhs_track.skor_tertinggi }}</strong>
+                  </div>
+                  <small class="text-muted" style="font-size: 11px;">
+                    Dikerjakan sebanyak {{ mhs_track.total_percobaan }}x
+                  </small>
+                {% else %}
+                  <span class="text-muted" style="font-size: 0.85rem;">Belum ada riwayat kuis</span>
+                {% endif %}
+              </td>
+              
+              <td>
+                {% if mhs_track.waktu_akses_terakhir %}
+                  <span class="d-block fw-medium text-dark mb-1" style="font-size: 0.85rem;" title="{{ mhs_track.subbab_terakhir }}">
+                    {% if "Kuis" in mhs_track.subbab_terakhir or "Evaluasi" in mhs_track.subbab_terakhir %}
+                      <i class="bi bi-check2-circle me-1 text-success"></i>
+                    {% else %}
+                      <i class="bi bi-book me-1 text-info"></i>
+                    {% endif %}
+                    {{ mhs_track.subbab_terakhir|truncatechars:25 }}
+                  </span>
+                  <small class="text-muted d-block" style="font-size: 11px; margin-top: -2px;">
+                    <i class="bi bi-calendar3 me-1"></i>{{ mhs_track.waktu_akses_terakhir|date:"d M Y, H:i" }} WITA
+                  </small>
+                {% else %}
+                  <span class="badge bg-light text-muted border px-2.5 py-1" style="font-size: 11px; border-radius: 6px;">
+                    Belum Ada Aktivitas
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-muted text-center py-5">
+                <i class="bi bi-people mb-2 d-block" style="font-size: 2rem;"></i>
+                Tidak ada data pelacakan untuk kelas ini.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -208,6 +263,49 @@
     });
   {% endfor %}
 {% endif %}
+
+document.querySelectorAll('#trackingTable th.sortable').forEach((headerCell, index) => {
+  headerCell.addEventListener('click', () => {
+    const table = headerCell.closest('table');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr:not(.text-muted)'));
+    
+    const isAscending = headerCell.classList.contains('asc');
+    
+    table.querySelectorAll('th.sortable').forEach(th => {
+      th.classList.remove('asc', 'desc');
+      const icon = th.querySelector('i.sort-icon');
+      if (icon) icon.className = 'bi bi-arrow-down-up sort-icon';
+    });
+    
+    const direction = isAscending ? 'desc' : 'asc';
+    headerCell.classList.add(direction);
+    
+    const currentIcon = headerCell.querySelector('i.sort-icon');
+    if (currentIcon) {
+      currentIcon.className = direction === 'asc' ? 'bi bi-arrow-up sort-icon' : 'bi bi-arrow-down sort-icon';
+    }
+
+    const dataAttributes = ['data-nama', 'data-progres', 'data-skor', 'data-akses'];
+    const targetAttribute = dataAttributes[index];
+    const sortType = headerCell.getAttribute('data-sort-type');
+
+    const sortedRows = rows.sort((rowA, rowB) => {
+      let valA = rowA.getAttribute(targetAttribute);
+      let valB = rowB.getAttribute(targetAttribute);
+
+      if (sortType === 'number') {
+        return direction === 'asc' ? parseFloat(valA) - parseFloat(valB) : parseFloat(valB) - parseFloat(valA);
+      } else if (sortType === 'date') {
+        return direction === 'asc' ? new Date(valA) - new Date(valB) : new Date(valB) - new Date(valA);
+      } else {
+        return direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      }
+    });
+
+    sortedRows.forEach(row => tbody.appendChild(row));
+  });
+});
 </script>
 
 {% endblock %}

@@ -336,7 +336,7 @@
   <div class="card-section-body">
     <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
     <ol>
-      <li>Memahami konsep operasi konvolusi pada pemrosesan citra digital.</li>
+      <li>Menjelaskan konsep operasi konvolusi pada pemrosesan citra digital.</li>
       <li>Menerapkan operasi konvolusi pada matriks citra sederhana.</li>
       <li>Menerapkan teknik <em>padding</em> pada proses konvolusi untuk mempertahankan ukuran citra.</li>
       <li>Menerapkan proses normalisasi hasil konvolusi agar nilai piksel berada dalam rentang yang valid.</li>
@@ -463,11 +463,13 @@
       Proses perhitungan konvolusi dapat dinyatakan secara matematis dengan persamaan berikut:
     </P>
 
-    <p style="text-align: center; font-size: 30px;">
-    \[
-    g(x,y) = \sum_{k=-1}^{1} \sum_{j=-1}^{1} h(j+1,k+1)\, f(x-j, y-k)
-    \]
-    </p>
+    <div style="overflow-x: auto; width: 100%; padding: 10px 0;">
+      <p style="text-align: center; font-size: clamp(18px, 4vw, 30px); margin: 0;">
+          \[
+          g(x,y) = \sum_{k=-1}^{1} \sum_{j=-1}^{1} h(j+1,k+1)\, f(x-j, y-k)
+          \]
+      </p>
+    </div>
 
     <p style="text-align: justify; text-indent: 30px;">
       Dengan keterangan:

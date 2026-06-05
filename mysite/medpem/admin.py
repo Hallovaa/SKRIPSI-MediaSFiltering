@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Dosen, Kelas, Mahasiswa, Materi, Aktivitas, ProgresAktivitas, Pengaturan, HasilKuis
+from .models import User, Dosen, Kelas, Mahasiswa, Materi, Aktivitas, ProgresAktivitas, HasilKuis, PengaturanKuisDosen
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -58,12 +58,14 @@ class ProgresAktivitasAdmin(admin.ModelAdmin):
     list_filter = ('status_selesai', 'aktivitas', 'mahasiswa__kelas')
     search_fields = ('mahasiswa__nama_lengkap', 'aktivitas__nama_aktivitas')
 
-@admin.register(Pengaturan)
-class PengaturanAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'kkm')
-
 @admin.register(HasilKuis)
 class HasilKuisAdmin(admin.ModelAdmin):
     list_display = ('mahasiswa', 'nomor_kuis', 'skor', 'tanggal_pengerjaan')
     list_filter = ('nomor_kuis', 'mahasiswa__kelas')
     search_fields = ('mahasiswa__nama_lengkap',)
+
+@admin.register(PengaturanKuisDosen)
+class PengaturanKuisDosenAdmin(admin.ModelAdmin):
+    list_display = ('dosen', 'aktivitas', 'kkm', 'durasi_menit')
+    list_filter = ('dosen', 'aktivitas')
+    search_fields = ('dosen__nama_lengkap', 'aktivitas__nama_aktivitas')

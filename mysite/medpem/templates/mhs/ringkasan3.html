@@ -77,10 +77,8 @@
     <div class="summary-box">
       <h4><b>1. Konsep Konvolusi</b></h4>
       <p style="text-align: justify; text-indent: 30px; margin-top: 10px; margin-left: 20px; margin-bottom: 30px;">
-        Konvolusi adalah teknik pada <em>spatial domain</em> yang menghitung nilai piksel baru 
-        berdasarkan piksel pusat dan piksel-piksel tetangganya menggunakan <em>kernel</em>. 
-        Teknik ini digunakan untuk menghasilkan citra yang lebih halus, lebih tajam, atau 
-        menonjolkan tepi.
+        Konvolusi adalah teknik pada spatial domain yang menghasilkan nilai piksel baru menggunakan kernel dan piksel tetangganya untuk menghaluskan, 
+        menajamkan, atau mendeteksi tepi citra.
       </p>
 
       <h4><b>2. Teknik Padding</b></h4>
@@ -97,13 +95,12 @@
 
       <h4><b>3. Normalisasi Citra</b></h4>
       <p style="text-align: justify; text-indent: 30px; margin-top: 10px; margin-left: 20px;">
-       Proses menyesuaikan nilai piksel hasil konvolusi agar berada dalam rentang standar (0–255). 
-       Ini memastikan citra tidak terlalu gelap atau terlalu terang akibat akumulasi nilai kernel yang besar atau negatif.
+       Normalisasi citra adalah proses menyesuaikan nilai piksel hasil pengolahan agar berada pada rentang 0–255 sehingga citra dapat ditampilkan dengan baik.
       </p>
     </div>
 
     <div class="material-nav">
-      <a href="{% url 'prak_konvolusi' %}" class="btn btn-outline-secondary">
+      <a href="{% url 'normalisasi_citra' %}" class="btn btn-outline-secondary">
         <i class="bi bi-chevron-left"></i> Sebelumnya
       </a>
       

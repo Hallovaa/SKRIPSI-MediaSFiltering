@@ -21,6 +21,7 @@ urlpatterns = [
     path('dash-dosen/progres-mhs/', views.progres_mhs, name='progres_mhs'),
     path('dash-dosen/nilai-mhs/', views.nilai_mhs, name='nilai_mhs'),
     path('dash-dosen/nilai-mhs/export/', views.export_nilai_excel, name='export_nilai_excel'),
+    path('dash-dosen/pengaturan/', views.pengaturan_sistem, name='pengaturan_sistem'),
 
     path('dash-mhs/', views.dash_mhs, name='dash_mhs'),  
     

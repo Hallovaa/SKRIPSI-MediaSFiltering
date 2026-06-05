@@ -19,7 +19,7 @@
 
     .quiz-wrapper {
         max-width: 1200px;
-        margin: 30px auto;
+        margin: 18px auto;
         padding: 0 20px;
     }
 
@@ -226,7 +226,8 @@
             <h2 class="fw-bold text-primary" style="text-align: center;">Petunjuk Pengerjaan Kuis</h2>
             <ul class="mt-3" style="text-align: justify; list-style-position: outside; padding-left: 20px;">
                 <li class="mb-2"><strong>Kuis terdiri</strong> dari 10 soal pilihan ganda, setiap soal memiliki satu jawaban yang benar.</li>
-                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah 15 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah {{ aktivitas.durasi_menit }} menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Standar Kelulusan (KKM)</strong> untuk kuis ini adalah {{ aktivitas.kkm }}.</li>
                 <li class="mb-2"><strong>Navigasi soal</strong> tersedia di sisi kanan layar. Nomor soal yang sedang dikerjakan ditandai dengan border berwarna biru.</li>
                 <li class="mb-2"><strong>Status pengerjaan</strong> soal ditunjukkan dengan warna: <span class="badge bg-success">Hijau</span> untuk soal yang sudah dijawab, <span class="badge bg-warning text-dark">Kuning</span> untuk soal yang ditandai ragu-ragu, dan <span class="badge bg-secondary">Abu-abu</span> untuk soal yang belum dijawab.</li>
                 <li class="mb-2"><strong>Tombol Ragu-ragu</strong> dapat digunakan jika peserta belum yakin dengan jawabannya dan ingin meninjaunya kembali sebelum kuis selesai.</li>
@@ -244,7 +245,7 @@
             <div class="question-card">
                 <div class="question-header">
                     <strong>Soal <span id="noSoal">1</span> / 10</strong>
-                    <div class="timer">⏱ <span id="timer">15:00</span></div>
+                    <div class="timer">⏱ <span id="timer">{{ aktivitas.durasi_menit }}:00</span></div>
                 </div>
                 <h5 class="mb-4" id="teksSoal">Loading...</h5>
                 <div id="optionsContainer">
@@ -279,14 +280,14 @@
             <div class="score" id="nilaiAkhir">0</div>
             <div id="loadingHasil" class="mt-3">Menghitung nilai secara aman...</div>
             <div id="lulusBox" class="hidden mt-4">
-                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM.</p>
+                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <p class="text-success fw-bold">Kamu dapat melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <a id="btnNextBab" href="{% url 'pengertian_spatial' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
                 </div>
             </div>
             <div id="tidakLulusBox" class="hidden mt-4">
-                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM.</p>
+                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi kuis untuk melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-warning px-4 fw-bold" onclick="ulangKuis()">Ulangi Kuis</button>
@@ -313,7 +314,7 @@
         let idx = 0;
         let jawaban = Array(soal.length).fill(null);
         let ragu = Array(soal.length).fill(false);
-        let sisaWaktu = 15 * 60;
+        let sisaWaktu = parseInt("{{ aktivitas.durasi_menit }}") * 60;
         let timer;
         let waktuMulaiKuis;
         let waktuSelesaiKuis;

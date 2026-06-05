@@ -162,7 +162,6 @@
 
     .nav-link.locked {
         color: var(--text-muted) !important;
-        pointer-events: none !important;
         cursor: not-allowed !important;
         opacity: 0.6 !important;
         background: transparent !important;
@@ -216,6 +215,10 @@
         border-radius: 10px;
         object-fit: cover;
     }
+
+    .swal2-container {
+    z-index: 9999 !important;
+}
   </style>
 
   {% block extra_head %}{% endblock %}
@@ -464,13 +467,84 @@
           }
         }
       });
+
+      // LOGIKA VALIDASI AKSES MENU DAN SWEETALERT DENGAN URUTAN TERINTEGRASI
+      const sidebarMenu = document.getElementById("sidebarMenu");
+      if (sidebarMenu) {
+        sidebarMenu.addEventListener("click", function(e) {
+          
+          // 1. Kondisi Klik pada Subbab yang Terkunci (.locked)
+          const lockedLink = e.target.closest(".nav-link.locked");
+          if (lockedLink) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Cari elemen pembungkus submenu tempat link ini berada
+            const parentSubmenu = lockedLink.closest(".submenu");
+            let jenisKonten = "materi";
+
+            if (parentSubmenu) {
+              // Dapatkan semua tautan subbab di dalam bab tersebut
+              const allLinksInSubmenu = Array.from(parentSubmenu.querySelectorAll(".nav-link"));
+              // Cari indeks tautan yang sedang diklik pengguna
+              const index = allLinksInSubmenu.indexOf(lockedLink);
+
+              // Jika ini adalah link pertama di dalam bab (Indeks 0), pembukanya adalah KUIS di bab sebelumnya
+              if (index === 0) {
+                jenisKonten = "kuis";
+              } 
+              // Jika ini indeks ke-1, ke-2, dst (termasuk menu Kuis itu sendiri), pembukanya adalah MATERI di atasnya
+              else {
+                jenisKonten = "materi";
+              }
+            } else {
+              // Fallback untuk link di luar submenu (misal Evaluasi Akhir)
+              jenisKonten = "materi";
+            }
+
+            Swal.fire({
+              icon: "warning",
+              title: "Akses Terkunci!",
+              text: `Silakan selesaikan ${jenisKonten} sebelumnya terlebih dahulu untuk membuka halaman ini.`,
+              confirmButtonColor: "#3b7be3",
+              confirmButtonText: "OK"
+            });
+            return;
+          }
+
+          // 2. Kondisi Klik Judul Bab Utama (Collapse Trigger)
+          const trigger = e.target.closest(".collapse-trigger");
+          if (trigger) {
+            const targetId = trigger.getAttribute("data-bs-target");
+            const targetCollapse = document.querySelector(targetId);
+            
+            if (targetCollapse) {
+              const totalLinks = targetCollapse.querySelectorAll(".nav-link").length;
+              const lockedLinks = targetCollapse.querySelectorAll(".nav-link.locked").length;
+              
+              // Jika semua sub-materi di dalam bab tersebut masih terkunci
+              if (totalLinks > 0 && totalLinks === lockedLinks) {
+                e.preventDefault();
+                e.stopPropagation(); 
+                
+                Swal.fire({
+                  icon: "info",
+                  title: "Bab Belum Terbuka!",
+                  text: "Selesaikan materi dan kuis pada bab sebelumnya untuk mengakses bab ini.",
+                  confirmButtonColor: "#3b7be3",
+                  confirmButtonText: "OK"
+                });
+              }
+            }
+          }
+        }, true);
+      }
     });
 
     function unlockNextContent(nextSlug) {
         const nextLink = document.querySelector(`[data-slug="${nextSlug}"]`);
         if (nextLink) {
             nextLink.classList.remove('locked');
-            nextLink.style.pointerEvents = 'auto';
             nextLink.style.opacity = '1';
             
             const lockIcon = nextLink.querySelector('.bi-lock-fill');

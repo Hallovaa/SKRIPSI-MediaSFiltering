@@ -234,9 +234,9 @@
   <div class="card-section-body">
     <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
     <ol>
-      <li>Memahami konsep <em>Smoothing</em> pada citra digital.</li>
-      <li>Memahami perbedaan antara <em>Linear Smoothing Filter</em> dan <em>Nonlinear Smoothing Filter</em>.</li>
-      <li>Menerapkan teknik <em>Smoothing Linear</em> dan <em>Nonlinear</em> pada matriks citra sederhana.</li>
+      <li>Menjelaskan konsep <em>smoothing</em>  pada pemrosesan citra digital.</li>
+      <li>Menjelaskan perbedaan antara <em>linear smoothing filter</em> dan <em>nonlinear smoothing filter</em>.</li>
+      <li>Menerapkan teknik <em>smoothing linear</em> dan <em>nonlinear</em> pada matriks citra sederhana.</li>
     </ol>
   </div>
 </section>
@@ -261,20 +261,22 @@
       dan citra menjadi lebih halus.
     </p>
 
-    <p style="text-align: center; font-size: 27px;">
-      $$
-      g(x,y)=
-      \frac{
-      \sum\limits_{k=-1}^{1}
-      \sum\limits_{j=-1}^{1}
-      h(j+1,k+1)\,f(x-j,y-k)
-      }{
-      \sum\limits_{k=-1}^{1}
-      \sum\limits_{j=-1}^{1}
-      h(j+1,k+1)
-      }
-      $$
-    </p>
+    <div style="overflow-x: auto; width: 100%; padding: 10px 0;">
+      <p style="text-align: center; font-size: clamp(18px, 4vw, 30px); margin: 0;">
+          $$
+          g(x,y)=
+          \frac{
+          \sum\limits_{k=-1}^{1}
+          \sum\limits_{j=-1}^{1}
+          h(j+1,k+1)\,f(x-j,y-k)
+          }{
+          \sum\limits_{k=-1}^{1}
+          \sum\limits_{j=-1}^{1}
+          h(j+1,k+1)
+          }
+          $$
+      </p>
+    </div>
 
     <p style="text-align: justify; text-indent: 30px;">
       Dengan keterangan:

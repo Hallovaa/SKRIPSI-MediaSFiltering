@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-    body {
+     body {
         font-family: 'Inter', sans-serif;
         background: #f8fafc;
         margin: 0;
@@ -112,6 +112,13 @@
         font-size: 14px;
         color: #475569;
         flex-shrink: 0;
+    }
+
+    /* Pendukung visual jika ada gambar di dalam pilihan opsi */
+    .img-option {
+        max-height: 80px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
     }
 
     .nav-btn {
@@ -226,7 +233,8 @@
             <h2 class="fw-bold text-primary" style="text-align: center;">Petunjuk Pengerjaan Kuis</h2>
             <ul class="mt-3" style="text-align: justify; list-style-position: outside; padding-left: 20px;">
                 <li class="mb-2"><strong>Kuis terdiri</strong> dari 10 soal pilihan ganda, setiap soal memiliki satu jawaban yang benar.</li>
-                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah 15 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Waktu pengerjaan</strong> kuis adalah {{ aktivitas.durasi_menit }} menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Standar Kelulusan (KKM)</strong> untuk kuis ini adalah {{ aktivitas.kkm }}.</li>
                 <li class="mb-2"><strong>Navigasi soal</strong> tersedia di sisi kanan layar. Nomor soal yang sedang dikerjakan ditandai dengan border berwarna biru.</li>
                 <li class="mb-2"><strong>Status pengerjaan</strong> soal ditunjukkan dengan warna: <span class="badge bg-success">Hijau</span> untuk soal yang sudah dijawab, <span class="badge bg-warning text-dark">Kuning</span> untuk soal yang ditandai ragu-ragu, dan <span class="badge bg-secondary">Abu-abu</span> untuk soal yang belum dijawab.</li>
                 <li class="mb-2"><strong>Tombol Ragu-ragu</strong> dapat digunakan jika peserta belum yakin dengan jawabannya dan ingin meninjaunya kembali sebelum kuis selesai.</li>
@@ -244,7 +252,7 @@
             <div class="question-card">
                 <div class="question-header">
                     <strong>Soal <span id="noSoal">1</span> / 10</strong>
-                    <div class="timer">⏱ <span id="timer">15:00</span></div>
+                    <div class="timer">⏱ <span id="timer">{{ aktivitas.durasi_menit }}:00</span></div>
                 </div>
                 <h5 class="mb-4" id="teksSoal">Loading...</h5>
                 
@@ -284,14 +292,14 @@
             <div class="score" id="nilaiAkhir">0</div>
             <div id="loadingHasil" class="mt-3">Menghitung nilai secara aman...</div>
             <div id="lulusBox" class="hidden mt-4">
-                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM.</p>
+                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <p class="text-success fw-bold">Kamu dapat melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <a id="btnNextBab" href="{% url 'sl_filters' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
                 </div>
             </div>
             <div id="tidakLulusBox" class="hidden mt-4">
-                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM.</p>
+                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi kuis untuk melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-warning px-4 fw-bold" onclick="ulangKuis()">Ulangi Kuis</button>
@@ -303,6 +311,7 @@
 
     <script>
         const STATIC_URL = "{% static '' %}";
+
         const soal = [
             {q:"Pada operasi konvolusi diperlukan piksel tetangga karena ….", o:["satu piksel saja belum cukup untuk menggambarkan kondisi suatu area citra","satu piksel saja sudah cukup untuk menentukan objek","piksel tetangga hanya digunakan untuk mempercepat proses komputasi","konvolusi hanya menggunakan piksel pusat ","setiap piksel tidak memiliki nilai intensitas"]},
             {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut ….", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"]},
@@ -319,7 +328,7 @@
         let idx = 0;
         let jawaban = Array(soal.length).fill(null);
         let ragu = Array(soal.length).fill(false);
-        let sisaWaktu = 15 * 60;
+        let sisaWaktu = parseInt("{{ aktivitas.durasi_menit }}") * 60;
         let timer;
         let waktuMulaiKuis;
         let waktuSelesaiKuis;
@@ -383,6 +392,7 @@
             document.getElementById('btnPrev').disabled = (idx === 0);
             document.getElementById('btnNext').innerText = (idx === soal.length - 1) ? "Selesai" : "Selanjutnya";
             updateGridUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function navigasi(step){
@@ -394,7 +404,6 @@
             if(idx < 0) idx = 0;
             if(idx >= soal.length) idx = soal.length - 1;
             renderSoal();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.querySelectorAll('.option').forEach(opt => {
@@ -426,11 +435,7 @@
             soal.forEach((_, i) => {
                 const btn = document.createElement('button');
                 btn.innerText = i + 1;
-                btn.onclick = () => { 
-                    idx = i; 
-                    renderSoal(); 
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                };
+                btn.onclick = () => { idx = i; renderSoal(); };
                 grid.appendChild(btn);
             });
         }
@@ -519,6 +524,10 @@
                         document.getElementById('statusText').innerText = 'LULUS';
                         document.getElementById('statusText').className = 'text-success fw-bold';
                         document.getElementById('lulusBox').classList.remove('hidden');
+                        
+                        if (typeof unlockNextContent === "function") {
+                            unlockNextContent("sl-filters");
+                        }
                     } else {
                         document.getElementById('statusText').innerText = 'TIDAK LULUS';
                         document.getElementById('statusText').className = 'text-danger fw-bold';

@@ -237,7 +237,7 @@
     .summary-list {
         list-style-position: outside;
         padding-left: 20px;
-        text-align: justify; /* Membuat teks rata kanan-kiri */
+        text-align: justify;
     }
 
     .summary-list li {
@@ -267,7 +267,8 @@
             <h2 class="fw-bold text-primary" style="text-align: center;">Petunjuk Pengerjaan Evaluasi Akhir</h2>
             <ul class="mt-3" style="text-align: justify; list-style-position: outside; padding-left: 20px;">
                 <li class="mb-2"><strong>Evaluasi terdiri</strong> dari 20 soal pilihan ganda, setiap soal memiliki satu jawaban yang benar.</li>
-                <li class="mb-2"><strong>Waktu pengerjaan</strong> evaluasi adalah 40 menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Waktu pengerjaan</strong> evaluasi adalah {{ aktivitas.durasi_menit }} menit dan ditampilkan dalam bentuk timer di bagian atas layar.</li>
+                <li class="mb-2"><strong>Standar Kelulusan (KKM)</strong> untuk evaluasi ini adalah {{ aktivitas.kkm }}.</li>
                 <li class="mb-2"><strong>Navigasi soal</strong> tersedia di sisi kanan layar. Nomor soal yang sedang dikerjakan ditandai dengan border berwarna biru.</li>
                 <li class="mb-2"><strong>Status pengerjaan</strong> soal ditunjukkan dengan warna: <span class="badge bg-success">Hijau</span> untuk soal yang sudah dijawab, <span class="badge bg-warning text-dark">Kuning</span> untuk soal yang ditandai ragu-ragu, dan <span class="badge bg-secondary">Abu-abu</span> untuk soal yang belum dijawab.</li>
                 <li class="mb-2"><strong>Tombol Ragu-ragu</strong> dapat digunakan jika peserta belum yakin dengan jawabannya dan ingin meninjaunya kembali sebelum evaluasi selesai.</li>
@@ -285,7 +286,7 @@
             <div class="question-card">
                 <div class="question-header">
                     <strong>Soal <span id="noSoal">1</span> / 20</strong>
-                    <div class="timer">⏱ <span id="timer">40:00</span></div>
+                    <div class="timer">⏱ <span id="timer">{{ aktivitas.durasi_menit }}:00</span></div>
                 </div>
                 <h5 class="mb-4" id="teksSoal">Loading...</h5>
                 
@@ -323,42 +324,38 @@
             <h2 id="statusText" class="fw-bold"></h2>
             <p><b>Nilai Akhir Evaluasi:</b></p>
             <div class="score" id="nilaiAkhir">0</div>
-            <div id="loadingHasil" class="mt-3">Menghitung skor...</div>
+            <div id="loadingHasil" class="mt-3">Menghitung nilai secara aman...</div>
             <div id="lulusBox" class="hidden mt-4">
-                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM.</p>
+                <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button onclick="tampilkanPenutup()" class="btn btn-primary px-4 fw-bold shadow-sm">Lanjutkan ke Penutup</button>
                 </div>
             </div>
             <div id="tidakLulusBox" class="hidden mt-4">
-                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM.</p>
-                <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi evaluasi untuk menyelesaikan pembelajaran.</p>
-                <div class="d-flex justify-content-center gap-2 mt-3">
-                    <a href="{% url 'pengertian_citra' %}" class="btn btn-nav-prev px-4 py-2 fw-bold">Pelajari Kembali</a>
+                <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM ({{ aktivitas.kkm }}).</p>
+                <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi evaluasi untuk melanjutkan ke bab berikutnya.</p>
+                <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-warning px-4 fw-bold" onclick="ulangKuis()">Ulangi Evaluasi</button>
+                    <a href="{% url 'pengertian_citra' %}" class="btn btn-nav-prev px-4 py-2 fw-bold">Pelajari Kembali</a>
                 </div>
             </div>
         </div>
 
-        <div id="halamanPenutup" class="congrats-box hidden">
-            <div class="text-center">
-                <h1 class="fw-bold text-primary mb-3">Pembelajaran Selesai!</h1>
-                <p class="lead">Selamat! kamu telah menyelesaikan seluruh materi pembelajaran yang tersedia.</p>
-            </div>
-
-            <div class="scrollable-summary">
-                <h5 class="fw-bold text-dark mb-3">Ringkasan Materi:</h5>
+        <div id="halamanPenutup" class="congrats-box text-center hidden">
+            <h2 class="fw-bold text-success mb-3">Pembelajaran Selesai!</h2>
+            <p class="lead text-muted mb-4">Selamat! kamu telah menyelesaikan seluruh materi pembelajaran yang tersedia.</p>
+            <div class="scrollable-summary border text-start">
+                <h5 class="fw-bold text-primary mb-3 text-center">Ringkasan Pembelajaran:</h5>
                 <ul class="summary-list">
                     <li><strong>Citra Digital:</strong> Merupakan representasi gambar dua dimensi yang tersusun dari piksel. Setiap piksel memiliki nilai intensitas (kecerahan), di mana resolusi citra akan memengaruhi kualitas dan detail visual yang dihasilkan.</li>
-                    <li><strong>Jenis Citra Digital:</strong> Mencakup Citra RGB yang memiliki tiga <em>channel</em> warna (0-255), Citra <em>Grayscale</em> dengan satu <em>channel</em> keabuan (0-255), dan Citra Biner yang hanya memiliki dua nilai piksel (0 dan 1) sebagai hasil dari proses <em>thresholding</em>.</li>
+                    <li><strong>Jenis Citra Digital:</strong> Mencakup Citra RGB yang memiliki tiga <em>channel</em> warna (0-255), Citra <em>Grayscale</em> dengan satu <em>channel</em> keabuan (0-255), dan Citra Biner yang hanya memiliki dua nilai piksel (0 dan 1) dari hasil dari proses <em>thresholding</em>.</li>
                     <li><strong><em>Spatial Filtering</em>:</strong> Sebuah teknik pemrosesan citra pada <em>domain</em> spasial yang memanfaatkan hubungan antara piksel pusat dengan piksel tetangganya. Teknik ini umumnya digunakan untuk proses <em>smoothing</em> (penghalusan) dan <em>sharpening</em> (penajaman).</li>
                     <li><strong><em>Spatial Domain</em> dan <em>Frequency Domain</em>:</strong> <em>Spatial Domain</em> berkaitan dengan pemrosesan langsung pada nilai intensitas piksel, sedangkan <em>Frequency Domain</em> melakukan pemrosesan pada komponen frekuensi citra setelah melalui tahap transformasi tertentu.</li>
                     <li><strong>Konvolusi (<em>Padding</em> dan Normalisasi):</strong> Konvolusi digunakan untuk menghitung nilai piksel baru melalui <em>kernel</em>. <em>Padding</em> diterapkan agar operasi konvolusi tetap dapat menjangkau tepi citra, sementara normalisasi memastikan nilai hasil perhitungan tetap berada pada rentang standar 0–255.</li>
-                    <li><strong><em>Smoothing Linear</em>:</strong> Proses yang bertujuan untuk mengurangi <em>noise</em> dan menghaluskan citra menggunakan <em>kernel</em> berbobot seperti <em>mean</em> atau <em>weighted average</em>. Perlu diingat bahwa proses ini dapat mengakibatkan detail citra menjadi sedikit lebih kabur.</li>
+                    <li><strong><em>Smoothing</em>:</strong> Teknik pengolahan citra untuk mengurangi <em>noise</em> dan menghaluskan citra, baik menggunakan <em>linear filters</em> (menggunakan konvolusi dan kernel berbobot) maupun <em>nonlinear filters</em> (berdasarkan urutan nilai piksel seperti <em>median</em>, <em>max</em>, dan <em>min filter</em>).</li>
                     <li><strong><em>Sharpening</em>:</strong> Teknik yang bertujuan menegaskan tepi dan detail citra dengan memperkuat perbedaan intensitas antar piksel. Hal ini dapat dicapai melalui penggunaan <em>kernel Laplacian</em>, metode <em>unsharp masking</em>, atau <em>highboost filtering</em>.</li>
                 </ul>
             </div>
-
             <div class="text-center mt-4">
                 <a href="{% url 'dash_mhs' %}" class="btn btn-primary btn-lg px-5 fw-bold shadow">Kembali ke Dashboard</a>
             </div>
@@ -368,32 +365,187 @@
     <script>
         const STATIC_URL = "{% static '' %}";
         const soal = [
-            { q: "Citra digital adalah .…", o: ["representasi gambar dalam bentuk data numerik yang terdiri dari piksel", "representasi gambar dalam bentuk teks", "gambar yang hanya dapat dilihat oleh manusia tanpa bantuan komputer", "gambar yang hanya terdiri dari warna hitam dan putih", "gambar yang tidak memiliki nilai numerik"] },
-            { q: "Pernyataan yang tepat mengenai resolusi citra adalah ….", o: ["resolusi tidak memengaruhi kualitas citra", "resolusi hanya menentukan ukuran file tanpa memengaruhi tampilan", "citra dengan resolusi rendah memiliki lebih banyak detail", "semakin sedikit piksel, semakin tajam citra yang dihasilkan", "semakin tinggi jumlah piksel, semakin jelas dan detail citra"] },
-            { q: "Spatial filtering dalam pemrosesan citra digital adalah .…", o: ["proses mengubah citra menjadi bentuk frekuensi", "proses menghapus seluruh piksel dalam citra", "proses menyimpan citra ke dalam komputer", "proses memanipulasi nilai piksel secara langsung pada spatial domain", "proses mengubah citra menjadi teks"] },
-            { q: "Perbedaan utama antara spatial domain dan frequency domain adalah .…", o: ["spatial domain menggunakan transformasi fourier, sedangkan frequency domain tidak", "spatial domain memproses langsung nilai piksel, sedangkan frequency domain melalui transformasi frekuensi terlebih dahulu", "keduanya memproses citra dengan cara yang sama", "frequency domain hanya digunakan untuk menyimpan citra", "spatial domain tidak dapat digunakan untuk filtering"] },
-            { q: "Padding dalam pemrosesan citra digital bertujuan untuk ….", o: ["menghapus piksel pada bagian tengah citra", "mengurangi ukuran citra", "menambahkan piksel di tepi citra agar proses konvolusi dapat dilakukan secara menyeluruh", "mengubah citra menjadi grayscale", "menyimpan citra ke dalam komputer"] },
-            { q: "Sebuah citra 5×5 dikonvolusi menggunakan kernel 3×3 dan ingin menghasilkan citra output dengan ukuran sama. Maka padding yang dibutuhkan adalah ….", o: ["1", "2", "3", "4", "5"] },
-            { q: "Pada konvolusi citra 5×5 dengan kernel 3×3 tanpa padding dan stride 1, ukuran hasil konvolusi adalah ….", o: ["1x1", "2x2", "3x3", "4x4", "5x5"] },
-            { q: "Jika diberikan replicate padding sebanyak 1 piksel, maka hasil matriks yang benar adalah ….", img: STATIC_URL + "assets/img/kuis/e15.png", o: [STATIC_URL + "assets/img/kuis/e15-d.png", STATIC_URL + "assets/img/kuis/e15-b.png", STATIC_URL + "assets/img/kuis/e15-c.png", STATIC_URL + "assets/img/kuis/e15-a.png", STATIC_URL + "assets/img/kuis/e15-e.png"] },
-            { q: "Pada citra berwarna (RGB), proses normalisasi dilakukan dengan cara ….", o: ["hanya pada satu channel saja", "menghapus salah satu channel warna", "menerapkan normalisasi pada setiap channel", "mengubah menjadi citra biner", "menggunakan padding"] },
-            { q: "Jika dilakukan normalisasi ke rentang 0–255, nilai hasil normalisasi untuk piksel −20 dan 300 adalah ….", img: STATIC_URL + "assets/img/kuis/e10.png", o: ["0 dan 64", "0 dan 128", "0 dan 255", "128 dan 0", "255 dan 0"] },
-            { q: "Perbedaan utama antara mean filter dan weighted averaging filter adalah ….", o: ["mean filter menggunakan bobot yang sama untuk semua piksel, sedangkan weighted averaging menggunakan bobot berbeda dengan piksel pusat lebih dominan", "mean filter dan weighted averaging sama-sama menggunakan bobot berbeda, namun weighted averaging lebih menekankan piksel pusat", "mean filter menggunakan bobot sama, sedangkan weighted averaging menggunakan bobot yang hampir sama pada semua piksel", "mean filter dan weighted averaging sama-sama menggunakan bobot yang sama, hanya berbeda pada ukuran kernel", "mean filter menggunakan bobot berbeda, sedangkan weighted averaging menggunakan bobot yang sama"] },
-            { q: "Nilai piksel pusat pertama hasil konvolusi adalah ….", img: STATIC_URL + "assets/img/kuis/e6.png", o: ["20", "30", "40", "50", "60"] },
-            { q: "Kernel smoothing berikut yang memberikan bobot terbesar pada piksel pusat dan bobot mengecil ke arah tepi adalah ....", o: [STATIC_URL + "assets/img/kuis/e11-b.png", STATIC_URL + "assets/img/kuis/e11-a.png", STATIC_URL + "assets/img/kuis/e11-c.png", STATIC_URL + "assets/img/kuis/e11-d.png", STATIC_URL + "assets/img/kuis/e11-e.png"] },
-            { q: "Syarat utama kernel pada proses sharpening agar area citra yang seragam tidak berubah adalah ….", o: ["semua nilai kernel harus positif", "kernel harus berukuran genap", "nilai tengah kernel harus nol", "kernel hanya berisi angka 1", "jumlah seluruh elemen kernel sama dengan nol"] },
-            { q: "Perbedaan utama antara unsharp masking dan highboost filtering adalah ….", o: ["unsharp masking menggunakan faktor penguatan k = 1, sedangkan highboost filtering menggunakan k = 1 sehingga hasil penajaman sama", "unsharp masking menggunakan k = 1, sedangkan highboost filtering menggunakan k > 1 sehingga efek penajaman lebih kuat", "unsharp masking dan highboost filtering sama-sama menggunakan k > 1, tetapi unsharp masking tidak menggunakan citra asli", "unsharp masking menggunakan k > 1, sedangkan highboost filtering menggunakan k = 1 untuk mempertahankan citra asli", "unsharp masking dan highboost filtering sama-sama menggunakan k = 1 dan k > 1 tanpa perbedaan efek"] },
-            { q: "Jika dilakukan highboost filtering dengan faktor penguatan k=2, maka nilai piksel pusat pada citra hasil adalah ....", img: STATIC_URL + "assets/img/kuis/e18.png", o: ["40", "60", "80", "90", "100"] },
-            { q: "Pada pustaka Pillow, fungsi convert(\"L\") digunakan untuk .…", o: ["mengubah citra menjadi biner", "mengubah format warna citra", "mengurangi variasi warna", "mengubah citra menjadi grayscale", "menyesuaikan kecerahan citra"] },
-            { q: "Pada fungsi convolve2d di SciPy, parameter mode=\"same\" digunakan untuk .…", o: ["menjaga ukuran hasil konvolusi tetap sama dengan citra asli", "menyamakan ukuran hasil konvolusi dengan ukuran kernel", "menyesuaikan ukuran hasil konvolusi setelah proses filtering", "menambahkan padding agar ukuran hasil konvolusi tetap sama", "mengubah ukuran citra sebelum dilakukan proses konvolusi"] },
-            { q: "Pada pustaka Pillow, filter yang digunakan untuk melakukan penajaman citra secara langsung tanpa menentukan kernel adalah .…", o: ["ImageFilter.SMOOTH", "ImageFilter.BLUR", "ImageFilter.MedianFilter", "ImageFilter.SHARPEN", "ImageFilter.GaussianBlur"] },
-            { q: "Fungsi dari kode di bawah ini adalah ….", img: STATIC_URL + "assets/img/kuis/e20.png", o: ["melakukan smoothing dengan efek penghalusan pada detail tepi citra", "melakukan smoothing dengan efek penghalusan pada variasi intensitas piksel", "melakukan smoothing dengan efek penghalusan pada distribusi intensitas citra", "melakukan smoothing dengan efek penghalusan pada kontras antar piksel", "melakukan smoothing dengan efek penghalusan yang lebih besar"] },
-        ];
+            {
+                q: "Citra digital adalah .…",
+                o: [
+                "representasi gambar dalam bentuk data numerik yang terdiri dari piksel",
+                "representasi gambar dalam bentuk teks",
+                "gambar yang hanya dapat dilihat oleh manusia tanpa bantuan komputer",
+                "gambar yang hanya terdiri dari warna hitam dan putih",
+                "gambar yang tidak memiliki nilai numerik"
+                ]
+            },
+            {
+                q: "Pernyataan yang tepat mengenai resolusi citra adalah ….",
+                o: [
+                "resolusi tidak memengaruhi kualitas citra",
+                "resolusi hanya menentukan ukuran file tanpa memengaruhi tampilan",
+                "citra dengan resolusi rendah memiliki lebih banyak detail",
+                "semakin sedikit piksel, semakin tajam citra yang dihasilkan",
+                "semakin tinggi jumlah piksel, semakin jelas dan detail citra"
+                ]
+            },
+            {
+                q: "Spatial filtering dalam pemrosesan citra digital adalah .…",
+                o: [
+                "proses mengubah citra menjadi bentuk frekuensi",
+                "proses menghapus seluruh piksel dalam citra",
+                "proses menyimpan citra ke dalam komputer menjadi piksel",
+                "proses memanipulasi nilai intensitas piksel secara langsung",
+                "proses mengubah citra menjadi nilai intensitas piksel"
+                ]
+            },
+            {
+                q: "Perbedaan utama antara spatial domain dan frequency domain adalah ….",
+                o: [
+                    "spatial domain menggunakan transformasi fourier, sedangkan frequency domain tidak",
+                    "spatial domain memproses langsung nilai piksel, sedangkan frequency domain melalui transformasi frekuensi terlebih dahulu",
+                    "spatial domain menggunakan transformasi fourier, sedangkan frequency domain menggunakan kernel konvolusi",
+                    "spatial domain untuk mempertajam citra, sedangkan frequency domain untuk menghaluskan citra",
+                    "spatial domain hanya digunakan untuk menyimpan citra dan frequency domain prosesnya"
+                ]
+            },
+            {
+                q: "Padding dalam pemrosesan citra digital bertujuan untuk ….",
+                o: [
+                "menghapus piksel pada bagian tengah citra agar proses konvolusi dapat dilakukan secara menyeluruh",
+                "mengurangi ukuran citra agar proses konvolusi dapat dilakukan secara menyeluruh",
+                "menambahkan piksel di tepi citra agar proses konvolusi dapat dilakukan secara menyeluruh",
+                "mengubah citra menjadi grayscale agar proses konvolusi dapat dilakukan secara menyeluruh",
+                "menyimpan citra ke dalam komputer agar proses konvolusi dapat dilakukan secara menyeluruh"
+                ]
+            },
+            {
+                q: "Sebuah citra 5×5 dikonvolusi menggunakan kernel 3×3 dan ingin menghasilkan citra output dengan ukuran sama. Maka padding yang dibutuhkan adalah ….",
+                o: ["1", "2", "3", "4", "5"]
+            },
+            {
+                q: "Pada konvolusi citra 5×5 dengan kernel 3×3 tanpa padding dan stride 1, ukuran hasil konvolusi adalah ….",
+                o: ["1x1", "2x2", "3x3", "4x4", "5x5"]
+            },
+            {
+                q: "Jika diberikan replicate padding sebanyak 1 piksel, maka hasil matriks yang benar adalah ….",
+                img: STATIC_URL + "assets/img/kuis/e15.png",
+                o: [
+                STATIC_URL + "assets/img/kuis/e15-d.png",
+                STATIC_URL + "assets/img/kuis/e15-b.png",
+                STATIC_URL + "assets/img/kuis/e15-c.png",
+                STATIC_URL + "assets/img/kuis/e15-a.png",
+                STATIC_URL + "assets/img/kuis/e15-e.png"
+                ]
+            },
+            {
+                q: "Pada citra berwarna (RGB), proses normalisasi dilakukan dengan cara ….",
+                o: [
+                "hanya pada satu channel saja",
+                "menghapus salah satu channel warna",
+                "diterapkan pada setiap channel",
+                "mengubah menjadi citra biner",
+                "menggunakan padding"
+                ]
+            },
+            {
+                q: "Jika dilakukan normalisasi ke rentang 0–255, nilai hasil normalisasi untuk piksel −20 dan 300 adalah ….",
+                img: STATIC_URL + "assets/img/kuis/ne10.png",
+                o: ["0 dan 64", "0 dan 128", "0 dan 255", "128 dan 0", "255 dan 0"]
+            },
+            {
+                q: "Perbedaan utama antara mean filter dan weighted averaging filter adalah ….",
+                o: [
+                "mean filter menggunakan bobot yang sama untuk semua piksel, sedangkan weighted averaging menggunakan bobot berbeda dengan piksel pusat lebih dominan",
+                "mean filter dan weighted averaging sama-sama menggunakan bobot berbeda, namun weighted averaging lebih menekankan piksel pusat",
+                "mean filter menggunakan bobot sama, sedangkan weighted averaging menggunakan bobot yang hampir sama pada semua piksel",
+                "mean filter dan weighted averaging sama-sama menggunakan bobot yang sama, hanya berbeda pada ukuran kernel",
+                "mean filter menggunakan bobot berbeda, sedangkan weighted averaging menggunakan bobot yang sama"
+                ]
+            },
+            {
+                q: "Diberikan citra grayscale 4x4 dan kernel mean 3x3 berikut, nilai piksel pusat pertama hasil konvolusi adalah ….",
+                img: STATIC_URL + "assets/img/kuis/e6.png",
+                o: ["20", "30", "40", "50", "60"]
+            },
+            {
+                q: "Kernel smoothing berikut yang memberikan bobot terbesar pada piksel pusat dan mengecil ke arah tepi adalah ....",
+                o: [
+                STATIC_URL + "assets/img/kuis/e11-b.png",
+                STATIC_URL + "assets/img/kuis/e11-a.png",
+                STATIC_URL + "assets/img/kuis/e11-c.png",
+                STATIC_URL + "assets/img/kuis/e11-d.png",
+                STATIC_URL + "assets/img/kuis/e11-e.png"
+                ]
+            },
+            {
+                q: "Syarat utama kernel pada proses sharpening agar area citra yang seragam tidak berubah adalah",
+                o: [
+                "semua nilai kernel harus positif",
+                "kernel harus berukuran genap",
+                "nilai tengah kernel harus nol",
+                "kernel hanya berisi angka 1",
+                "jumlah seluruh elemen kernel sama dengan nol"
+                ]
+            },
+            {
+                q: "Perbedaan utama antara unsharp masking dan highboost filtering adalah ….",
+                o: [
+                "unsharp masking menggunakan faktor penguatan k = 1, sedangkan highboost filtering menggunakan k = 1 sehingga hasil penajaman sama",
+                "unsharp masking menggunakan k = 1, sedangkan highboost filtering menggunakan k > 1 sehingga efek penajaman lebih kuat",
+                "unsharp masking dan highboost filtering sama-sama menggunakan k > 1, tetapi unsharp masking tidak menggunakan citra asli",
+                "unsharp masking menggunakan k > 1, sedangkan highboost filtering menggunakan k = 1 untuk mempertahankan citra asli",
+                "unsharp masking dan highboost filtering sama-sama menggunakan k = 1 dan k > 1 tanpa perbedaan efek"
+                ]
+            },
+            {
+                q: "Jika dilakukan highboost filtering dengan faktor penguatan k=2, maka nilai piksel pusat pada citra hasil adalah ....",
+                img: STATIC_URL + "assets/img/kuis/e18.png",
+                o: ["40", "60", "80", "90", "100"]
+            },
+            {
+                q: "Pada pustaka Pillow, fungsi convert(\"L\") digunakan untuk .…",
+                o: [
+                "mengubah citra menjadi biner",
+                "mengubah format warna citra",
+                "mengurangi variasi warna",
+                "mengubah citra menjadi grayscale",
+                "menyesuaikan kecerahan citra"
+                ]
+            },
+            {
+                q: "Pada fungsi convolve2d di SciPy, parameter mode=\"same\" digunakan untuk .…",
+                o: [
+                "menjaga ukuran hasil konvolusi tetap sama dengan citra asli",
+                "menyamakan ukuran hasil konvolusi dengan ukuran kernel",
+                "menyesuaikan ukuran hasil konvolusi setelah proses filtering",
+                "menambahkan padding agar ukuran hasil konvolusi tetap sama",
+                "mengubah ukuran citra sebelum dilakukan proses konvolusi"
+                ]
+            },
+            {
+                q: "Pada pustaka Pillow, filter yang digunakan untuk melakukan penajaman citra secara langsung tanpa menentukan kernel adalah .…",
+                o: [
+                "ImageFilter.SMOOTH",
+                "ImageFilter.BLUR",
+                "ImageFilter.MedianFilter",
+                "ImageFilter.SHARPEN",
+                "ImageFilter.GaussianBlur"
+                ]
+            },
+            {
+                q: "Perhatikan potongan kode berikut, Fungsi dari kode tersebut adalah .…",
+                img: STATIC_URL + "assets/img/kuis/e20.png",
+                o: [
+                "melakukan smoothing dengan efek penghalusan pada detail tepi citra",
+                "melakukan smoothing dengan efek penghalusan pada variasi intensitas piksel",
+                "melakukan smoothing dengan efek penghalusan pada distribusi intensitas citra",
+                "melakukan smoothing dengan efek penghalusan pada kontras antar piksel",
+                "melakukan smoothing dengan efek penghalusan yang lebih besar"
+                ]
+            }
+            ];
 
         let idx = 0;
         let jawaban = Array(soal.length).fill(null);
         let ragu = Array(soal.length).fill(false);
-        let sisaWaktu = 40 * 60;
+        let sisaWaktu = parseInt("{{ aktivitas.durasi_menit }}") * 60;
         let timer;
         let waktuMulaiKuis;
         let waktuSelesaiKuis;
@@ -420,11 +572,12 @@
                     clearInterval(timer); 
                     Swal.fire({
                         title: 'Waktu Habis!',
-                        text: 'Waktu pengerjaan telah berakhir.',
+                        text: 'Waktu pengerjaan evaluasi telah berakhir.',
                         icon: 'warning',
-                        confirmButtonText: 'Lihat Hasil',
-                        allowOutsideClick: false
-                    }).then(() => { konfirmasiSelesai(); });
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        konfirmasiSelesai();
+                    });
                 }
             }, 1000);
         }
@@ -458,6 +611,7 @@
             document.getElementById('btnPrev').disabled = (idx === 0);
             document.getElementById('btnNext').innerText = (idx === soal.length - 1) ? "Selesai" : "Selanjutnya";
             updateGridUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function navigasi(step){
@@ -466,8 +620,9 @@
                 return; 
             }
             idx += step;
+            if(idx < 0) idx = 0;
+            if(idx >= soal.length) idx = soal.length - 1;
             renderSoal();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.querySelectorAll('.option').forEach(opt => {
@@ -484,7 +639,12 @@
                 renderSoal(); 
                 updateGridUI(); 
             } else {
-                Swal.fire({ icon: 'info', text: 'Pilih jawaban terlebih dahulu.', timer: 1200, showConfirmButton: false });
+                Swal.fire({
+                    icon: 'info',
+                    text: 'Pilih jawaban terlebih dahulu sebelum menandai ragu-ragu.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
             }
         }
 
@@ -563,23 +723,34 @@
             try {
                 const response = await fetch("{% url 'cek_nilai_evaluasi' %}", {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
-                    body: JSON.stringify({ "jawaban_siswa": jawaban, "waktu_mulai": waktuMulaiKuis, "waktu_selesai": waktuSelesaiKuis })
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ 
+                        "jawaban_siswa": jawaban,
+                        "waktu_mulai": waktuMulaiKuis,
+                        "waktu_selesai": waktuSelesaiKuis
+                    })
                 });
+                if (!response.ok) throw new Error('Gagal menghubungi server');
                 const data = await response.json();
                 document.getElementById('loadingHasil').classList.add('hidden');
-                document.getElementById('nilaiAkhir').innerText = data.skor;
-                if(data.lulus){
-                    document.getElementById('statusText').innerText = 'LULUS';
-                    document.getElementById('statusText').className = 'text-success fw-bold';
-                    document.getElementById('lulusBox').classList.remove('hidden');
-                } else {
-                    document.getElementById('statusText').innerText = 'TIDAK LULUS';
-                    document.getElementById('statusText').className = 'text-danger fw-bold';
-                    document.getElementById('tidakLulusBox').classList.remove('hidden');
+                if (data.skor !== undefined) {
+                    document.getElementById('nilaiAkhir').innerText = data.skor;
+                    if(data.lulus){
+                        document.getElementById('statusText').innerText = 'LULUS';
+                        document.getElementById('statusText').className = 'text-success fw-bold';
+                        document.getElementById('lulusBox').classList.remove('hidden');
+                    } else {
+                        document.getElementById('statusText').innerText = 'TIDAK LULUS';
+                        document.getElementById('statusText').className = 'text-danger fw-bold';
+                        document.getElementById('tidakLulusBox').classList.remove('hidden');
+                    }
                 }
             } catch (e) {
-                document.getElementById('loadingHasil').innerText = "Terjadi kesalahan saat memproses nilai.";
+                document.getElementById('loadingHasil').innerHTML = `<span class="text-danger">${e.message}</span>`;
             }
         }
 

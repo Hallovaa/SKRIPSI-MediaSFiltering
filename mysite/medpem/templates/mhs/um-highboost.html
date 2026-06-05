@@ -305,11 +305,13 @@
       Secara matematis <em>unsharp masking</em> dilakukan dengan menambahkan citra selisih antara citra asli dan citra hasil <em>smoothing</em> ke citra asli.
     </p>
 
-    <p style="text-align: center; font-size: 30px;">
-    \[
-    g(x,y) = f(x,y) + k \big( f(x,y) - f_s(x,y) \big), \ k = 1
-    \]
-    </p>
+    <div style="overflow-x: auto; width: 100%; padding: 10px 0;">
+      <p style="text-align: center; font-size: clamp(18px, 4vw, 30px); margin: 0;">
+      \[
+      g(x,y) = f(x,y) + k \big( f(x,y) - f_s(x,y) \big), \ k = 1
+      \]
+      </p>
+    </div>
 
     <p style="text-align: justify; text-indent: 30px;">
       Dengan keterangan:
@@ -323,7 +325,7 @@
     </ul>
 
     <figure style="margin-top:50px;">
-      <img src="{% static 'assets/img/konten/4E.png' %}" style="display:block; margin:auto; width:100%;">
+      <img src="{% static 'assets/img/konten/n4E.png' %}" style="display:block; margin:auto; width:100%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
         Gambar E.4 Contoh hasil penerapan <em>unsharp masking</em> pada citra <em>grayscale</em> 
       </figcaption>
@@ -366,11 +368,13 @@
       Pada <em>highboost filtering</em>, citra selisih antara citra asli dan citra hasil <em>smoothing</em> diperkuat terlebih dahulu, kemudian ditambahkan kembali ke citra asli untuk menghasilkan penajaman yang lebih kuat.
     </p>
 
-    <p style="text-align: center; font-size: 30px;">
-    \[
-    g(x,y) = f(x,y) + k \big( f(x,y) - f_s(x,y) \big),\ k > 1
-    \]
-    </p>
+    <div style="overflow-x: auto; width: 100%; padding: 10px 0;">
+      <p style="text-align: center; font-size: clamp(18px, 4vw, 30px); margin: 0;">
+          \[
+          g(x,y) = f(x,y) + k \big( f(x,y) - f_s(x,y) \big),\ k > 1
+          \]
+      </p>
+    </div>
 
     <p style="text-align: justify; text-indent: 30px;">
       Dengan keterangan:
@@ -384,7 +388,7 @@
     </ul>
 
     <figure style="margin-top:50px;">
-      <img src="{% static 'assets/img/konten/5E.png' %}" style="display:block; margin:auto; width:95%;">
+      <img src="{% static 'assets/img/konten/n5E.png' %}" style="display:block; margin:auto; width:95%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
         Gambar E.5 Contoh penerapan <em>highboost filter</em> pada citra <em>grayscale</em> 
       </figcaption>
@@ -402,6 +406,12 @@
       Hal ini menunjukkan bahwa proses penajaman yang dihasilkan lebih kuat dibandingkan <em>unsharp masking</em> biasa.
     </p>
 
+    <figure style="margin-top:20px;">
+      <img src="{% static 'assets/img/konten/n6E.png' %}" style="display:block; margin:auto; width:95%;">
+      <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
+        Gambar E.6 Perbandingan hasil citra <em>unsharp masking</em> dan <em>highboost filter</em>
+      </figcaption>
+    </figure>
 
     </div>
 </section>

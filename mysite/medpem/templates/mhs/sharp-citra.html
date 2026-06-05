@@ -180,20 +180,23 @@
     max-width: 900px;
     margin: 20px auto;
     font-family: Arial, sans-serif;
+    padding: 0 10px; 
+    box-sizing: border-box;
   }
 
   .laplacian-row {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     gap: 40px;
-    margin: 20px 0;
     flex-wrap: wrap;
   }
 
   .laplacian-matrix,
   .laplacian-calc {
     font-size: 20px;
+    max-width: 100%; 
+    overflow-x: auto; 
   }
 
   hr {
@@ -215,9 +218,9 @@
   <div class="card-section-body">
     <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
     <ol>
-      <li>Memahami konsep <em>Sharpening</em> pada citra digital.</li>
-      <li>Memahami perbedaan <em>Smoothing</em> dan <em>Sharpening</em> pada <em>Spatial Filters</em>.</li>
-      <li>Menerapkan teknik <em>Sharpening</em> menggunakan <em>Unsharp Masking</em> dan <em>Highboost Filtering</em> pada matriks citra sederhana.</li>
+      <li>Menjelaskan konsep <em>sharpening</em> pada pemrosesan citra digital.</li>
+      <li>Menjelaskan perbedaan <em>smoothing</em> dan <em>sharpening</em> pada <em>spatial filters</em>.</li>
+      <li>Menerapkan teknik <em>sharpening</em> menggunakan <em>unsharp masking</em> dan <em>highboost filtering</em> pada matriks citra sederhana.</li>
     </ol>
   </div>
 </section>
@@ -253,7 +256,7 @@
     </p>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/2E.png' %}" style="display:block; margin:auto; width:40%;">
+      <img src="{% static 'assets/img/konten/n1E.png' %}" style="display:block; margin:auto; width:40%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
         Gambar E.2 Citra <em>grayscale</em> anak tangga
       </figcaption>
@@ -506,7 +509,8 @@
       <div id="options-container"></div>
     </div>
     <div id="quiz-feedback" style="min-height:48px; margin-top:15px;"></div>
-    <div style="margin-top:20px;">
+    <div style="margin-top:20px; display: flex; gap: 10px;">
+      <button id="prev-quiz-btn" class="btn btn-secondary" style="display: none;">Kembali</button>
       <button id="next-quiz-btn" class="btn btn-primary" disabled>Selanjutnya</button>
     </div>
   </div>
@@ -778,13 +782,13 @@ document.addEventListener('DOMContentLoaded', function () {
     { 
       q: 'Perbedaan utama antara smoothing dan sharpening adalah ….',
       opts: [
-        'sharpening memperkuat perubahan intensitas sedangkan smoothing meratakannya',
-        'keduanya selalu menggunakan kernel yang sama',
-        'smoothing hanya digunakan pada citra berwarna',
-        'sharpening tidak melibatkan piksel tetangga',
-        'keduanya bertujuan memperhalus citra'
+        'smoothing menghaluskan citra sedangkan sharpening mempertajam citra',
+        'smoothing mempertajam citra sedangkan sharpening menghaluskan citra',
+        'smoothing hanya untuk citra berwarna sedangkan sharpening untuk grayscale',
+        'smoothing dan sharpening tidak memakai piksel tetangga',
+        'smoothing dan sharpening menghasilkan efek yang sama'
       ],
-      ans: 'sharpening memperkuat perubahan intensitas sedangkan smoothing meratakannya',
+      ans: 'smoothing menghaluskan citra sedangkan sharpening mempertajam citra',
       explain: 'smoothing berfungsi meratakan nilai piksel sehingga citra lebih halus, sedangkan sharpening mempertegas perubahan intensitas pada tepi.'
     },
     { 
@@ -826,9 +830,11 @@ document.addEventListener('DOMContentLoaded', function () {
   ];
 
   let currentIdx = 0;
+  let userAnswers = {};
   const qText = document.getElementById('question-text');
   const optsCont = document.getElementById('options-container');
   const feedback = document.getElementById('quiz-feedback');
+  const btnPrevQuiz = document.getElementById('prev-quiz-btn');
   const btnNextQuiz = document.getElementById('next-quiz-btn');
 
   function renderQuestion(idx) {
@@ -839,11 +845,28 @@ document.addEventListener('DOMContentLoaded', function () {
     feedback.innerHTML = '';
     btnNextQuiz.disabled = true;
 
+    if (btnPrevQuiz) {
+      if (idx === 0) {
+        btnPrevQuiz.style.display = 'none';
+      } else {
+        btnPrevQuiz.style.display = 'block';
+      }
+    }
+
+    const hasSavedAnswer = userAnswers.hasOwnProperty(idx);
+    const savedAnswer = userAnswers[idx];
+
     const labels = ['a', 'b', 'c', 'd', 'e'];
     item.opts.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       btn.innerHTML = `<span class="option-label">${labels[i]}.</span> ${opt}`;
+      
+      if (hasSavedAnswer && opt === savedAnswer) {
+        btn.style.background = '#e9f2ff';
+        btn.style.borderColor = '#3b7be3';
+      }
+
       btn.onclick = () => {
         Array.from(optsCont.children).forEach(child => {
           child.style.background = '#fff';
@@ -854,6 +877,7 @@ document.addEventListener('DOMContentLoaded', function () {
           btn.style.borderColor = '#3b7be3';
           feedback.innerHTML = `<div style="color:green;font-weight:700">Benar - ${item.explain}</div>`;
           btnNextQuiz.disabled = false;
+          userAnswers[idx] = opt;
           Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
         } else {
           btn.style.background = '#fff0f0';
@@ -863,6 +887,12 @@ document.addEventListener('DOMContentLoaded', function () {
       };
       optsCont.appendChild(btn);
     });
+
+    if (hasSavedAnswer) {
+      feedback.innerHTML = `<div style="color:green;font-weight:700">Benar - ${item.explain}</div>`;
+      btnNextQuiz.disabled = false;
+      Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
+    }
   }
 
   function updateProgressDatabase() {
@@ -892,6 +922,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }).then(() => {
           unlockNextMateri();
           currentIdx = 0;
+          userAnswers = {};
           renderQuestion(0);
         });
       }
@@ -908,6 +939,15 @@ document.addEventListener('DOMContentLoaded', function () {
       updateProgressDatabase();
     }
   };
+
+  if (btnPrevQuiz) {
+    btnPrevQuiz.onclick = () => {
+      if (currentIdx > 0) {
+        currentIdx--;
+        renderQuestion(currentIdx);
+      }
+    };
+  }
 
   renderQuestion(0);
   if (selesaiSlugs.includes(currentSlug)) unlockNextMateri();

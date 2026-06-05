@@ -441,7 +441,17 @@
     });
 
     if (allCorrect) {
-      updateProgressDatabase();
+      if (isCompleted) {
+        Swal.fire({
+          title: 'Luar Biasa!',
+          text: 'Semua jawaban kamu benar. Silakan lanjutkan ke materi berikutnya.',
+          icon: 'success',
+          confirmButtonColor: '#3b7be3'
+        });
+        unlockNext();
+      } else {
+        updateProgressDatabase();
+      }
     } else {
       Swal.fire({
         icon: 'error',

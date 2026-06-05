@@ -82,27 +82,20 @@
     <div class="summary-box">
       <h4><b>1. Pengertian <em>Spatial Filtering</em></b></h4>
       <p style="text-align: justify; text-indent: 30px; margin-top: 20px; margin-left: 30px; margin-bottom: 50px;">
-        <em>Spatial filtering</em> adalah teknik pemrosesan citra digital yang bekerja langsung pada nilai 
-        piksel di <em>spatial domain</em> dengan memanfaatkan piksel tetangga. Teknik ini digunakan untuk 
-        memperbaiki kualitas citra, seperti mengurangi <em>noise</em> (<em>smoothing</em>) dan menajamkan 
-        detail (<em>sharpening</em>). Prosesnya dilakukan melalui operasi ketetanggaan 
-        (<em>neighbourhood operation</em>), di mana nilai piksel pusat dipengaruhi oleh piksel di sekitarnya.
+        Spatial filtering adalah teknik pemrosesan citra yang bekerja langsung pada nilai piksel untuk 
+        meningkatkan kualitas citra, seperti mengurangi <em>noise</em> (<em>smoothing</em>) atau menajamkan detail citra (<em>sharpening</em>).
       </p>    
 
       <h4><b>2. <em>Spatial Domain vs Frequency Domain</em></b></h4>
 
       <dt style="margin-left: 30px; margin-top: 20px;">a. <em>Spatial Domain</em></dt>
         <dd style="text-align: justify; text-indent: 30px; margin-top: 5px; margin-left: 50px;">
-          Pemrosesan citra dilakukan langsung pada nilai intensitas piksel dengan memperhatikan piksel-piksel 
-          di sekitarnya. Metode ini digunakan untuk penghalusan citra, pengurangan <em>noise</em>, dan 
-          penajaman detail.
+          Pemrosesan citra yang dilakukan secara langsung pada nilai intensitas piksel. Teknik ini digunakan untuk penghalusan, penajaman, dan deteksi tepi citra.
         </dd>
 
       <dt style="margin-left: 30px;">b. <em>Frequency Domain</em></dt>
         <dd style="text-align: justify; text-indent: 30px; margin-top: 5px; margin-left: 50px;">
-          Pemrosesan citra dilakukan dengan mengubah citra ke domain frekuensi menggunakan transformasi 
-          tertentu. Setelah dilakukan penyaringan frekuensi, hasilnya dikembalikan ke domain spasial 
-          untuk memperoleh citra akhir.
+          Pemrosesan citra dilakukan dengan mengubah citra ke domain frekuensi menggunakan transformasi tertentu. Kemudian hasilnya dikembalikan ke <em>spatial domain</em> untuk memperoleh citra akhir.
         </dd>
     </div>
 

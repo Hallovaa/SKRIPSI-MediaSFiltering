@@ -1,0 +1,185 @@
+{% extends "dosen/base.html" %}
+{% load static %}
+
+{% block title %}Pengaturan KKM dan Durasi{% endblock %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+.hero {
+  background: linear-gradient(135deg, #eff6ff, #eef2ff);
+  padding: 36px 28px;
+  border-radius: 22px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.hero p {
+  color: #64748b;
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.main-box {
+  background: #ffffff;
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+}
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+.box-header h4 {
+  font-weight: 800;
+  margin-bottom: 0;
+  color: #1e293b;
+}
+
+.aktivitas-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease-in-out;
+}
+
+.aktivitas-card:hover {
+  border-color: #2563eb;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.05);
+}
+
+.input-label-custom {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.input-group-text {
+  background-color: #f8fafc;
+  border-color: #e5e7eb;
+  color: #64748b;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.form-control {
+  border-color: #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn-save {
+  background-color: #2563eb;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 28px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-save:hover {
+  background-color: #1d4ed8;
+  color: #ffffff;
+}
+</style>
+
+<div class="hero">
+  <h1>Pengaturan <span class="text-primary">KKM dan Durasi</span></h1>
+  <p>Atur nilai Kriteria Ketuntasan Minimal (KKM) dan batas waktu pengerjaan untuk setiap kuis maupun evaluasi</p>
+</div>
+
+<form method="POST" action="{% url 'pengaturan_sistem' %}">
+  {% csrf_token %}
+  
+  <div class="main-box shadow-sm">
+    <div class="box-header">
+      <h4>Konfigurasi Kuis dan Evaluasi</h4>
+    </div>
+
+    <div class="row g-3">
+      {% for akt in all_aktivitas %}
+      <div class="col-xl-4 col-md-6">
+        <div class="aktivitas-card">
+          <div class="mb-3">
+            <div class="d-flex align-items-start gap-2 mb-1">
+              <i class="bi bi-file-earmark-text text-primary mt-1"></i>
+              <h6 class="fw-bold text-dark mb-0" style="font-size: 14px; line-height: 1.4;">{{ akt.nama_aktivitas }}</h6>
+            </div>
+            <small class="text-muted d-block ps-4" style="font-size: 12px;">{{ akt.materi.nama_materi }}</small>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <div class="d-flex flex-column">
+                <label class="input-label-custom">KKM</label>
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text"><i class="bi bi-award"></i></span>
+                  <input type="number" class="form-control text-center fw-bold" name="kkm_{{ akt.id }}" value="{{ akt.kkm_dosen }}" min="0" max="100" required>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="d-flex flex-column">
+                <label class="input-label-custom">Durasi</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" class="form-control border-end-0 text-center fw-bold" name="durasi_{{ akt.id }}" value="{{ akt.durasi_dosen }}" min="1" required>
+                  <span class="input-group-text">Min</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <div class="col-12 text-center py-5 border rounded-4 bg-light">
+        <i class="bi bi-clipboard-x text-muted display-4 d-block mb-2"></i>
+        <p class="text-muted mb-0">Data kuis atau evaluasi tidak ditemukan.</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+      <button type="submit" class="btn btn-primary btn-save text-white shadow-sm d-flex align-items-center gap-2"> Simpan Perubahan
+      </button>
+    </div>
+  </div>
+</form>
+
+<script>
+{% if messages %}
+  {% for message in messages %}
+    Swal.fire({
+      icon: 'success',
+      title: 'Berhasil!',
+      text: '{{ message|safe }}',
+      confirmButtonColor: '#2563eb',
+      timer: 3000,
+      showConfirmButton: false
+    });
+  {% endfor %}
+{% endif %}
+</script>
+
+{% endblock %}

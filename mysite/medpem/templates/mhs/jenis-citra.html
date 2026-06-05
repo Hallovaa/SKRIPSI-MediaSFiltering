@@ -267,9 +267,9 @@
     </p>
 
     <figure style="margin:20px 0;">
-      <img src="{% static 'assets/img/konten/10A.png' %}" style="display:block; margin:auto; width:80%;">
+      <img src="{% static 'assets/img/konten/11A.png' %}" style="display:block; margin:auto; width:90%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
-        Gambar A.10 Contoh citra <em>grayscale</em> 
+        Gambar A.10 Contoh citra RGB <em>grayscale</em> 
       </figcaption>
     </figure>
 
@@ -279,31 +279,34 @@
       nilai rata-rata dari ketiga <em>channel</em> </strong>tersebut. Proses konversi ini dapat dinyatakan dengan persamaan berikut:
     </p>
 
-    <p style="text-align: center; font-size: 28px; margin-top: 30px">
-    \[
-      y = \frac{1}{3}({\color{red}{R}} + {\color{green}{G}} + {\color{blue}{B}})
-    \]
-
-    </p> 
+    <div style="text-align: center; margin: 20px 0;">
+      <div style="display: inline-block; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px 25px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);">
+          <p style="text-align: center; font-size: 24px; margin: 0; line-height: 2;">
+          \( y = {\color{red}{0.299R}} + {\color{green}{0.587G}} + {\color{blue}{0.114B}} \)
+          </p>
+      </div>
+    </div>
 
     <p style="text-align: justify; text-indent: 30px;">
       Selain metode rata-rata terdapat metode konversi lain untuk menghasilkan citra <em>grayscale</em> dengan 
       <strong>memberikan bobot berbeda pada setiap <em>channel</em> warna</strong>. Hal ini didasarkan pada sensitivitas mata manusia 
       yang lebih peka terhadap warna hijau dibandingkan warna merah dan biru. Oleh karena itu, <em>channel</em> hijau 
-      diberi bobot lebih besar agar tingkat kecerahan citra terlihat lebih jelas. Proses konversi dengan metode luminasi dapat dinyatakan dengan persamaan berikut:
+      diberi bobot lebih besar agar tingkat kecerahan citra terlihat lebih jelas. Proses konversi dengan <strong>metode luminasi</strong> dapat dinyatakan dengan persamaan berikut:
     </p>
 
-    <p style="text-align: center; font-size: 28px;">
-    \[
-    y = {\color{red}{0.299R}} + {\color{green}{0.587G}} + {\color{blue}{0.114B}}
-    \]
-    </p><br>
+    <div style="text-align: center; margin: 20px 0;">
+      <div style="display: inline-block; background-color: #ffffff; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px 25px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);">
+          <p style="text-align: center; font-size: 24px; margin: 0; line-height: 1;">
+          \( y = \frac{1}{3}({\color{red}{R}} + {\color{green}{G}} + {\color{blue}{B}}) \)
+          </p>
+      </div>
+    </div>
 
 
-    <figure style="margin:0px 0;">
-      <img src="{% static 'assets/img/konten/11A.png' %}" style="display:block; margin:auto; width:95%;">
+    <figure style="margin:50px 0;">
+      <img src="{% static 'assets/img/konten/n1A.png' %}" style="display:block; margin:auto; width:95%;">
       <figcaption style="color:#7f7f7f; margin-top:8px; text-align:center; font-weight:normal;">
-        Gambar A.11 Citra RGB dan Citra <em><em>grayscale</em></em> 
+        Gambar A.11 Hasil konversi citra RGB ke <em>grayscale</em> menggunakan metode rata-rata dan luminansi. 
       </figcaption>
     </figure>
 
@@ -371,7 +374,8 @@
       <div id="options-container"></div>
     </div>
     <div id="quiz-feedback" style="min-height:40px; margin-top:10px;"></div>
-    <div style="margin-top:20px;">
+    <div style="margin-top:20px; display: flex; gap: 10px;">
+      <button id="prev-quiz-btn" class="btn btn-secondary" style="display: none;">Kembali</button>
       <button id="next-quiz-btn" class="btn btn-primary" disabled>Selanjutnya</button>
     </div>
   </div>
@@ -456,9 +460,12 @@
   ];
 
   let currentIdx = 0;
+  let userAnswers = {};
+
   const qText = document.getElementById('question-text');
   const optsCont = document.getElementById('options-container');
   const feedback = document.getElementById('quiz-feedback');
+  const btnPrevQuiz = document.getElementById('prev-quiz-btn');
   const btnNextQuiz = document.getElementById('next-quiz-btn');
   const btnNavNext = document.getElementById('nav-next-materi');
 
@@ -483,12 +490,28 @@
     feedback.innerHTML = '';
     btnNextQuiz.disabled = true;
 
+    if (btnPrevQuiz) {
+      if (idx === 0) {
+        btnPrevQuiz.style.display = 'none';
+      } else {
+        btnPrevQuiz.style.display = 'block';
+      }
+    }
+
+    const hasSavedAnswer = userAnswers.hasOwnProperty(idx);
+    const savedAnswer = userAnswers[idx];
+
     const labels = ['a', 'b', 'c', 'd', 'e'];
     item.opts.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       btn.innerHTML = `<span class="option-label">${labels[i]}.</span> ${opt}`;
       
+      if (hasSavedAnswer && opt === savedAnswer) {
+        btn.style.background = '#e9f2ff';
+        btn.style.borderColor = '#3b7be3';
+      }
+
       btn.onclick = () => {
         Array.from(optsCont.children).forEach(child => {
           child.style.background = '#fff';
@@ -501,6 +524,7 @@
           btn.style.borderColor = '#3b7be3';
           feedback.innerHTML = `<div style="color:green;font-weight:700">Benar - ${item.explain}</div>`;
           btnNextQuiz.disabled = false;
+          userAnswers[idx] = opt;
           Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
         } else {
           btn.style.background = '#fff0f0';
@@ -510,16 +534,35 @@
       };
       optsCont.appendChild(btn);
     });
+
+    if (hasSavedAnswer) {
+      feedback.innerHTML = `<div style="color:green;font-weight:700">Benar - ${item.explain}</div>`;
+      if (idx < quizData.length - 1) {
+        btnNextQuiz.disabled = false;
+      } else {
+        btnNextQuiz.disabled = false;
+      }
+      Array.from(optsCont.children).forEach(b => b.style.pointerEvents = 'none');
+    }
   }
 
   btnNextQuiz.onclick = () => {
-    currentIdx++;
-    if (currentIdx < quizData.length) {
+    if (currentIdx < quizData.length - 1) {
+      currentIdx++;
       renderQuestion(currentIdx);
     } else {
       updateProgressDatabase();
     }
   };
+
+  if (btnPrevQuiz) {
+    btnPrevQuiz.onclick = () => {
+      if (currentIdx > 0) {
+        currentIdx--;
+        renderQuestion(currentIdx);
+      }
+    };
+  }
 
   function updateProgressDatabase() {
     fetch("{% url 'update_progres' %}", {
@@ -548,8 +591,7 @@
           confirmButtonColor: '#3b7be3'
         }).then(() => {
           unlockNavigation();
-          currentIdx = 0;
-          renderQuestion(0);
+          renderQuestion(currentIdx);
         });
       } else {
         throw new Error(data.message);

@@ -16,7 +16,6 @@ class User(AbstractUser):
     username = models.CharField(
         max_length=150,
         unique=True,
-        help_text='Username otomatis menggunakan email.',
         validators=[], 
         error_messages={
             'unique': "Username ini sudah terdaftar.",
@@ -57,21 +56,6 @@ class Kelas(models.Model):
 
     def __str__(self): 
         return self.nama_kelas
-
-class Pengaturan(models.Model):
-    kkm = models.IntegerField(default=75)
-
-    class Meta:
-        verbose_name_plural = "Pengaturan"
-
-    def save(self, *args, **kwargs):
-        self.pk = 1
-        super(Pengaturan, self).save(*args, **kwargs)
-
-    @classmethod
-    def load(cls):
-        obj, created = cls.objects.get_or_create(pk=1)
-        return obj
 
 class Mahasiswa(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='mahasiswa_profile')
@@ -128,8 +112,10 @@ class HasilKuis(models.Model):
 class Materi(models.Model):
     nama_materi = models.CharField(max_length=100)
     urutan = models.PositiveIntegerField()
+    
     def __str__(self): 
         return f"{self.urutan}. {self.nama_materi}"
+        
     class Meta: 
         verbose_name_plural = "Materi"
         ordering = ['urutan']
@@ -147,9 +133,23 @@ class Aktivitas(models.Model):
 
     def __str__(self): 
         return f"{self.materi.urutan}.{self.urutan} {self.nama_aktivitas}"
+        
     class Meta: 
         verbose_name_plural = "Aktivitas"
         ordering = ['materi__urutan', 'urutan']
+        
+class PengaturanKuisDosen(models.Model):
+    dosen = models.ForeignKey(Dosen, on_delete=models.CASCADE, related_name='pengaturan_kuis')
+    aktivitas = models.ForeignKey(Aktivitas, on_delete=models.CASCADE)
+    kkm = models.IntegerField(default=75)
+    durasi_menit = models.IntegerField(default=30)  
+
+    class Meta:
+        unique_together = ('dosen', 'aktivitas')
+        verbose_name_plural = "Pengaturan Kuis Dosen"
+
+    def __str__(self):
+        return f"{self.dosen.nama_lengkap} - {self.aktivitas.nama_aktivitas}"
 
 class ProgresAktivitas(models.Model):
     mahasiswa = models.ForeignKey(Mahasiswa, on_delete=models.CASCADE, related_name='progres_aktivitas')
