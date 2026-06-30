@@ -24,7 +24,6 @@ def dapatkan_kkm_dan_durasi_dosen(mahasiswa, aktivitas):
             return config.kkm, config.durasi_menit
     return 75, 30
 
-
 def generate_token(length=6):
     characters = string.ascii_uppercase + string.digits
     return ''.join(random.choice(characters) for _ in range(length))
@@ -189,12 +188,14 @@ def dash_dosen(request):
         display_name = mhs.nama_lengkap if mhs.nama_lengkap else mhs.user.username
         total_percobaan = riwayat_kuis_mhs.count()
         skor_tertinggi = riwayat_kuis_mhs.aggregate(max_skor=Max('skor'))['max_skor'] or 0
-        log_terakhir = ProgresAktivitas.objects.filter(mahasiswa=mhs).order_by('-tgl_selesai').first()
+        
+        log_terakhir = ProgresAktivitas.objects.filter(mahasiswa=mhs, tgl_akhir__isnull=False).order_by('-tgl_akhir').first()
+        
         waktu_akses_terakhir = None
         subbab_terakhir_nama = None
         
         if log_terakhir:
-            waktu_akses_terakhir = log_terakhir.tgl_selesai
+            waktu_akses_terakhir = log_terakhir.tgl_akhir 
             subbab_terakhir_nama = log_terakhir.aktivitas.nama_aktivitas
 
         daftar_tracking_mahasiswa.append({
@@ -410,8 +411,19 @@ def progres_mhs(request):
         mhs_queryset = mhs_queryset.filter(Q(nama_lengkap__icontains=query) | Q(nim__icontains=query))
     if kelas_id:
         mhs_queryset = mhs_queryset.filter(kelas_id=kelas_id)
+    
     for mhs in mhs_queryset:
         mhs.progres_belajar = mhs.hitung_progres_total()
+        
+        progres_list = ProgresAktivitas.objects.filter(mahasiswa=mhs, status_selesai=True).select_related('aktivitas')
+        tanggal_dict = {}
+        for p in progres_list:
+            if p.tgl_akhir:
+                waktu_lokal = timezone.localtime(p.tgl_akhir)
+                tanggal_dict[p.aktivitas.nama_aktivitas] = waktu_lokal.strftime('%d-%m-%Y %H:%M')
+        
+        mhs.riwayat_tanggal_json = json.dumps(tanggal_dict)
+
     paginator = Paginator(mhs_queryset, per_page)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
@@ -503,26 +515,50 @@ def nilai_mhs(request):
                     raw_ans = hk.detail_jawaban if hk.detail_jawaban else []
                 if n == '7':
                     kunci_eval = [0, 4, 3, 1, 2, 0, 2, 3, 2, 2, 0, 4, 1, 4, 1, 1, 3, 0, 3, 4]
-                    detail_bool = []
+                    detail_gabungan = []
                     for idx_q in range(20):
                         ans_val = raw_ans[idx_q] if idx_q < len(raw_ans) else None
-                        detail_bool.append(ans_val == kunci_eval[idx_q])
-                    hk.detail_jawaban = detail_bool
+                        
+                        if isinstance(ans_val, bool):
+                            is_benar = ans_val
+                            huruf = "-"
+                        elif isinstance(ans_val, dict):
+                            is_benar = ans_val.get('benar', False)
+                            jwb = ans_val.get('jawaban')
+                            huruf = chr(65 + int(jwb)) if jwb is not None else "-"
+                        else:
+                            is_benar = (ans_val == kunci_eval[idx_q])
+                            huruf = chr(65 + int(ans_val)) if ans_val is not None else "-"
+                            
+                        detail_gabungan.append({'benar': is_benar, 'huruf': huruf})
+                    hk.detail_jawaban = detail_gabungan
                     hk.lulus = (hk.skor >= kkm_remap.get('evaluasi', 75))
                 else:
                     kunci_kuis = {
                         "1": [2, 1, 0, 4, 3, 1, 3, 0, 2, 4],
-                        "2": [0, 1, 2, 1, 4, 3, 0, 4, 2, 3],
-                        "3": [0, 2, 1, 3, 0, 4, 2, 1, 3, 4],
+                        "2": [0, 2, 1, 3, 0, 4, 2, 1, 3, 4],
+                        "3": [0, 1, 2, 1, 4, 3, 0, 4, 2, 3],
                         "4": [2, 3, 1, 4, 2, 3, 0, 4, 0, 1],
                         "5": [1, 4, 0, 3, 0, 3, 2, 2, 4, 3]
                     }
                     kunci_aktif = kunci_kuis.get(n, [])
-                    detail_bool = []
+                    detail_gabungan = []
                     for idx_q in range(len(kunci_aktif)):
                         ans_val = raw_ans[idx_q] if idx_q < len(raw_ans) else None
-                        detail_bool.append(ans_val == kunci_aktif[idx_q])
-                    hk.detail_jawaban = detail_bool
+                        
+                        if isinstance(ans_val, bool):
+                            is_benar = ans_val
+                            huruf = "-"
+                        elif isinstance(ans_val, dict):
+                            is_benar = ans_val.get('benar', False)
+                            jwb = ans_val.get('jawaban')
+                            huruf = chr(65 + int(jwb)) if jwb is not None else "-"
+                        else:
+                            is_benar = (ans_val == kunci_aktif[idx_q])
+                            huruf = chr(65 + int(ans_val)) if ans_val is not None else "-"
+                            
+                        detail_gabungan.append({'benar': is_benar, 'huruf': huruf})
+                    hk.detail_jawaban = detail_gabungan
                     hk.lulus = (hk.skor >= kkm_remap.get(f'k{n}', 75))
 
         mhs.nilai_rekap = rekap
@@ -536,7 +572,10 @@ def nilai_mhs(request):
             for hk in riwayats:
                 if hasattr(hk, 'detail_jawaban'):
                     for i in range(min(jumlah_soal, len(hk.detail_jawaban))):
-                        if hk.detail_jawaban[i]:
+                        item = hk.detail_jawaban[i]
+                        if isinstance(item, dict) and item.get('benar'):
+                            benar_per_soal[i] += 1
+                        elif isinstance(item, bool) and item:
                             benar_per_soal[i] += 1
             return [int((benar / total_mhs_attempts) * 100) for benar in benar_per_soal]
 
@@ -773,55 +812,12 @@ def kuis_1(request):
     })
 
 @login_required
-def pengertian_spatial(request):
+def k_konvolusi(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
     if not status_kuis.get('kuis_1'):
         messages.warning(request, "Selesaikan Kuis 1 terlebih dahulu!")
-        return redirect('dash_mhs')
-    return render(request, 'mhs/pengertian-spatial.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
-
-@login_required
-def spatial_frequency(request):
-    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
-    mhs = request.user.mahasiswa_profile
-    status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
-    return render(request, 'mhs/spatial-frequency.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
-
-@login_required
-def ringkasan2(request):
-    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
-    mhs = request.user.mahasiswa_profile
-    status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
-    return render(request, 'mhs/ringkasan2.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
-
-@login_required
-def kuis_2(request):
-    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
-    mhs = request.user.mahasiswa_profile
-    status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
-    akt = get_object_or_404(Aktivitas, slug='kuis-2')
-    kkm_aktif, durasi_aktif = dapatkan_kkm_dan_durasi_dosen(mhs, akt)
-    akt.kkm = kkm_aktif
-    akt.durasi_menit = durasi_aktif
-    return render(request, 'mhs/kuis-2.html', {
-        'selesai_slugs': get_user_progress(request.user), 
-        'lulus_kuis': status_kuis,
-        'durasi_detik': durasi_aktif * 60,
-        'aktivitas': akt
-    })
-
-@login_required
-def k_konvolusi(request):
-    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
-    mhs = request.user.mahasiswa_profile
-    status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_2'):
-        messages.warning(request, "Selesaikan Kuis 2 terlebih dahulu!")
         return redirect('dash_mhs')
     return render(request, 'mhs/k-konvolusi.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
@@ -830,7 +826,7 @@ def t_padding(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
     return render(request, 'mhs/t-padding.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -838,7 +834,7 @@ def normalisasi_citra(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
     return render(request, 'mhs/normalisasi-citra.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -846,7 +842,7 @@ def ringkasan3(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan3.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -854,7 +850,7 @@ def kuis_3(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_1'): return redirect('dash_mhs') 
     akt = get_object_or_404(Aktivitas, slug='kuis-3')
     kkm_aktif, durasi_aktif = dapatkan_kkm_dan_durasi_dosen(mhs, akt)
     akt.kkm = kkm_aktif
@@ -867,12 +863,55 @@ def kuis_3(request):
     })
 
 @login_required
-def sl_filters(request):
+def pengertian_spatial(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
     if not status_kuis.get('kuis_3'):
         messages.warning(request, "Selesaikan Kuis 3 terlebih dahulu!")
+        return redirect('dash_mhs')
+    return render(request, 'mhs/pengertian-spatial.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+
+@login_required
+def spatial_frequency(request):
+    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
+    mhs = request.user.mahasiswa_profile
+    status_kuis = get_kuis_status(mhs)
+    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
+    return render(request, 'mhs/spatial-frequency.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+
+@login_required
+def ringkasan2(request):
+    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
+    mhs = request.user.mahasiswa_profile
+    status_kuis = get_kuis_status(mhs)
+    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
+    return render(request, 'mhs/ringkasan2.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
+
+@login_required
+def kuis_2(request):
+    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
+    mhs = request.user.mahasiswa_profile
+    status_kuis = get_kuis_status(mhs)
+    if not status_kuis.get('kuis_3'): return redirect('dash_mhs') 
+    akt = get_object_or_404(Aktivitas, slug='kuis-2')
+    kkm_aktif, durasi_aktif = dapatkan_kkm_dan_durasi_dosen(mhs, akt)
+    akt.kkm = kkm_aktif
+    akt.durasi_menit = durasi_aktif
+    return render(request, 'mhs/kuis-2.html', {
+        'selesai_slugs': get_user_progress(request.user), 
+        'lulus_kuis': status_kuis,
+        'durasi_detik': durasi_aktif * 60,
+        'aktivitas': akt
+    })
+
+@login_required
+def sl_filters(request):
+    if request.user.role != User.IS_MAHASISWA: return redirect('landing')
+    mhs = request.user.mahasiswa_profile
+    status_kuis = get_kuis_status(mhs)
+    if not status_kuis.get('kuis_2'):
+        messages.warning(request, "Selesaikan Kuis 2 terlebih dahulu!")
         return redirect('dash_mhs')
     return render(request, 'mhs/sl-filters.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
@@ -881,7 +920,7 @@ def sn_filters(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     return render(request, 'mhs/sn-filters.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -889,7 +928,7 @@ def ringkasan4(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     return render(request, 'mhs/ringkasan4.html', {'selesai_slugs': get_user_progress(request.user), 'lulus_kuis': status_kuis})
 
 @login_required
@@ -897,7 +936,7 @@ def kuis_4(request):
     if request.user.role != User.IS_MAHASISWA: return redirect('landing')
     mhs = request.user.mahasiswa_profile
     status_kuis = get_kuis_status(mhs)
-    if not status_kuis.get('kuis_3'): return redirect('dash_mhs')
+    if not status_kuis.get('kuis_2'): return redirect('dash_mhs')
     akt = get_object_or_404(Aktivitas, slug='kuis-4')
     kkm_aktif, durasi_aktif = dapatkan_kkm_dan_durasi_dosen(mhs, akt)
     akt.kkm = kkm_aktif
@@ -1019,35 +1058,47 @@ def update_progres(request, slug=None):
                 slug = data.get('slug')
             if not slug:
                 return JsonResponse({'status': 'error', 'message': 'Slug tidak ditemukan'}, status=400)
+            
             mhs = getattr(request.user, 'mahasiswa_profile', None)
             if not mhs:
                 return JsonResponse({'status': 'error', 'message': 'Profil mahasiswa tidak ditemukan'}, status=403)
+            
             aktivitas = get_object_or_404(Aktivitas, slug=slug)
-            progres, created = ProgresAktivitas.objects.update_or_create(
+            
+            progres, created = ProgresAktivitas.objects.get_or_create(
                 mahasiswa=mhs, 
-                aktivitas=aktivitas, 
-                defaults={'status_selesai': True, 'tgl_selesai': timezone.now()}
+                aktivitas=aktivitas
             )
+            
+            if not progres.status_selesai:
+                progres.tgl_awal = timezone.now()
+                progres.status_selesai = True
+            
+            progres.tgl_akhir = timezone.now()
+            progres.save()
+            
             return JsonResponse({'status': 'success'})
+            
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+            
     return JsonResponse({'status': 'error', 'message': 'Invalid method'}, status=405)
 
 def kalkulasi_skor_v2(jawaban_siswa, kunci_jawaban):
-    benar_list = []
+    jawaban_tersimpan = []
     benar_count = 0
     for i in range(len(kunci_jawaban)):
-        is_benar = False
+        ans_val = None
         if i < len(jawaban_siswa) and jawaban_siswa[i] is not None:
             try:
-                if int(jawaban_siswa[i]) == kunci_jawaban[i]:
+                ans_val = int(jawaban_siswa[i])
+                if ans_val == kunci_jawaban[i]:
                     benar_count += 1
-                    is_benar = True
             except (ValueError, TypeError):
                 pass
-        benar_list.append(is_benar)
+        jawaban_tersimpan.append(ans_val) 
     skor = int((benar_count / len(kunci_jawaban)) * 100)
-    return skor, benar_list
+    return skor, jawaban_tersimpan
 
 def simpan_hasil_kuis_v2(mhs, nomor, skor, detail_jwb, mulai, selesai):
     slug_kuis = f'kuis-{nomor}' if nomor < 7 else 'evaluasi'
@@ -1084,7 +1135,7 @@ def simpan_hasil_kuis_v2(mhs, nomor, skor, detail_jwb, mulai, selesai):
         ProgresAktivitas.objects.update_or_create(
             mahasiswa=mhs, 
             aktivitas=aktivitas, 
-            defaults={'status_selesai': True, 'tgl_selesai': timezone.now()}
+            defaults={'status_selesai': True, 'tgl_akhir': timezone.now()}
         )
     return lulus_skor
 
@@ -1109,7 +1160,7 @@ def cek_nilai_kuis_2(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            kunci = [0, 1, 2, 1, 4, 3, 0, 4, 2, 3]
+            kunci = [0, 2, 1, 3, 0, 4, 2, 1, 3, 4]
             mhs = request.user.mahasiswa_profile
             skor, detail = kalkulasi_skor_v2(data.get('jawaban_siswa'), kunci)
             lulus = simpan_hasil_kuis_v2(mhs, 2, skor, detail, data.get('waktu_mulai'), data.get('waktu_selesai'))
@@ -1124,7 +1175,7 @@ def cek_nilai_kuis_3(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            kunci = [0, 2, 1, 3, 0, 4, 2, 1, 3, 4]
+            kunci = [0, 1, 2, 1, 4, 3, 0, 4, 2, 3]
             mhs = request.user.mahasiswa_profile
             skor, detail = kalkulasi_skor_v2(data.get('jawaban_siswa'), kunci)
             lulus = simpan_hasil_kuis_v2(mhs, 3, skor, detail, data.get('waktu_mulai'), data.get('waktu_selesai'))
@@ -1171,18 +1222,10 @@ def cek_nilai_evaluasi(request):
             data = json.loads(request.body)
             kunci = [0, 4, 3, 1, 2, 0, 2, 3, 2, 2, 0, 4, 1, 4, 1, 1, 3, 0, 3, 4]
             mhs = request.user.mahasiswa_profile
-            def kalkulasi_skor_eval(jawaban_siswa, kunci_jawaban):
-                benar = 0
-                detail = []
-                for i in range(len(kunci_jawaban)):
-                    js = jawaban_siswa[i] if i < len(jawaban_siswa) else None
-                    is_benar = (js == kunci_jawaban[i])
-                    if is_benar: benar += 1
-                    detail.append({'no': i+1, 'jawaban': js, 'benar': is_benar})
-                skor = int((benar / len(kunci_jawaban)) * 100)
-                return skor, detail
-            skor, detail = kalkulasi_skor_eval(data.get('jawaban_siswa'), kunci)
+            
+            skor, detail = kalkulasi_skor_v2(data.get('jawaban_siswa'), kunci)
             lulus = simpan_hasil_kuis_v2(mhs, 7, skor, detail, data.get('waktu_mulai'), data.get('waktu_selesai'))
+            
             return JsonResponse({'skor': skor, 'lulus': lulus})
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)

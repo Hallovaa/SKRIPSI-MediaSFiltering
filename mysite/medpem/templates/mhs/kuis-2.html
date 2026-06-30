@@ -3,7 +3,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Subbab 2 - Kuis</title>
+<title>Subbab 3 - Kuis</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="{% static 'assets/css/bootstrap-5.0.0-beta1.min.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@
                 <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <p class="text-success fw-bold">Kamu dapat melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
-                    <a id="btnNextBab" href="{% url 'k_konvolusi' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
+                    <a id="btnNextBab" href="{% url 'sl_filters' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
                 </div>
             </div>
             <div id="tidakLulusBox" class="hidden mt-4">
@@ -498,6 +498,9 @@
                         document.getElementById('statusText').innerText = 'LULUS';
                         document.getElementById('statusText').className = 'text-success fw-bold';
                         document.getElementById('lulusBox').classList.remove('hidden');
+                        if (typeof unlockNextContent === "function") {
+                            unlockNextContent("sl-filters");
+                        }
                     } else {
                         document.getElementById('statusText').innerText = 'TIDAK LULUS';
                         document.getElementById('statusText').className = 'text-danger fw-bold';

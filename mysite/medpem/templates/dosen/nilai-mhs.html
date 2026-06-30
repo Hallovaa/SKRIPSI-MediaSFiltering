@@ -573,11 +573,14 @@
                                 </td>
                                 
                                 {% for status in riwayat.detail_jawaban %}
-                                    <td>
-                                        {% if status %}
-                                            <i class="bi bi-check-lg text-success" style="font-size: 1.2rem; font-weight: bold;"></i>
+                                    <td class="text-center align-middle">
+                                        {% if status.huruf and status.huruf != "-" %}
+                                            <span class="{% if status.benar %}text-success{% else %}text-danger{% endif %}" 
+                                                style="font-size: 14px; font-weight: 800;">
+                                                {{ status.huruf }}
+                                            </span>
                                         {% else %}
-                                            <i class="bi bi-x-lg text-danger" style="font-size: 1rem;"></i>
+                                            <span class="text-muted" style="font-size: 14px; font-weight: 500;">-</span>
                                         {% endif %}
                                     </td>
                                 {% endfor %}
@@ -648,6 +651,18 @@
             {q:"Seorang peneliti ingin mengurangi ukuran file citra namun tetap mempertahankan informasi bentuk dan intensitas cahaya objek. Strategi yang paling efisien adalah ….", o:["mengubah citra RGB menjadi grayscale","mengubah citra RGB menjadi biner","menurunkan resolusi","menghapus sebagian piksel","mengompresi tanpa kehilangan data"], k:4}
         ],
         "2": [
+            {q:"Pada operasi konvolusi diperlukan piksel tetangga karena ….", o:["satu piksel saja belum cukup untuk menggambarkan kondisi suatu area citra","satu piksel saja sudah cukup untuk menentukan objek","piksel tetangga hanya digunakan untuk mempercepat proses komputasi","konvolusi hanya menggunakan piksel pusat ","setiap piksel tidak memiliki nilai intensitas"], k:0},
+            {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut ….", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"], k:2},
+            {q:"Kernel Gaussian pada proses konvolusi umumnya digunakan untuk ….", o:["menonjolkan garis tepi","menghaluskan citra dan mengurangi noise","mendeteksi sudut","memperbesar resolusi citra","mengubah citra menjadi biner"], k:1},
+            {q:"Ukuran kernel pada proses konvolusi harus bernilai ganjil karena ….", o:["mempermudah komputasi","agar kernel dapat digeser lebih cepat","mengikuti standar pemrosesan citra","harus memiliki satu piksel pusat yang jelas","mengurangi jumlah piksel tetangga"], k:3},
+            {q:"Kernel berukuran 3×3 melibatkan jumlah piksel tetangga sebanyak ….", o:["delapan piksel","enam piksel","empat piksel","sembilan piksel","dua belas piksel"], k:0},
+            {q:"Teknik padding digunakan dalam konvolusi dengan tujuan utama untuk ….", o:["mempercepat proses filtering","memperkecil ukuran citra","menghilangkan noise secara langsung","menormalkan nilai piksel","memungkinkan piksel tepi ikut diproses"], k:4},
+            {q:"Jenis padding yang mengisi tepi citra dengan menyalin nilai piksel terdekat disebut ….", o:["zero padding","constant padding","replicate padding","wrap padding","reflect padding"], k:2},
+            {q:"Tujuan utama dari normalisasi citra setelah konvolusi adalah ….", o:["meningkatkan resolusi citra","menyesuaikan nilai piksel ke rentang 0–255","menambahkan padding baru","menghilangkan kernel","memperbesar ukuran citra"], k:1},
+            {q:"Perhatikan matriks piksel citra grayscale 4×4 di atas! Hasil normalisasi nilai piksel untuk -12, -25, dan -8 adalah ….", o:["14, 0, dan 18","14, 0, dan 19","14, 0, dan 20","15, 0, dan 19","15, 0, dan 20"], k:3, img: STATIC_URL + "assets/img/kuis/k3-9.png"},
+            {q:"Perhatikan matriks piksel citra grayscale 4×4 di atas! Hasil normalisasi nilai piksel untuk 270 dan 256 adalah ….", o:["255 dan 255","255 dan 230","255 dan 231","255 dan 240","255 dan 241"], k:4, img: STATIC_URL + "assets/img/kuis/k3-10.png"}    
+        ],
+        "3": [
             {q:"Pada spatial domain proses pemrosesan citra dilakukan dengan cara ….", o:["memodifikasi nilai intensitas piksel secara langsung","mengubah citra ke spektrum frekuensi","menyaring citra menggunakan fast fourier transform","menghilangkan domain spasial","menghitung amplitudo frekuensi"], k:0},
             {q:"Salt and pepper noise pada citra ditandai dengan ….", o:["perubahan warna secara acak","bintik hitam dan putih acak pada citra","munculnya garis-garis horizontal","perubahan resolusi citra","hilangnya seluruh detail objek"], k:1},
             {q:"Transformasi yang umum digunakan untuk memindahkan citra ke frequency domain adalah ….", o:["median transform","laplacian transform","fast fourier transform","thresholding","smoothing"], k:2},
@@ -658,18 +673,6 @@
             {q:"Hasil filtering pada frequency domain tidak dapat langsung ditampilkan karena ….", o:["noise pada citra belum sepenuhnya dihilangkan","intensitas warna citra berubah secara acak","kontras citra menjadi terlalu rendah","tepi objek citra menghilang seluruhnya","hasil filtering masih berupa komponen frekuensi, bukan nilai piksel citra"], k:4},
             {q:"Perbedaan utama spatial domain dan frequency domain adalah ….", o:["spatial menggunakan warna, frequency menggunakan ukuran piksel","keduanya sama persis","spatial memproses piksel langsung, frequency memproses komponen frekuensi","spatial memerlukan fast fourier transform","frequency hanya bekerja di citra berwarna"], k:2},
             {q:"Invers transform diperlukan setelah filtering di domain frekuensi karena ….", o:["untuk mengubah warna citra menjadi lebih jelas","untuk memperkecil ukuran file citra setelah proses filtering","untuk meningkatkan tingkat kecerahan dan saturasi citra","untuk mengembalikan citra hasil filtering ke domain spasial agar dapat ditampilkan","untuk menukar posisi piksel agar menghasilkan citra baru"], k:3}
-        ],
-        "3": [
-            {q:"Pada operasi konvolusi diperlukan piksel tetangga karena ….", o:["satu piksel saja belum cukup untuk menggambarkan kondisi suatu area citra","satu piksel saja sudah cukup untuk menentukan objek","piksel tetangga hanya digunakan untuk mempercepat proses komputasi","konvolusi hanya menggunakan piksel pusat ","setiap piksel tidak memiliki nilai intensitas"], k:0},
-            {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut ….", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"], k:2},
-            {q:"Kernel Gaussian pada proses konvolusi umumnya digunakan untuk ….", o:["menonjolkan garis tepi","menghaluskan citra dan mengurangi noise","mendeteksi sudut","memperbesar resolusi citra","mengubah citra menjadi biner"], k:1},
-            {q:"Ukuran kernel pada proses konvolusi harus bernilai ganjil karena ….", o:["mempermudah komputasi","agar kernel dapat digeser lebih cepat","mengikuti standar pemrosesan citra","harus memiliki satu piksel pusat yang jelas","mengurangi jumlah piksel tetangga"], k:3},
-            {q:"Kernel berukuran 3×3 melibatkan jumlah piksel tetangga sebanyak ….", o:["delapan piksel","enam piksel","empat piksel","sembilan piksel","dua belas piksel"], k:0},
-            {q:"Teknik padding digunakan dalam konvolusi dengan tujuan utama untuk ….", o:["mempercepat proses filtering","memperkecil ukuran citra","menghilangkan noise secara langsung","menormalkan nilai piksel","memungkinkan piksel tepi ikut diproses"], k:4},
-            {q:"Jenis padding yang mengisi tepi citra dengan menyalin nilai piksel terdekat disebut ….", o:["zero padding","constant padding","replicate padding","wrap padding","reflect padding"], k:2},
-            {q:"Tujuan utama dari normalisasi citra setelah konvolusi adalah ….", o:["meningkatkan resolusi citra","menyesuaikan nilai piksel ke rentang 0–255","menambahkan padding baru","menghilangkan kernel","memperbesar ukuran citra"], k:1},
-            {q:"Perhatikan matriks piksel citra grayscale 4×4 di atas! Hasil normalisasi nilai piksel untuk -12, -25, dan -8 adalah ….", o:["14, 0, dan 18","14, 0, dan 19","14, 0, dan 20","15, 0, dan 19","15, 0, dan 20"], k:3, img: STATIC_URL + "assets/img/kuis/k3-9.png"},
-            {q:"Perhatikan matriks piksel citra grayscale 4×4 di atas! Hasil normalisasi nilai piksel untuk 270 dan 256 adalah ….", o:["255 dan 255","255 dan 230","255 dan 231","255 dan 240","255 dan 241"], k:4, img: STATIC_URL + "assets/img/kuis/k3-10.png"}
         ],
         "4": [
             {q: "Tujuan utama proses smoothing pada citra digital adalah ….", o: ["menajamkan tepi objek", "meningkatkan resolusi citra", "mengurangi noise dan membuat citra tampak lebih halus", "mengubah citra ke domain frekuensi", "memisahkan objek dari latar belakang"], k:2},

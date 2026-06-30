@@ -22,7 +22,6 @@
   padding: 22px;
 }
 
-/* Perbaikan Filter Bar agar responsif */
 .filter-bar {
   display: flex;
   justify-content: space-between;
@@ -347,7 +346,7 @@
             </div>
           </td>
           <td class="text-center">
-            <button class="detail-link" onclick='openDetail("{{ mhs.nama_lengkap }}", "{{ mhs.nim }}", "{{ mhs.progres_belajar|default:0 }}", {{ mhs.detail_progres_json|safe|default:"{}" }})' title="Lihat Detail">
+            <button class="detail-link" onclick='openDetail("{{ mhs.nama_lengkap }}", "{{ mhs.nim }}", "{{ mhs.progres_belajar|default:0 }}", {{ mhs.detail_progres_json|safe|default:"{}" }}, {{ mhs.riwayat_tanggal_json|safe|default:"{}" }})' title="Lihat Detail">
               <i class="bi bi-search"></i>
             </button>
           </td>
@@ -405,13 +404,47 @@
 
 <script>
 const strukturMenu = [
-    { title: "PENDAHULUAN", items: ["Pengertian Citra Digital", "Jenis Citra Digital", "Kuis 1"] },
-    { title: "PENGANTAR SPATIAL FILTERING", items: ["Pengertian Spatial Filtering", "Domain Spasial vs Frekuensi", "Kuis 2"] },
-    { title: "KONVOLUSI", items: ["Konsep Konvolusi", "Teknik Padding", "Normalisasi Citra", "Kuis 3"] },
-    { title: "SMOOTHING SPATIAL FILTERS", items: ["Smoothing Linear Filters", "Order-Statistic Filters", "Kuis 4"] },
-    { title: "SHARPENING SPATIAL FILTERS", items: ["Sharpening Citra Digital", "Unsharp Masking & Highboost", "Kuis 5"] },
-    { title: "PRAKTIKUM", items: ["Grayscale & Biner", "Konvolusi & Padding", "Smoothing Linear", "Nonlinear Filters", "Sharpening Citra", "Unsharp Masking"] },
-    { title: "EVALUASI", items: ["Evaluasi Akhir"] }
+    { title: "PENDAHULUAN", items: [
+        { label: "Pengertian Citra Digital", dbName: "Pengertian Citra Digital" },
+        { label: "Jenis Citra Digital", dbName: "Jenis Citra Digital" },
+        { label: "Ringkasan", dbName: "Ringkasan 1" }, 
+        { label: "Kuis", dbName: "Kuis 1" } 
+    ] },
+    { title: "KONVOLUSI", items: [
+        { label: "Konsep Konvolusi", dbName: "Konsep Konvolusi" },
+        { label: "Teknik Padding", dbName: "Teknik Padding" },
+        { label: "Normalisasi Citra", dbName: "Normalisasi Citra" },
+        { label: "Ringkasan", dbName: "Ringkasan 3" }, 
+        { label: "Kuis", dbName: "Kuis 3" }
+    ] },
+    { title: "PENGANTAR SPATIAL FILTERING", items: [
+        { label: "Pengertian Spatial Filtering", dbName: "Pengertian Spatial Filtering" },
+        { label: "Spatial Domain vs Frequency Domain", dbName: "Spatial Domain vs Frequency Domain" },
+        { label: "Ringkasan", dbName: "Ringkasan 2" },
+        { label: "Kuis", dbName: "Kuis 2" }
+    ] },
+    { title: "SMOOTHING SPATIAL FILTERS", items: [
+        { label: "Smoothing Linear Filters", dbName: "Smoothing Linear Filters" },
+        { label: "Smoothing Nonlinear Filters", dbName: "Smoothing Nonlinear Filters" },
+        { label: "Ringkasan", dbName: "Ringkasan 4" },
+        { label: "Kuis", dbName: "Kuis 4" }
+    ] },
+    { title: "SHARPENING SPATIAL FILTERS", items: [
+        { label: "Sharpening Citra Digital", dbName: "Sharpening Citra Digital" },
+        { label: "Unsharp Masking & Highboost", dbName: "Unsharp Masking & Highboost" },
+        { label: "Ringkasan", dbName: "Ringkasan 5" },
+        { label: "Kuis", dbName: "Kuis 5" }
+    ] },
+    { title: "PRAKTIKUM", items: [
+        { label: "Grayscale & Biner", dbName: "Grayscale & Biner" },
+        { label: "Konvolusi", dbName: "Konvolusi" },
+        { label: "Smoothing Filters", dbName: "Smoothing Filters" },
+        { label: "Sharpening Filters", dbName: "Sharpening Filters" },
+        { label: "Ringkasan", dbName: "Ringkasan 6" }
+    ] },
+    { title: "EVALUASI", items: [
+        { label: "Evaluasi Akhir", dbName: "Evaluasi Akhir" }
+    ] }
 ];
 
 let timeout = null;
@@ -425,7 +458,7 @@ searchInput.addEventListener('keyup', function() {
     }, 600);
 });
 
-function openDetail(nama, nim, progres, dataStatus) {
+function openDetail(nama, nim, progres, dataStatus, dataTanggal) {
     document.getElementById("modalNama").innerText = nama;
     document.getElementById("modalNim").innerText = nim;
     document.getElementById("modalProgres").innerText = progres;
@@ -441,24 +474,31 @@ function openDetail(nama, nim, progres, dataStatus) {
 
     strukturMenu.forEach(bab => {
         html += `<div class="material-section"><div class="material-title">${bab.title}</div>`;
-        bab.items.forEach((item, index) => {
+        bab.items.forEach((itemObj, index) => {
+            let itemLabel = itemObj.label;
+            let itemDB = itemObj.dbName;
             let status = "lock";
             
             if (globalIndex < itemsCompleted) {
                 status = "done";
             } else if (globalIndex === itemsCompleted) {
-                status = dataStatus[item] === "done" ? "done" : "active";
+                status = dataStatus[itemDB] === "done" ? "done" : "active";
             } else {
                 status = "lock";
             }
 
-            if (dataStatus[item] === "done") status = "done";
+            if (dataStatus[itemDB] === "done") status = "done";
 
             let statusClass = "status-lock", icon = "bi-lock-fill";
+            let tglHtml = "";
             
             if(status === "done") { 
                 statusClass = "status-done"; 
                 icon = "bi-check-circle-fill"; 
+                let tgl = dataTanggal && dataTanggal[itemDB] ? dataTanggal[itemDB] : "";
+                if (tgl) {
+                    tglHtml = `<span class="badge bg-light text-secondary border me-2" style="font-size: 11px; font-weight: 500;"><i class="bi bi-clock"></i> ${tgl}</span>`;
+                }
             } else if(status === "active") { 
                 statusClass = "status-active"; 
                 icon = "bi bi-x-circle-fill"; 
@@ -466,8 +506,11 @@ function openDetail(nama, nim, progres, dataStatus) {
             
             html += `
                 <div class="material-item ${statusClass}">
-                    <span>${index + 1}. ${item}</span>
-                    <i class="bi ${icon} status-icon"></i>
+                    <span>${index + 1}. ${itemLabel}</span>
+                    <div class="d-flex align-items-center">
+                        ${tglHtml}
+                        <i class="bi ${icon} status-icon"></i>
+                    </div>
                 </div>`;
             
             globalIndex++;

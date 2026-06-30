@@ -54,7 +54,7 @@ class AktivitasAdmin(admin.ModelAdmin):
 
 @admin.register(ProgresAktivitas)
 class ProgresAktivitasAdmin(admin.ModelAdmin):
-    list_display = ('mahasiswa', 'aktivitas', 'status_selesai', 'tgl_selesai')
+    list_display = ('mahasiswa', 'aktivitas', 'status_selesai', 'tgl_awal', 'tgl_akhir')
     list_filter = ('status_selesai', 'aktivitas', 'mahasiswa__kelas')
     search_fields = ('mahasiswa__nama_lengkap', 'aktivitas__nama_aktivitas')
 

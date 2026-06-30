@@ -1,7 +1,7 @@
 {% extends "mhs/base.html" %}
 {% load static %}
 
-{% block title %}Subbab 3 - Konsep Konvolusi{% endblock %}
+{% block title %}Subbab 2 - Konsep Konvolusi{% endblock %}
 
 {% block content %}
 {{ selesai_slugs|json_script:"selesai-slugs-data" }}
@@ -325,7 +325,7 @@
 </style>
 
 <div class="mb-3">
-  <h1 class="title-main" style="font-family: 'Inter', sans-serif; font-weight: 800;">SUBBAB 3 - <span style="color:var(--primary-500)">KONSEP KONVOLUSI</span></h1>
+  <h1 class="title-main" style="font-family: 'Inter', sans-serif; font-weight: 800;">SUBBAB 2 - <span style="color:var(--primary-500)">KONSEP KONVOLUSI</span></h1>
 </div>
 
 <section class="card-section">
@@ -769,7 +769,7 @@
 </section>
 
 <div class="material-nav">
-  <a href="{% url 'ringkasan2' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
+  <a href="{% url 'ringkasan_citra' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
   <a id="nav-next-materi" href="{% url 't_padding' %}" 
      class="btn btn-primary {% if 'k-konvolusi' not in selesai_slugs %}disabled{% endif %}" 
      style="{% if 'k-konvolusi' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">

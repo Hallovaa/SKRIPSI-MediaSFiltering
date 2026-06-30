@@ -35,7 +35,7 @@
   }
   .locked {
     cursor: not-allowed;
-    pointer-events: none;
+    /* pointer-events: none; dihapus/dikomentari agar script bisa mendeteksi klik */
   }
   .icon-box {
     width: 48px;
@@ -87,7 +87,7 @@
 </style>
 
 <div class="hero-section">
-  <div style="background:rgba(59,123,227,0.08); color:#3b7be3; padding:6px 16px; border-radius999px; display:inline-block; font-size: 14px; font-weight: 700;">
+  <div style="background:rgba(59,123,227,0.08); color:#3b7be3; padding:6px 16px; border-radius:999px; display:inline-block; font-size: 14px; font-weight: 700;">
     Pemrosesan Citra Digital
   </div>
   <h1 class="title mt-3"><em>Spatial</em> <span style="color:#3b7be3"><em>Filtering</em></span></h1>
@@ -132,22 +132,6 @@
           <i class="bi {% if not lulus_kuis.kuis_1 %}bi-lock-fill{% else %}bi-2-square{% endif %}"></i>
         </div>
         <div>
-          <a href="{% url 'pengertian_spatial' %}" class="text-decoration-none text-dark stretched-link">
-            <div class="fw-bold">Pengenalan <em>Spatial Filtering</em></div>
-            <small class="text-muted">Domain Spasial & Frekuensi</small>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-4">
-    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_2 %}opacity-50 locked{% endif %}">
-      <div class="d-flex gap-3 align-items-start">
-        <div class="icon-box" style="background: {% if lulus_kuis.kuis_2 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_2 %}bi-lock-fill{% else %}bi-3-square{% endif %}"></i>
-        </div>
-        <div>
           <a href="{% url 'k_konvolusi' %}" class="text-decoration-none text-dark stretched-link">
             <div class="fw-bold">Konvolusi</div>
             <small class="text-muted">Prinsip Kerja Konvolusi Citra</small>
@@ -161,7 +145,23 @@
     <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_3 %}opacity-50 locked{% endif %}">
       <div class="d-flex gap-3 align-items-start">
         <div class="icon-box" style="background: {% if lulus_kuis.kuis_3 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
-          <i class="bi {% if not lulus_kuis.kuis_3 %}bi-lock-fill{% else %}bi-4-square{% endif %}"></i>
+          <i class="bi {% if not lulus_kuis.kuis_3 %}bi-lock-fill{% else %}bi-3-square{% endif %}"></i>
+        </div>
+        <div>
+          <a href="{% url 'pengertian_spatial' %}" class="text-decoration-none text-dark stretched-link">
+            <div class="fw-bold">Pengenalan <em>Spatial Filtering</em></div>
+            <small class="text-muted">Domain Spasial & Frekuensi</small>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card p-3 h-100 module-card shadow-sm rounded-4 {% if not lulus_kuis.kuis_2 %}opacity-50 locked{% endif %}">
+      <div class="d-flex gap-3 align-items-start">
+        <div class="icon-box" style="background: {% if lulus_kuis.kuis_2 %}linear-gradient(135deg, #3b7be3, #2f6dd1){% else %}#94a3b8{% endif %};">
+          <i class="bi {% if not lulus_kuis.kuis_2 %}bi-lock-fill{% else %}bi-4-square{% endif %}"></i>
         </div>
         <div>
           <a href="{% url 'sl_filters' %}" class="text-decoration-none text-dark stretched-link">
@@ -272,49 +272,14 @@
             {% elif nilai_kuis.kuis_1 %}
               <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
             {% else %}
-              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
-            {% endif %}
-          </td>
-        </tr>
-        
-        <tr>
-          <td class="ps-3">
-            <div class="fw-bold">Kuis 2: Pengenalan <em>Spatial Filtering</em></div>
-            <div class="quiz-meta-info">
-              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_2 }}</span>
-              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_2 }} Menit</span>
-            </div>
-            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.2 }}</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 %}
-              <span class="text-remidi-center">Remidi</span>
-            {% else %}
-              <span class="text-muted small">-</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            <span class="fw-bold">{{ nilai_kuis.kuis_2|default:"-" }}</span>
-            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 and nilai_kuis.kuis_2 == kkm_kuis.kuis_2 %}
-              <br><span class="badge-remidi">Maksimal KKM</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            {% if lulus_kuis.kuis_2 %}
-              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
-            {% elif nilai_kuis.kuis_2 %}
-              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
-            {% else %}
-              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
             {% endif %}
           </td>
         </tr>
 
         <tr>
           <td class="ps-3">
-            <div class="fw-bold">Kuis 3: Konvolusi</div>
+            <div class="fw-bold">Kuis 2: Konvolusi</div>
             <div class="quiz-meta-info">
               <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_3 }}</span>
               <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_3 }} Menit</span>
@@ -342,7 +307,42 @@
             {% elif nilai_kuis.kuis_3 %}
               <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
             {% else %}
-              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="ps-3">
+            <div class="fw-bold">Kuis 3: Pengenalan <em>Spatial Filtering</em></div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_2 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_2 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.2 }}</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            <span class="fw-bold">{{ nilai_kuis.kuis_2|default:"-" }}</span>
+            {% if dict_pengerjaan_mhs.2 > 1 and nilai_awal.2 < kkm_kuis.kuis_2 and nilai_kuis.kuis_2 == kkm_kuis.kuis_2 %}
+              <br><span class="badge-remidi">Maksimal KKM</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_2 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_2 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
             {% endif %}
           </td>
         </tr>
@@ -377,7 +377,7 @@
             {% elif nilai_kuis.kuis_4 %}
               <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
             {% else %}
-              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
             {% endif %}
           </td>
         </tr>
@@ -412,7 +412,7 @@
             {% elif nilai_kuis.kuis_5 %}
               <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
             {% else %}
-              <span class="badge bg-light text-muted rounded-pill px-3">Belum</span>
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
             {% endif %}
           </td>
         </tr>
@@ -447,7 +447,7 @@
             {% elif nilai_evaluasi %}
               <span class="badge bg-danger rounded-pill px-3">Tidak Lulus</span>
             {% else %}
-              <span class="badge bg-white text-primary border border-primary rounded-pill px-3">Belum</span>
+              <span class="badge bg-white text-primary border border-primary rounded-pill px-3">Belum dikerjakan</span>
             {% endif %}
           </td>
         </tr>
@@ -463,4 +463,26 @@
     </div>
   </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const lockedCards = document.querySelectorAll('.locked');
+    
+    lockedCards.forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        e.preventDefault(); 
+        
+        Swal.fire({
+          icon: "warning",
+          title: "Bab Terkunci!",
+          text: "Selesaikan bab sebelumnya terlebih dulu untuk mengakses bab ini.",
+          confirmButtonColor: "#3b7be3",
+          confirmButtonText: "OK"
+        });
+      });
+    });
+  });
+</script>
 {% endblock %}

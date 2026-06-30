@@ -155,7 +155,8 @@ class ProgresAktivitas(models.Model):
     mahasiswa = models.ForeignKey(Mahasiswa, on_delete=models.CASCADE, related_name='progres_aktivitas')
     aktivitas = models.ForeignKey(Aktivitas, on_delete=models.CASCADE)
     status_selesai = models.BooleanField(default=False)
-    tgl_selesai = models.DateTimeField(auto_now=True)
+    tgl_awal = models.DateTimeField(null=True, blank=True) 
+    tgl_akhir = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         unique_together = ('mahasiswa', 'aktivitas')
@@ -163,3 +164,4 @@ class ProgresAktivitas(models.Model):
 
     def __str__(self):
         return f"{self.mahasiswa.nama_lengkap} - {self.aktivitas.nama_aktivitas}"
+    
