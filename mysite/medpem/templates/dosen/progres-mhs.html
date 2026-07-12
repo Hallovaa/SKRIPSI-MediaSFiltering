@@ -346,7 +346,7 @@
             </div>
           </td>
           <td class="text-center">
-            <button class="detail-link" onclick='openDetail("{{ mhs.nama_lengkap }}", "{{ mhs.nim }}", "{{ mhs.progres_belajar|default:0 }}", {{ mhs.detail_progres_json|safe|default:"{}" }}, {{ mhs.riwayat_tanggal_json|safe|default:"{}" }})' title="Lihat Detail">
+            <button class="detail-link" onclick='openDetail("{{ mhs.nama_lengkap }}", "{{ mhs.nim }}", "{{ mhs.progres_belajar|default:0 }}", {{ mhs.status_progres_json|safe|default:"{}" }}, {{ mhs.riwayat_tanggal_json|safe|default:"{}" }})' title="Lihat Detail">
               <i class="bi bi-search"></i>
             </button>
           </td>
@@ -462,32 +462,28 @@ function openDetail(nama, nim, progres, dataStatus, dataTanggal) {
     document.getElementById("modalNama").innerText = nama;
     document.getElementById("modalNim").innerText = nim;
     document.getElementById("modalProgres").innerText = progres;
-    
-    let totalItems = 0;
-    strukturMenu.forEach(bab => totalItems += bab.items.length);
-
-    let itemsCompleted = Math.floor((progres / 100) * totalItems);
-    if (progres >= 100) itemsCompleted = totalItems;
 
     let html = "";
-    let globalIndex = 0;
+    let foundActive = false; // Penanda untuk menemukan materi pertama yang belum "done"
 
     strukturMenu.forEach(bab => {
         html += `<div class="material-section"><div class="material-title">${bab.title}</div>`;
         bab.items.forEach((itemObj, index) => {
             let itemLabel = itemObj.label;
             let itemDB = itemObj.dbName;
-            let status = "lock";
+            let status;
             
-            if (globalIndex < itemsCompleted) {
+            // LOGIKA BARU: Pengecekan sekuensial murni (Anti Meleset)
+            if (dataStatus && dataStatus[itemDB] === "done") {
                 status = "done";
-            } else if (globalIndex === itemsCompleted) {
-                status = dataStatus[itemDB] === "done" ? "done" : "active";
             } else {
-                status = "lock";
+                if (!foundActive) {
+                    status = "active"; // Materi pertama yang belum selesai = Terbuka (Silang)
+                    foundActive = true;
+                } else {
+                    status = "lock";   // Materi sisanya = Terkunci (Gembok)
+                }
             }
-
-            if (dataStatus[itemDB] === "done") status = "done";
 
             let statusClass = "status-lock", icon = "bi-lock-fill";
             let tglHtml = "";
@@ -501,7 +497,8 @@ function openDetail(nama, nim, progres, dataStatus, dataTanggal) {
                 }
             } else if(status === "active") { 
                 statusClass = "status-active"; 
-                icon = "bi bi-x-circle-fill"; 
+                // [PENTING] Hanya ditulis bi-x-circle-fill, jangan ditambah "bi" lagi di depannya
+                icon = "bi-x-circle-fill"; 
             }
             
             html += `
@@ -512,8 +509,6 @@ function openDetail(nama, nim, progres, dataStatus, dataTanggal) {
                         <i class="bi ${icon} status-icon"></i>
                     </div>
                 </div>`;
-            
-            globalIndex++;
         });
         html += `</div>`;
     });

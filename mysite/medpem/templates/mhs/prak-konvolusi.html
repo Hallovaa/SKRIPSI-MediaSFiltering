@@ -1,13 +1,14 @@
 {% extends "mhs/base.html" %}
 {% load static %}
 
-{% block title %}Subbab 6 - Konvolusi{% endblock %}
+{% block title %}Subbab 6 - Praktikum Konvolusi{% endblock %}
 
 {% block content %}
 {{ selesai_slugs|json_script:"selesai-slugs-data" }}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
 <style>
 .card-section {
@@ -256,6 +257,7 @@
     cursor: pointer;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .file-item.active {
@@ -263,6 +265,28 @@
     background: #eff6ff;
     color: #1d4ed8;
     font-weight: 600;
+}
+
+.file-item .file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.file-item .btn-hapus-item {
+    color: #ef4444;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.file-item .btn-hapus-item:hover {
+    background: #fee2e2;
 }
 
 .input-preview {
@@ -479,12 +503,12 @@
             <span class="keyword">import</span> <span class="module">numpy</span> <span class="keyword">as</span> <span class="module">np</span><br>
             <span class="keyword">from</span> <span class="module">PIL</span> <span class="keyword">import</span> <span class="module">Image</span><br>
             <span class="keyword">from</span> <span class="module">scipy.signal</span> <span class="keyword">import</span> <span class="function">convolve2d</span><br><br>
-            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"img/rgb.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             image = <span class="module">np</span>.<span class="function">array</span>(img, dtype=<span class="module">np</span>.float32)<br><br>
-            kernel = (<span class="number">1</span>/<span class="number">16</span>) * <span class="module">np</span>.<span class="function">array</span>([<br>
-            &nbsp;&nbsp;[<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>],<br>
-            &nbsp;&nbsp;[<span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>],<br>
-            &nbsp;&nbsp;[<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>]<br>
+            kernel = <span class="module">np</span>.<span class="function">array</span>([<br>
+            &nbsp;&nbsp;[<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>],<br>
+            &nbsp;&nbsp;[<span class="number">-1</span>, <span class="number">4</span>, <span class="number">-1</span>],<br>
+            &nbsp;&nbsp;[<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>]<br>
             ], dtype=<span class="module">np</span>.float32)<br><br>
             hasil = <span class="function">convolve2d</span>(<br>
             &nbsp;&nbsp;image,<br>
@@ -496,7 +520,8 @@
 
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
             Pada kode di atas, citra terlebih dahulu dikonversi menjadi <em>grayscale</em>, kemudian diubah ke dalam bentuk <em>array</em> agar dapat diproses menggunakan perhitungan numerik. 
-            <em>Kernel</em> yang digunakan adalah <em>kernel smoothing</em> Gaussian 3×3 yang berfungsi untuk menghaluskan citra dengan memberi pengaruh lebih besar pada piksel di sekitar pusat.
+            <em>Kernel</em> yang digunakan pada contoh di atas adalah <strong>kernel Laplacian 3×3</strong> yang berfungsi untuk <strong>mendeteksi tepi (<em>edge detection</em>)</strong> pada citra. 
+            Berbeda dengan penghalusan (<em>smoothing</em>), kernel ini akan menonjolkan garis-garis batas objek pada gambar.
         </p>
 
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
@@ -508,38 +533,30 @@
             SciPy juga menyediakan <strong><em>wrap</em></strong> yaitu <em>padding</em> yang mengisi tepi citra menggunakan piksel dari sisi berlawanan sehingga citra diperlakukan seolah-olah melingkar.
         </p>
 
-
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
             Hasil konvolusi kadang menghasilkan nilai piksel yang terlalu kecil (kurang dari 0) atau terlalu besar (lebih dari 255). 
             Padahal citra <em>grayscale</em> hanya dapat menampilkan nilai piksel dalam rentang 0 sampai 255. 
-            Oleh karena itu nilai piksel hasil konvolusi perlu disesuaikan kembali agar sesuai dengan rentang nilai citra digital.
+            Oleh karena itu nilai piksel hasil konvolusi perlu disesuaikan kembali agar sesuai dengan rentang nilai citra digital melalui proses <strong>normalisasi</strong>.
         </p>
 
         <div class="code-box-code">
-            hasil_out = hasil.<span class="function">copy</span>()<br><br>
             min_val = hasil.<span class="function">min</span>()<br>
             max_val = hasil.<span class="function">max</span>()<br><br>
-            mask_low = hasil < <span class="number">0</span><br>
-            mask_high = hasil > <span class="number">255</span><br><br>
-            <span class="keyword">if</span> min_val < <span class="number">0</span> <span class="keyword">or</span> max_val > <span class="number">255</span>:<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;hasil_norm = (hasil - min_val) / (max_val - min_val) * <span class="number">255</span><br><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;hasil_out[mask_low] = hasil_norm[mask_low]<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;hasil_out[mask_high] = hasil_norm[mask_high]<br><br>
-            hasil_conv = hasil_out.<span class="function">astype</span>(<span class="module">np</span>.uint8)<br>
+            hasil_norm = (hasil - min_val) / (max_val - min_val) * <span class="number">255</span><br><br>
+            hasil_conv = hasil_norm.<span class="function">astype</span>(<span class="module">np</span>.uint8)<br>
             <span class="module">Image</span>.<span class="function">fromarray</span>(hasil_conv)
         </div>
 
         <p style="text-align:justify;text-indent:30px; margin-left:20px;">
             Pada kode di atas, nilai piksel terkecil dan terbesar dari hasil konvolusi dicari terlebih dahulu. 
-            Jika terdapat nilai piksel yang berada di luar rentang 0–255, maka nilai tersebut disesuaikan kembali agar semua piksel berada dalam rentang yang digunakan pada citra <em>grayscale</em>. 
-            Setelah itu, citra diubah ke tipe data <em>uint8</em> sehingga dapat digunakan sebagai citra <em>grayscale</em> dan diproses atau disimpan kembali. 
-            Dengan cara ini, hasil konvolusi tetap dapat digunakan tanpa mengubah informasi penting pada citra.
+            Kemudian, rumus normalisasi diterapkan secara langsung agar semua piksel didistribusikan ulang ke dalam rentang 0 hingga 255. 
+            Setelah itu, hasil perhitungannya diubah ke tipe data <em>uint8</em> sehingga dapat digunakan sebagai citra <em>grayscale</em> standar dan diproses atau disimpan kembali. 
         </p>
 
     </div>
 </section>
 
-<section class="card-section">
+<section class="card-section" id="editor-section">
     <div class="card-section-header">
         <i class="bi bi-journal-code"></i> SFiltering CitraLab
     </div>
@@ -548,13 +565,14 @@
             <strong><i class="bi bi-info-circle text-primary"></i> Langkah-langkah Penggunaan Editor:</strong>
             <ul>
                 <li>Pastikan status editor pada sidebar kanan bawah menunjukkan <span class="text-success fw-bold">“Editor Siap”</span> sebelum mulai menggunakan editor.</li>
+                <li><span style="color: #d97706; font-weight: bold;"><i class="bi bi-folder-symlink"></i> Gambar Uji Coba:</span> Unduh gambar uji coba <a href="https://drive.google.com/drive/folders/1uVNRnG3vQrn-HRGHpvp_mwPhQfuK6UAS?usp=drive_link" target="_blank" class="text-decoration-none fw-bold" style="color: #3b82f6;">di sini</a>, kemudian unggah gambar ke editor.</li>
                 <li>Unggah gambar melalui tombol <strong>Unggah</strong> <i class="bi bi-upload ms-1"></i> pada sidebar.</li>
                 <li>Gambar yang diunggah atau dipilih dari Galeri Citra SFiltering akan otomatis ditampilkan pada <strong>pratinjau gambar</strong> <i class="bi bi-image ms-1"></i>.</li>
                 <li>Klik nama file pada Galeri Citra <i class="bi bi-files"></i>, dan nama file akan otomatis digunakan pada <strong>sel pertama</strong>.</li>
                 <li>Klik ikon <strong>Jalankan</strong> <i class="bi bi-play-fill text-success ms-1"></i> di sebelah kanan sel untuk memproses gambar.</li>
                 <li>Arahkan kursor ke bagian bawah sel, lalu klik ikon <i class="bi bi-plus-circle text-primary ms-1"></i> untuk menambahkan sel baru.</li>
                 <li>Klik ikon <i class="bi bi-trash text-danger ms-1"></i> pada sel yang tidak diperlukan.</li>
-                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel</i>.</li>
+                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel.</li>
                 <li>Klik tombol <strong>Unduh Gambar</strong> <i class="bi bi-download ms-1"></i> untuk menyimpan hasil pemrosesan.</li>
             </ul>
         </div>
@@ -565,6 +583,9 @@
                 <div class="widget-box">
                     <div class="widget-title"><i class="bi bi-image"></i> Pratinjau Gambar</div>
                     <img id="input-display" class="input-preview" src="https://via.placeholder.com/300x200?text=Pilih+Gambar">
+                    <div id="tiff-warning" style="display: none; font-size: 11px; color: #d97706; margin-top: 10px; text-align: center; background: #fef3c7; padding: 6px; border-radius: 6px; border: 1px solid #fcd34d;">
+                        <i class="bi bi-info-circle-fill me-1"></i> Format <strong>.tiff</strong> tidak dapat dipratinjau oleh browser, namun <b>berhasil diunggah dan siap diproses</b> di dalam editor.
+                    </div>
                 </div>
                 <div class="widget-box">
                     <div class="widget-title"><i class="bi bi-files"></i> Galeri Citra SFiltering</div>
@@ -573,7 +594,7 @@
                     </label>
                     <input type="file" id="image-upload" style="display: none;" accept="image/*" multiple>
                     <div id="file-list-names" class="file-list"></div>
-                    <button class="btn btn-sm btn-link text-danger p-0" onclick="clearFiles()">Hapus Semua</button>
+                    <button class="btn btn-sm btn-link text-danger p-0 mt-2" onclick="clearFiles()"><i class="bi bi-trash3"></i> Hapus Semua</button>
                 </div>
                 <div id="engine-status">Memuat Editor...</div>
             </div>
@@ -596,12 +617,12 @@
                 <p>1. Perhatikan potongan kode Python berikut:</p>
                 
                 <div class="code-snippet">
-                    img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"img/rgb.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+                    img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"iwak-sapat.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
                     image = <span class="module">np</span>.<span class="function">array</span>(img, dtype=<span class="module">np</span>.float32)<br><br>
-                    kernel = (<span class="number">1</span>/<span class="number">16</span>) * <span class="module">np</span>.<span class="function">array</span>([<br>
-                    &nbsp;&nbsp;[<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>],<br>
-                    &nbsp;&nbsp;[<span class="number">2</span>, <span class="number">4</span>, <span class="number">2</span>],<br>
-                    &nbsp;&nbsp;[<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>]<br>
+                    kernel = <span class="module">np</span>.<span class="function">array</span>([<br>
+                    &nbsp;&nbsp;[<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>],<br>
+                    &nbsp;&nbsp;[<span class="number">-1</span>, <span class="number">4</span>, <span class="number">-1</span>],<br>
+                    &nbsp;&nbsp;[<span class="number">0</span>, <span class="number">-1</span>, <span class="number">0</span>]<br>
                     ], dtype=<span class="module">np</span>.float32)<br><br>
                     hasil = <input type="text" id="quiz-1" class="quiz-input" style="width:140px" placeholder=". . ." oninput="handleInput(this)"> (<br>
                     &nbsp;&nbsp;image,<br>
@@ -611,7 +632,7 @@
                     )
                 </div>
                 <p style="text-align:justify;">
-                    Lengkapilah bagian kode yang kosong agar proses konvolusi citra menggunakan Gaussian kernel 3×3 dapat berjalan dengan ukuran output sama seperti citra input!
+                    Lakukan proses konvolusi pada citra grayscale menggunakan kernel Laplacian 3×3. <b>Pertahankan ukuran citra hasil</b> agar tetap sama dengan citra inputan dan <b> gunakan reflect padding</b> untuk menangani bagian tepi citra. Lengkapilah bagian kode yang kosong agar proses konvolusi berjalan sesuai ketentuan tersebut.
                 </p>
                 <div id="feedback-quiz" class="feedback-msg"></div>
                 <div class="mt-4">
@@ -640,17 +661,17 @@
 
 <script>
 let pyodideInstance;
-let fileStore = {};
+let fileStore = {}; 
 let notebookCells = [
     { 
         id: 'c1', 
-        content: `import numpy as np\nfrom PIL import Image\nfrom scipy.signal import convolve2d\n\nimg = Image.open("pilih_gambar.jpg").convert("L")\nimage = np.array(img, dtype=np.float32)\n\nkernel = (1/16) * np.array([\n    [1, 2, 1],\n    [2, 4, 2],\n    [1, 2, 1]\n], dtype=np.float32)\n\nhasil = convolve2d(image, kernel, mode="same", boundary="symm")\n\nhasil_out = hasil.copy()\nmin_val, max_val = hasil.min(), hasil.max()\n\nif min_val < 0 or max_val > 255:\n    hasil_out = (hasil - min_val) / (max_val - min_val) * 255\n\nhasil_conv = hasil_out.astype(np.uint8)\nimg_final = Image.fromarray(hasil_conv)\nimg_final.save("hasil_konvolusi.png")\nimg_final`, 
-        output: null, 
-        log: null, 
-        fileName: "" 
+        content: `# Mengimpor pustaka numpy untuk pengolahan array/matriks\nimport numpy as np\n# Mengimpor modul Image dari PIL (Pillow)\nfrom PIL import Image\n# Mengimpor fungsi convolve2d dari SciPy untuk konvolusi 2D\nfrom scipy.signal import convolve2d\n\n# Membuka gambar dan mengubahnya menjadi grayscale\nimg = Image.open("pilih_gambar.jpg")\nimg = img.convert("L")\nimage = np.array(img, dtype=np.float32)\n\n# Kernel Laplacian 3x3\nkernel = np.array([\n    [0, -1, 0],\n    [-1, 4, -1],\n    [0, -1, 0]\n], dtype=np.float32)\n\n# Melakukan operasi konvolusi menggunakan mode "same" agar ukuran citra tetap dan boundary "symm" untuk reflect padding\nhasil = convolve2d(image, kernel, mode="same", boundary="symm")\n\n# Mencari nilai minimum dan maksimum hasil konvolusi\nmin_val = hasil.min()\nmax_val = hasil.max()\n\n# Normalisasi hasil konvolusi ke rentang 0-255\nhasil_normalisasi = (hasil - min_val) / (max_val - min_val) * 255\n\n# Mengubah matriks kembali menjadi tipe data citra uint8\nhasil_uint8 = hasil_normalisasi.astype(np.uint8)\n\n# Membuat objek citra dan menyimpan hasil\nimg_final = Image.fromarray(hasil_uint8)\nimg_final.save("hasil_konvolusi.png")\n\n# Menampilkan hasil\nimg_final`, 
+            output: null, 
+            log: null, 
+            fileName: "" 
     }
 ];
-let editors = {};
+let editors = {}; 
 
 function handleInput(el) {
     const feedback = document.getElementById('feedback-quiz');
@@ -745,10 +766,24 @@ async function initPyodide() {
         const micropip = pyodideInstance.pyimport("micropip");
         await micropip.install(["pillow", "numpy", "scipy"]);
         
+        // MODIFIKASI DIMULAI DI SINI: Patch Image.open agar otomatis melakukan rotasi EXIF
         await pyodideInstance.runPythonAsync(`
 import io, base64
-from PIL import Image
+from PIL import Image, ImageOps
 import __main__
+
+_original_open = Image.open
+
+def _patched_open(*args, **kwargs):
+    img = _original_open(*args, **kwargs)
+    try:
+        img = ImageOps.exif_transpose(img)
+    except Exception:
+        pass
+    return img
+
+Image.open = _patched_open
+
 def get_image_as_base64(var_name):
     try:
         obj = getattr(__main__, var_name, None)
@@ -768,7 +803,7 @@ def get_image_as_base64(var_name):
 
 function renderNotebook() {
     const container = document.getElementById("notebook");
-    const scrollPos = window.scrollY;
+    const scrollPos = window.scrollY; 
     container.innerHTML = "";
     notebookCells.forEach((cell, index) => {
         const cellDiv = document.createElement("div");
@@ -792,16 +827,18 @@ function renderNotebook() {
             <div class="btn-add-cell-mid" onclick="addNewCellAt(${index + 1})"><i class="bi bi-plus-circle"></i></div>
         `;
         container.appendChild(cellDiv);
+        
         const editor = CodeMirror.fromTextArea(document.getElementById(`edit-ctrl-${cell.id}`), {
             mode: "python", theme: "dracula", lineNumbers: true, indentUnit: 4, viewportMargin: Infinity
         });
+        
         editor.on("change", (cm) => {
             const cellObj = notebookCells.find(c => c.id === cell.id);
             if(cellObj) cellObj.content = cm.getValue();
         });
         editors[cell.id] = editor;
     });
-    window.scrollTo(0, scrollPos);
+    window.scrollTo(0, scrollPos); 
 }
 
 function addNewCellAt(index) {
@@ -811,7 +848,7 @@ function addNewCellAt(index) {
 }
 
 function deleteCell(id) {
-    if (notebookCells.length === 1) return;
+    if (notebookCells.length === 1) return; 
     notebookCells = notebookCells.filter(c => c.id !== id);
     delete editors[id];
     renderNotebook();
@@ -827,8 +864,16 @@ async function runCell(id) {
 
     outArea.style.display = "block";
     logLabel.innerText = "Memproses...";
+    logLabel.style.color = "#ef4444";
+    
+    imgElement.style.display = "none";
+    imgElement.src = "";
+    dlBtn.style.display = "none";
+    cellObj.output = null;
+
     try {
         await pyodideInstance.runPythonAsync(code);
+        
         const lines = code.trim().split('\n');
         const lastLine = lines[lines.length - 1].trim();
         
@@ -842,6 +887,7 @@ async function runCell(id) {
             cellObj.output = url;
             cellObj.log = "Berhasil diproses";
             cellObj.fileName = targetFileName;
+            
             imgElement.src = url;
             imgElement.style.display = "block";
             dlBtn.href = url;
@@ -856,32 +902,98 @@ async function runCell(id) {
     } catch (err) {
         logLabel.innerText = "Error:\n" + err;
         logLabel.style.color = "#ef4444";
+        cellObj.output = null;
     }
 }
 
+document.getElementById("image-upload").addEventListener("click", function() {
+    this.value = null;
+});
+
 document.getElementById("image-upload").addEventListener("change", (e) => {
     const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
     const list = document.getElementById("file-list-names");
     for (const file of files) {
         const reader = new FileReader();
         reader.onload = (ev) => {
             const data = new Uint8Array(ev.target.result);
+            
             pyodideInstance.FS.writeFile(file.name, data);
             const url = URL.createObjectURL(new Blob([data], {type: file.type}));
             fileStore[file.name] = url;
+            
             const item = document.createElement("div");
             item.className = "file-item";
-            item.innerHTML = `<span>${file.name}</span><i class="bi bi-check2 text-success"></i>`;
+            item.innerHTML = `
+                <span class="file-name">${file.name}</span>
+                <button class="btn-hapus-item" title="Hapus gambar"><i class="bi bi-trash"></i></button>
+            `;
+            
             item.onclick = () => {
                 document.querySelectorAll(".file-item").forEach(el => el.classList.remove("active"));
                 item.classList.add("active");
-                document.getElementById("input-display").src = url;
-                if (notebookCells.length > 0) {
-                    let first = editors[notebookCells[0].id].getValue();
-                    const updated = first.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
-                    editors[notebookCells[0].id].setValue(updated);
+                
+                const ext = file.name.split('.').pop().toLowerCase();
+                const tiffWarning = document.getElementById("tiff-warning");
+                
+                if (ext === 'tiff' || ext === 'tif') {
+                    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Format+TIFF+(Siap+Diproses)";
+                    if (tiffWarning) tiffWarning.style.display = "block";
+                } else {
+                    document.getElementById("input-display").src = url;
+                    if (tiffWarning) tiffWarning.style.display = "none";
                 }
+                
+                notebookCells.forEach(cell => {
+                    const outArea = document.getElementById(`out-${cell.id}`);
+                    const imgElement = document.getElementById(`img-${cell.id}`);
+                    const dlBtn = document.getElementById(`dl-${cell.id}`);
+                    const logLabel = document.getElementById(`log-${cell.id}`);
+
+                    if (outArea) outArea.style.display = "none";
+                    if (imgElement) {
+                        imgElement.style.display = "none";
+                        imgElement.src = "";
+                    }
+                    if (dlBtn) dlBtn.style.display = "none";
+                    if (logLabel) logLabel.innerText = "";
+                    cell.output = null;
+                    cell.log = null;
+
+                    if (editors[cell.id]) {
+                        let code = editors[cell.id].getValue();
+                        const updated = code.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
+                        editors[cell.id].setValue(updated);
+                        cell.content = updated;
+                    }
+                });
             };
+
+            const btnHapus = item.querySelector('.btn-hapus-item');
+            btnHapus.addEventListener('click', (event) => {
+                event.stopPropagation();
+                
+                try { pyodideInstance.FS.unlink(file.name); } catch(err) {}
+                
+                URL.revokeObjectURL(fileStore[file.name]);
+                delete fileStore[file.name];
+                
+                const isActive = item.classList.contains('active');
+                item.remove();
+                
+                const remainingItems = document.querySelectorAll(".file-item");
+                if (remainingItems.length === 0) {
+                    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+                    const tiffWarning = document.getElementById("tiff-warning");
+                    if (tiffWarning) tiffWarning.style.display = "none";
+                    document.getElementById("image-upload").value = "";
+                } else if (isActive) {
+                    remainingItems[0].click();
+                }
+            });
+
             list.appendChild(item);
             item.click();
         };
@@ -897,6 +1009,10 @@ function clearFiles() {
     fileStore = {};
     document.getElementById("file-list-names").innerHTML = "";
     document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+    
+    const tiffWarning = document.getElementById("tiff-warning");
+    if (tiffWarning) tiffWarning.style.display = "none";
+    document.getElementById("image-upload").value = "";
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -921,6 +1037,74 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     initPyodide();
+
+    const editorSection = document.getElementById('editor-section');
+    const quizSection = document.getElementById('quiz-card');
+    
+    if(editorSection) editorSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    if(quizSection) quizSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    
+    let editorBlurredToastShown = false;
+    let quizBlurredToastShown = false;
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        if (!editorSection || !quizSection) return;
+        
+        const quizRect = quizSection.getBoundingClientRect();
+        const editorRect = editorSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+
+        if (quizRect.top < windowHeight * 0.7 && quizRect.bottom > windowHeight * 0.2) {
+            editorSection.style.opacity = "0.05"; 
+            editorSection.style.filter = "blur(8px)";
+            editorSection.style.pointerEvents = "none";
+            
+            quizSection.style.opacity = "1";
+            quizSection.style.filter = "none";
+            quizSection.style.pointerEvents = "auto";
+
+            if (!editorBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Fokus',
+                    text: 'Editor disembunyikan agar kamu fokus mengerjakan Aktivitas.'
+                });
+                editorBlurredToastShown = true;
+                quizBlurredToastShown = false;
+            }
+        } 
+        else if (editorRect.top < windowHeight * 0.7 && editorRect.bottom > windowHeight * 0.2) {
+            quizSection.style.opacity = "0.05"; 
+            quizSection.style.filter = "blur(8px)";
+            quizSection.style.pointerEvents = "none";
+            
+            editorSection.style.opacity = "1";
+            editorSection.style.filter = "none";
+            editorSection.style.pointerEvents = "auto";
+
+            if (!quizBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Eksplorasi',
+                    text: 'Aktivitas disembunyikan agar kamu fokus mencoba koding di Editor.'
+                });
+                quizBlurredToastShown = true;
+                editorBlurredToastShown = false;
+            }
+        }
+    });
 });
 </script>
 

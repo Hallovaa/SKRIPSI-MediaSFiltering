@@ -138,18 +138,18 @@ class Aktivitas(models.Model):
         verbose_name_plural = "Aktivitas"
         ordering = ['materi__urutan', 'urutan']
         
-class PengaturanKuisDosen(models.Model):
-    dosen = models.ForeignKey(Dosen, on_delete=models.CASCADE, related_name='pengaturan_kuis')
+class PengaturanKuisKelas(models.Model):
+    kelas = models.ForeignKey(Kelas, on_delete=models.CASCADE, related_name='pengaturan_kuis')
     aktivitas = models.ForeignKey(Aktivitas, on_delete=models.CASCADE)
     kkm = models.IntegerField(default=75)
     durasi_menit = models.IntegerField(default=30)  
 
     class Meta:
-        unique_together = ('dosen', 'aktivitas')
-        verbose_name_plural = "Pengaturan Kuis Dosen"
+        unique_together = ('kelas', 'aktivitas')
+        verbose_name_plural = "Pengaturan Kuis Kelas"
 
     def __str__(self):
-        return f"{self.dosen.nama_lengkap} - {self.aktivitas.nama_aktivitas}"
+        return f"{self.kelas.nama_kelas} - {self.aktivitas.nama_aktivitas}"
 
 class ProgresAktivitas(models.Model):
     mahasiswa = models.ForeignKey(Mahasiswa, on_delete=models.CASCADE, related_name='progres_aktivitas')

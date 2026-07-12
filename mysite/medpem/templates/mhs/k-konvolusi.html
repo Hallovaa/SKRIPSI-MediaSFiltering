@@ -351,8 +351,8 @@
   </div>
   <div class="card-section-body">
     <p style="text-align: justify; text-indent: 30px;">
-      Salah satu teknik yang paling umum digunakan pada <strong><em>spatial domain</em></strong> adalah <strong>konvolusi, yaitu operasi tetangga (<em>neighbourhood operation</em>) 
-      yang memanfaatkan nilai piksel pusat dan piksel di sekitarnya</strong>. Mengapa perlu melibatkan piksel tetangga? Karena nilai satu piksel saja 
+      <strong> Konvolusi merupakan operasi yang melibatkan suatu piksel beserta piksel-piksel di sekitarnya, 
+      sehingga dikenal sebagai operasi ketetanggaan (<em>neighbourhood operation</em>)</strong>. Mengapa perlu melibatkan piksel tetangga? Karena nilai satu piksel saja 
       belum cukup untuk menggambarkan kondisi suatu area citra. Satu piksel hanya menunjukkan tingkat kecerahan pada satu titik saja. 
     </p>
 
@@ -370,19 +370,18 @@
     </figure>
 
   <p style="text-align: justify; text-indent: 30px;">
-    Pada Gambar C.1 terlihat bahwa <strong>untuk mengetahui informasi pada suatu citra digital perlu memperhatikan nilai piksel di sekitarnya</strong>. 
-    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel di sekelilingnya 
-    disebut piksel tetangga. Dengan membandingkan nilai piksel pusat dan piksel tetangganya, terlihat perbedaan tingkat keabuan yang 
-    cukup besar antara sisi kiri dan kanan. Perbedaan nilai yang tajam ini menunjukkan perubahan intensitas yang kuat, sehingga 
-    menandakan bahwa area tersebut merupakan tepi (<em>edge</em>) pada citra.
+    Pada Gambar C.1 ditunjukkan sebuah citra beserta nilai pikselnya. Gambar tersebut menunjukkan bahwa <strong>untuk memahami 
+    kondisi suatu area pada citra digital, nilai satu piksel saja tidak cukup, tetapi perlu mempertimbangkan nilai piksel di sekitarnya</strong>. 
+    Piksel yang berada di tengah area (ditandai dengan warna biru) disebut sebagai piksel pusat, sedangkan piksel di sekelilingnya disebut piksel tetangga. 
+    Terlihat bahwa nilai piksel di sebelah kiri relatif tinggi (lebih terang), sedangkan nilai piksel di sebelah kanan lebih rendah (lebih gelap). 
+    Perbedaan nilai tersebut menunjukkan adanya perubahan intensitas yang tajam, sehingga area tersebut merupakan tepi (<em>edge</em>) pada citra.
   </p>
 
 
   <p style="text-align: justify; text-indent: 30px;">
-    <strong><em>Filtering</em></strong> bertujuan untuk menghasilkan citra sesuai dengan kebutuhan. 
-    Dengan menggunakan konvolusi, proses <em>filtering</em> dapat menghasilkan citra baru yang 
-    <strong>lebih halus, lebih tajam, atau dengan tepi objek yang lebih jelas</strong>. Pada proses konvolusi digunakan sebuah <strong><em>kernel</em></strong>, yaitu 
-    <strong>matriks kecil berisi nilai bobot</strong> yang dapat dibayangkan seperti jendela kecil yang digeser di atas citra dari satu piksel ke piksel lainnya.
+    Pemanfaatan nilai piksel pusat dan piksel tetangga tersebut dilakukan melalui operasi konvolusi. Operasi ini menjadi dasar dalam proses <strong><em>filtering</em></strong>, 
+    yaitu proses untuk <strong>menghasilkan citra sesuai dengan kebutuhan, seperti menghaluskan citra, mempertajam detail, atau memperjelas tepi objek</strong>. 
+    Pada proses konvolusi digunakan sebuah <em>kernel</em> , yaitu matriks kecil berisi nilai bobot yang dapat dibayangkan sebagai jendela kecil yang digeser di atas citra dari satu piksel ke piksel lainnya.
   </p>
 
   <p style="text-align: justify; text-indent: 30px;">

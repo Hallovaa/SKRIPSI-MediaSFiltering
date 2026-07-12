@@ -256,6 +256,7 @@
     cursor: pointer;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .file-item.active {
@@ -263,6 +264,28 @@
     background: #eff6ff;
     color: #1d4ed8;
     font-weight: 600;
+}
+
+.file-item .file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.file-item .btn-hapus-item {
+    color: #ef4444;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.file-item .btn-hapus-item:hover {
+    background: #fee2e2;
 }
 
 .input-preview {
@@ -392,11 +415,11 @@
         </p>
         
         <div class="code-box-code">
-            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.SMOOTH)
         </div>
         <div class="code-box-code">
-            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            img = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.SMOOTH_MORE)
         </div>
 
@@ -408,11 +431,11 @@
 
         <p style="text-align:justify;text-indent:30px;">
             Selain <em>filter</em> bawaan, Pillow juga menyediakan <strong><em>ImageFilter.Kernel</em></strong> jika ingin menerapkan <em>smoothing</em> menggunakan <em>kernel</em> tertentu. 
-            Pada metode ini cukup menentukan ukuran <em>kernel</em> dan nilai <em>kernel</em> yang digunakan tanpa perlu mengatur proses <em>padding</em> secara terpisah seperti pada konvolusi manual.
+            Pada metode ini cukup menentukan ukuran <em>kernel</em> and nilai <em>kernel</em> yang digunakan tanpa perlu mengatur proses <em>padding</em> secara terpisah seperti pada konvolusi manual.
         </p>
 
         <div class="code-box-code">
-            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             <br>
             <span class="variable">kernel</span> = [<br>
             &nbsp;&nbsp;&nbsp;&nbsp;<span class="number">1</span>, <span class="number">2</span>, <span class="number">1</span>,<br>
@@ -441,23 +464,23 @@
         </p>
 
         <div class="code-box-code">
-            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.<span class="function">MedianFilter</span>(size=<span class="number">3</span>))
         </div>
     
         <div class="code-box-code">
-            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.<span class="function">MinFilter</span>(size=<span class="number">3</span>))<br>
         </div>
     
         <div class="code-box-code">
-            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.jpg"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
+            <span class="variable">image</span> = <span class="module">Image</span>.<span class="function">open</span>(<span class="string">"gambar.png"</span>).<span class="function">convert</span>(<span class="string">"L"</span>)<br>
             filtered_img = img.<span class="function">filter</span>(<span class="module">ImageFilter</span>.<span class="function">MaxFilter</span>(size=<span class="number">3</span>))
         </div>
     </div>
 </section>
 
-<section class="card-section">
+<section class="card-section" id="editor-section">
     <div class="card-section-header">
         <i class="bi bi-journal-code"></i> SFiltering CitraLab
     </div>
@@ -466,13 +489,14 @@
             <strong><i class="bi bi-info-circle text-primary"></i> Langkah-langkah Penggunaan Editor:</strong>
             <ul>
                 <li>Pastikan status editor pada sidebar kanan bawah menunjukkan <span class="text-success fw-bold">“Editor Siap”</span> sebelum mulai menggunakan editor.</li>
+                <li><span style="color: #d97706; font-weight: bold;"><i class="bi bi-folder-symlink"></i> Gambar Uji Coba:</span> Unduh gambar uji coba <a href="https://drive.google.com/drive/folders/1ApA0hM7f28IWCcFVUE_4xygJ9slo9UH-?usp=sharing" target="_blank" class="text-decoration-none fw-bold" style="color: #3b82f6;">di sini</a>, kemudian unggah gambar ke editor.</li>
                 <li>Unggah gambar melalui tombol <strong>Unggah</strong> <i class="bi bi-upload ms-1"></i> pada sidebar.</li>
                 <li>Gambar yang diunggah atau dipilih dari Galeri Citra SFiltering akan otomatis ditampilkan pada <strong>pratinjau gambar</strong> <i class="bi bi-image ms-1"></i>.</li>
                 <li>Klik nama file pada Galeri Citra <i class="bi bi-files"></i>, dan nama file akan otomatis digunakan pada <strong>sel pertama</strong>.</li>
                 <li>Klik ikon <strong>Jalankan</strong> <i class="bi bi-play-fill text-success ms-1"></i> di sebelah kanan sel untuk memproses gambar.</li>
                 <li>Arahkan kursor ke bagian bawah sel, lalu klik ikon <i class="bi bi-plus-circle text-primary ms-1"></i> untuk menambahkan sel baru.</li>
                 <li>Klik ikon <i class="bi bi-trash text-danger ms-1"></i> pada sel yang tidak diperlukan.</li>
-                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel</i>.</li>
+                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel.</li>
                 <li>Klik tombol <strong>Unduh Gambar</strong> <i class="bi bi-download ms-1"></i> untuk menyimpan hasil pemrosesan.</li>
             </ul>
         </div>
@@ -483,6 +507,9 @@
                 <div class="widget-box">
                     <div class="widget-title"><i class="bi bi-image"></i> Pratinjau Gambar</div>
                     <img id="input-display" class="input-preview" src="https://via.placeholder.com/300x200?text=Pilih+Gambar">
+                    <div id="tiff-warning" style="display: none; font-size: 11px; color: #d97706; margin-top: 10px; text-align: center; background: #fef3c7; padding: 6px; border-radius: 6px; border: 1px solid #fcd34d;">
+                        <i class="bi bi-info-circle-fill me-1"></i> Format <strong>.tiff</strong> tidak dapat dipratinjau oleh browser, namun <b>berhasil diunggah dan siap diproses</b> di dalam editor.
+                    </div>
                 </div>
                 <div class="widget-box">
                     <div class="widget-title"><i class="bi bi-files"></i> Galeri Citra SFiltering</div>
@@ -491,7 +518,7 @@
                     </label>
                     <input type="file" id="image-upload" style="display: none;" accept="image/*" multiple>
                     <div id="file-list-names" class="file-list"></div>
-                    <button class="btn btn-sm btn-link text-danger p-0" onclick="clearFiles()">Hapus Semua</button>
+                    <button class="btn btn-sm btn-link text-danger p-0 mt-2" onclick="clearFiles()"><i class="bi bi-trash3"></i> Hapus Semua</button>
                 </div>
                 <div id="engine-status">Memuat Editor...</div>
             </div>
@@ -551,27 +578,27 @@ let fileStore = {};
 let notebookCells = [
     { 
         id: 'c1', 
-        content: `from PIL import Image, ImageFilter\n\nimg = Image.open("pilih_gambar.jpg").convert("L")\nfiltered_img = img.filter(ImageFilter.SMOOTH_MORE)\nfiltered_img.save("hasil_smooth.png")\nfiltered_img`, 
+        content: `# Mengimpor modul dari PIL\nfrom PIL import Image, ImageFilter\n\n# Membuka gambar dan mengubahnya ke grayscale\nimg = Image.open("pilih_gambar.jpg").convert("L")\n\n# Menerapkan filter smoothing yang lebih kuat\nfiltered_img = img.filter(ImageFilter.SMOOTH_MORE)\n\n# Menyimpan dan menampilkan hasil\nfiltered_img.save("hasil_smooth.png")\nfiltered_img`, 
         output: null, log: null, fileName: "hasil_smooth.png" 
     },
     { 
         id: 'c2', 
-        content: `image = Image.open("pilih_gambar.jpg").convert("L")\n\nkernel = [\n    1, 2, 1,\n    2, 4, 2,\n    1, 2, 1\n]\n\nkernel_filter = ImageFilter.Kernel((3, 3), kernel, scale=16, offset=0)\nsmoothened_image = image.filter(kernel_filter)\n\nsmoothened_image.save("hasil_custom_kernel.png")\nsmoothened_image`, 
+        content: `# Membuka gambar dan mengubahnya ke grayscale\nimage = Image.open("pilih_gambar.jpg").convert("L")\n\n# Mendefinisikan matriks kernel manual 3x3\nkernel = [\n    1, 2, 1,\n    2, 4, 2,\n    1, 2, 1\n]\n\n# Membuat custom filter dengan parameter ukuran 3x3, pembagi (scale) 16, dan offset 0\nkernel_filter = ImageFilter.Kernel((3, 3), kernel, scale=16, offset=0)\n\n# Menerapkan custom filter pada gambar\nsmoothened_image = image.filter(kernel_filter)\n\n# Menyimpan dan menampilkan hasil\nsmoothened_image.save("hasil_custom_kernel.png")\nsmoothened_image`, 
         output: null, log: null, fileName: "hasil_custom_kernel.png" 
     },
     { 
         id: 'c3', 
-        content: `img = Image.open("pilih_gambar.jpg").convert("L")\nmedian_img = img.filter(ImageFilter.MedianFilter(size=3))\nmedian_img.save("hasil_median.png")\nmedian_img`, 
+        content: `# Membuka gambar dan mengubahnya ke grayscale\nimg = Image.open("pilih_gambar.jpg").convert("L")\n\n# Menerapkan Median Filter dengan ukuran matriks 3x3\nmedian_img = img.filter(ImageFilter.MedianFilter(size=3))\n\n# Menyimpan dan menampilkan hasil\nmedian_img.save("hasil_median.png")\nmedian_img`, 
         output: null, log: null, fileName: "hasil_median.png" 
     },
     { 
         id: 'c4', 
-        content: `img = Image.open("pilih_gambar.jpg").convert("L")\nmin_img = img.filter(ImageFilter.MinFilter(size=3))\nmin_img.save("hasil_min.png")\nmin_img`, 
+        content: `# Membuka gambar dan mengubahnya ke grayscale\nimg = Image.open("pilih_gambar.jpg").convert("L")\n\n# Menerapkan Min Filter dengan ukuran matriks 3x3\nmin_img = img.filter(ImageFilter.MinFilter(size=3))\n\n# Menyimpan dan menampilkan hasil\nmin_img.save("hasil_min.png")\nmin_img`, 
         output: null, log: null, fileName: "hasil_min.png" 
     },
     { 
         id: 'c5', 
-        content: `img = Image.open("pilih_gambar.jpg").convert("L")\nmax_img = img.filter(ImageFilter.MaxFilter(size=3))\nmax_img.save("hasil_max.png")\nmax_img`, 
+        content: `# Membuka gambar dan mengubahnya ke grayscale\nimg = Image.open("pilih_gambar.jpg").convert("L")\n\n# Menerapkan Max Filter dengan ukuran matriks 3x3\nmax_img = img.filter(ImageFilter.MaxFilter(size=3))\n\n# Menyimpan dan menampilkan hasil\nmax_img.save("hasil_max.png")\nmax_img`, 
         output: null, log: null, fileName: "hasil_max.png" 
     }
 ];
@@ -663,12 +690,15 @@ async function initPyodide() {
         await micropip.install(["pillow"]);
         await pyodideInstance.runPythonAsync(`
 import io, base64
-from PIL import Image
+from PIL import Image, ImageOps
 import __main__
+
 def get_image_as_base64(var_name):
     try:
         obj = getattr(__main__, var_name, None)
         if obj and isinstance(obj, Image.Image):
+            obj = ImageOps.exif_transpose(obj)
+            
             buf = io.BytesIO()
             obj.save(buf, format='PNG')
             return base64.b64encode(buf.getvalue()).decode('utf-8')
@@ -684,6 +714,7 @@ def get_image_as_base64(var_name):
 
 function renderNotebook() {
     const container = document.getElementById("notebook");
+    const scrollPos = window.scrollY;
     container.innerHTML = "";
     notebookCells.forEach((cell, index) => {
         const cellDiv = document.createElement("div");
@@ -716,6 +747,7 @@ function renderNotebook() {
         });
         editors[cell.id] = editor;
     });
+    window.scrollTo(0, scrollPos);
 }
 
 async function runCell(id) {
@@ -728,29 +760,51 @@ async function runCell(id) {
 
     outArea.style.display = "block";
     logLabel.innerText = "Memproses...";
+    logLabel.style.color = "#ef4444";
+    
+    imgElement.style.display = "none";
+    imgElement.src = "";
+    dlBtn.style.display = "none";
+    cellObj.output = null;
+
     try {
         await pyodideInstance.runPythonAsync(code);
+        
         const lines = code.trim().split('\n');
         const lastLine = lines[lines.length - 1].trim();
+        
+        let targetFileName = "hasil_praktikum.png";
+        const saveMatch = code.match(/\.save\(\s*["']([^"']+)["']\s*\)/);
+        if (saveMatch) targetFileName = saveMatch[1];
+        
         const base64Data = await pyodideInstance.runPythonAsync(`get_image_as_base64("${lastLine}")`);
         if (base64Data) {
             const url = `data:image/png;base64,${base64Data}`;
             cellObj.output = url;
             cellObj.log = "Berhasil diproses";
-            imgElement.src = url; imgElement.style.display = "block";
-            dlBtn.href = url; dlBtn.style.display = "inline-flex";
+            cellObj.fileName = targetFileName;
+            
+            imgElement.src = url;
+            imgElement.style.display = "block";
+            dlBtn.href = url;
+            dlBtn.download = targetFileName;
+            dlBtn.style.display = "inline-flex";
         } else {
-            cellObj.log = "Selesai dijalankan."; imgElement.style.display = "none";
+            cellObj.log = "Selesai dijalankan.";
+            imgElement.style.display = "none";
         }
-        logLabel.innerText = cellObj.log; logLabel.style.color = "#22c55e";
+        logLabel.innerText = cellObj.log;
+        logLabel.style.color = "#22c55e";
     } catch (err) {
-        logLabel.innerText = "Error: " + err; logLabel.style.color = "#ef4444";
+        logLabel.innerText = "Error:\n" + err;
+        logLabel.style.color = "#ef4444";
+        cellObj.output = null;
     }
 }
 
 function addNewCellAt(index) {
     const newId = 'c' + Date.now();
-    notebookCells.splice(index, 0, { id: newId, content: "", output: null, log: null });
+    notebookCells.splice(index, 0, { id: newId, content: "", output: null, log: null, fileName: "" });
     renderNotebook();
 }
 
@@ -761,8 +815,14 @@ function deleteCell(id) {
     renderNotebook();
 }
 
+document.getElementById("image-upload").addEventListener("click", function() {
+    this.value = null;
+});
+
 document.getElementById("image-upload").addEventListener("change", (e) => {
     const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
     const list = document.getElementById("file-list-names");
     for (const file of files) {
         const reader = new FileReader();
@@ -771,19 +831,75 @@ document.getElementById("image-upload").addEventListener("change", (e) => {
             pyodideInstance.FS.writeFile(file.name, data);
             const url = URL.createObjectURL(new Blob([data], {type: file.type}));
             fileStore[file.name] = url;
+            
             const item = document.createElement("div");
             item.className = "file-item";
-            item.innerHTML = `<span>${file.name}</span><i class="bi bi-check2 text-success"></i>`;
+            
+            item.innerHTML = `
+                <span class="file-name">${file.name}</span>
+                <button class="btn-hapus-item" title="Hapus gambar"><i class="bi bi-trash"></i></button>
+            `;
+            
             item.onclick = () => {
                 document.querySelectorAll(".file-item").forEach(el => el.classList.remove("active"));
                 item.classList.add("active");
-                document.getElementById("input-display").src = url;
+                
+                const ext = file.name.split('.').pop().toLowerCase();
+                const tiffWarning = document.getElementById("tiff-warning");
+                
+                if (ext === 'tiff' || ext === 'tif') {
+                    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Format+TIFF+(Siap+Diproses)";
+                    if (tiffWarning) tiffWarning.style.display = "block";
+                } else {
+                    document.getElementById("input-display").src = url;
+                    if (tiffWarning) tiffWarning.style.display = "none";
+                }
+                
                 notebookCells.forEach(cell => {
-                    let current = editors[cell.id].getValue();
-                    const updated = current.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
-                    editors[cell.id].setValue(updated);
+                    if (editors[cell.id]) {
+                        let code = editors[cell.id].getValue();
+                        const updated = code.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
+                        editors[cell.id].setValue(updated);
+                        cell.content = updated;
+                    }
+                    
+                    // Logika Pembersihan Output Sel saat ganti file
+                    cell.output = null;
+                    cell.log = null;
+                    const logLabel = document.getElementById(`log-${cell.id}`);
+                    const imgElement = document.getElementById(`img-${cell.id}`);
+                    const dlBtn = document.getElementById(`dl-${cell.id}`);
+                    const outArea = document.getElementById(`out-${cell.id}`);
+                    if (logLabel) logLabel.innerText = "";
+                    if (imgElement) { imgElement.src = ""; imgElement.style.display = "none"; }
+                    if (dlBtn) dlBtn.style.display = "none";
+                    if (outArea) outArea.style.display = "none";
                 });
             };
+
+            const btnHapus = item.querySelector('.btn-hapus-item');
+            btnHapus.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                
+                try { pyodideInstance.FS.unlink(file.name); } catch(err) {}
+                
+                URL.revokeObjectURL(fileStore[file.name]);
+                delete fileStore[file.name];
+                
+                const isActive = item.classList.contains('active');
+                item.remove(); 
+                
+                const remainingItems = document.querySelectorAll(".file-item");
+                if (remainingItems.length === 0) {
+                    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+                    const tiffWarning = document.getElementById("tiff-warning");
+                    if (tiffWarning) tiffWarning.style.display = "none";
+                    document.getElementById("image-upload").value = "";
+                } else if (isActive) {
+                    remainingItems[0].click();
+                }
+            });
+
             list.appendChild(item);
             item.click();
         };
@@ -792,9 +908,17 @@ document.getElementById("image-upload").addEventListener("change", (e) => {
 });
 
 function clearFiles() {
+    Object.keys(fileStore).forEach(f => {
+        try { pyodideInstance.FS.unlink(f); } catch(e) {}
+        URL.revokeObjectURL(fileStore[f]);
+    });
     fileStore = {};
     document.getElementById("file-list-names").innerHTML = "";
     document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+    
+    const tiffWarning = document.getElementById("tiff-warning");
+    if (tiffWarning) tiffWarning.style.display = "none";
+    document.getElementById("image-upload").value = "";
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -807,6 +931,85 @@ document.addEventListener("DOMContentLoaded", function() {
         unlockSidebarNext();
     }
     initPyodide();
+
+    // ==========================================
+    // --- FITUR ANTI-CONTEK START ---
+    // ==========================================
+    const editorSection = document.getElementById('editor-section');
+    const quizSection = document.getElementById('quiz-card');
+    
+    if(editorSection) editorSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    if(quizSection) quizSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    
+    let editorBlurredToastShown = false;
+    let quizBlurredToastShown = false;
+
+    // Konfigurasi SweetAlert2 Toast
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        if (!editorSection || !quizSection) return;
+        
+        const quizRect = quizSection.getBoundingClientRect();
+        const editorRect = editorSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Jika Kuis sedang terlihat jelas di layar
+        if (quizRect.top < windowHeight * 0.7 && quizRect.bottom > windowHeight * 0.2) {
+            // Samarkan Editor
+            editorSection.style.opacity = "0.05"; 
+            editorSection.style.filter = "blur(8px)";
+            editorSection.style.pointerEvents = "none";
+            
+            // Perjelas Kuis
+            quizSection.style.opacity = "1";
+            quizSection.style.filter = "none";
+            quizSection.style.pointerEvents = "auto";
+
+            if (!editorBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Fokus',
+                    text: 'Editor disembunyikan agar kamu fokus mengerjakan Aktivitas.'
+                });
+                editorBlurredToastShown = true;
+                quizBlurredToastShown = false; 
+            }
+        } 
+        // Jika Editor sedang terlihat jelas di layar
+        else if (editorRect.top < windowHeight * 0.7 && editorRect.bottom > windowHeight * 0.2) {
+            // Samarkan Kuis
+            quizSection.style.opacity = "0.05"; 
+            quizSection.style.filter = "blur(8px)";
+            quizSection.style.pointerEvents = "none";
+            
+            // Perjelas Editor
+            editorSection.style.opacity = "1";
+            editorSection.style.filter = "none";
+            editorSection.style.pointerEvents = "auto";
+
+            if (!quizBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Eksplorasi',
+                    text: 'Aktivitas disembunyikan agar kamu fokus mencoba koding di Editor.'
+                });
+                quizBlurredToastShown = true;
+                editorBlurredToastShown = false; 
+            }
+        }
+    });
+    // --- FITUR ANTI-CONTEK END ---
 });
 </script>
 

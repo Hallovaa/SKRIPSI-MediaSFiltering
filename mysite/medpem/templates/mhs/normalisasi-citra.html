@@ -204,7 +204,7 @@
 
     <p style="text-align: center; font-size: 30px;">
       \[
-      P_{\text{baru}} = 255 \times \frac{P_{\text{lama}} - P_{\text{min}}}{P_{\text{maks}} - P_{\text{min}}}
+      I_{\text{baru}} = 255 \times \frac{I_{\text{lama}} - I_{\text{min}}}{I_{\text{maks}} - I_{\text{min}}}
       \]
     </p>
 
@@ -329,7 +329,7 @@
 
 <div class="material-nav">
   <a href="{% url 't_padding' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
-  <a id="nextBtnMaterial" href="{% url 'ringkasan3' %}" 
+  <a id="nextBtnMaterial" href="{% url 'ringkasan2' %}" 
      class="btn btn-primary {% if 'normalisasi-citra' not in selesai_slugs %}disabled{% endif %}" 
      style="{% if 'normalisasi-citra' not in selesai_slugs %}opacity:0.5; pointer-events:none;{% endif %}">
      Selanjutnya <i class="bi bi-chevron-right"></i>
@@ -362,7 +362,7 @@
       btnNavNext.style.opacity = '1';
       btnNavNext.style.pointerEvents = 'auto';
     }
-    const sidebarLink = document.querySelector('a[href*="ringkasan3"]');
+    const sidebarLink = document.querySelector('a[href*="ringkasan2"]');
     if (sidebarLink) {
       sidebarLink.classList.remove('locked');
       sidebarLink.style.pointerEvents = 'auto';

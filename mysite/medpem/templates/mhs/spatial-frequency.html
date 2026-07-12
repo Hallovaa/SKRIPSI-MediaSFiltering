@@ -271,7 +271,7 @@
   <a href="{% url 'pengertian_spatial' %}" class="btn btn-outline-secondary">
     <i class="bi bi-chevron-left"></i> Sebelumnya
   </a>
-  <a id="nav-next" href="{% url 'ringkasan2' %}" 
+  <a id="nav-next" href="{% url 'ringkasan3' %}" 
      class="btn btn-primary {% if 'spatial-frequency' not in selesai_slugs %}disabled{% endif %}" 
      style="{% if 'spatial-frequency' not in selesai_slugs %}opacity: 0.5; pointer-events: none;{% endif %}">
     Selanjutnya <i class="bi bi-chevron-right"></i>
@@ -316,7 +316,7 @@
       btnNavNext.style.pointerEvents = 'auto';
     }
 
-    const sidebarLink = document.querySelector('a[href*="ringkasan2"]');
+    const sidebarLink = document.querySelector('a[href*="ringkasan3"]');
     if (sidebarLink) {
       sidebarLink.classList.remove('locked');
       sidebarLink.style.pointerEvents = 'auto';

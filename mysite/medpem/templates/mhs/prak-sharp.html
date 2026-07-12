@@ -256,6 +256,7 @@
     cursor: pointer;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .file-item.active {
@@ -263,6 +264,17 @@
     background: #eff6ff;
     color: #1d4ed8;
     font-weight: 600;
+}
+
+.delete-file-btn {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+
+.delete-file-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .input-preview {
@@ -458,7 +470,7 @@
     </div>
 </section>
 
-<section class="card-section">
+<section class="card-section" id="editor-section">
     <div class="card-section-header">
         <i class="bi bi-journal-code"></i> Filtering CitraLab
     </div>
@@ -467,6 +479,7 @@
             <strong><i class="bi bi-info-circle text-primary"></i> Langkah-langkah Penggunaan Editor:</strong>
             <ul>
                 <li>Pastikan status editor pada sidebar kanan bawah menunjukkan <span class="text-success fw-bold">“Editor Siap”</span> sebelum mulai menggunakan editor.</li>
+                <li><span style="color: #d97706; font-weight: bold;"><i class="bi bi-folder-symlink"></i> Gambar Uji Coba:</span> Unduh gambar uji coba <a href="https://drive.google.com/drive/folders/1dBBQdNqPCJ8IcqrPj1hwQzJUIYs-hwhH?usp=sharing" target="_blank" class="text-decoration-none fw-bold" style="color: #3b82f6;">di sini</a>, kemudian unggah gambar ke editor.</li>
                 <li>Unggah gambar melalui tombol <strong>Unggah</strong> <i class="bi bi-upload ms-1"></i> pada sidebar.</li>
                 <li>Gambar yang diunggah atau dipilih dari Galeri Citra SFiltering akan otomatis ditampilkan pada <strong>pratinjau gambar</strong> <i class="bi bi-image ms-1"></i>.</li>
                 <li>Klik nama file pada Galeri Citra <i class="bi bi-files"></i>, dan nama file akan otomatis digunakan pada <strong>sel pertama</strong>.</li>
@@ -563,17 +576,17 @@ let notebookCells = [
     },
     { 
         id: 's2', 
-        content: `image = Image.open("pilih_gambar.jpg").convert("L")\n\nkernel = [\n    0, -1, 0,\n    -1, 5, -1,\n    0, -1, 0\n]\n\nkernel_filter = ImageFilter.Kernel((3, 3), kernel, scale=1, offset=0)\nsharpen_image = image.filter(kernel_filter)\nsharpen_image.save("sharpen_kernel.png")\nsharpen_image`, 
+        content: `from PIL import Image, ImageFilter\n\nimage = Image.open("pilih_gambar.jpg").convert("L")\n\nkernel = [\n    0, -1, 0,\n    -1, 5, -1,\n    0, -1, 0\n]\n\nkernel_filter = ImageFilter.Kernel((3, 3), kernel, scale=1, offset=0)\nsharpen_image = image.filter(kernel_filter)\nsharpen_image.save("sharpen_kernel.png")\nsharpen_image`, 
         output: null, log: null, fileName: "sharpen_kernel.png" 
     },
     { 
         id: 's3', 
-        content: `image = Image.open("pilih_gambar.jpg").convert("L")\nfiltered_image = image.filter(ImageFilter.UnsharpMask)\nfiltered_image.save("unsharp_mask.png")\nfiltered_image`, 
+        content: `from PIL import Image, ImageFilter\n\nimage = Image.open("pilih_gambar.jpg").convert("L")\nfiltered_image = image.filter(ImageFilter.UnsharpMask)\nfiltered_image.save("unsharp_mask.png")\nfiltered_image`, 
         output: null, log: null, fileName: "unsharp_mask.png" 
     },
     { 
         id: 's4', 
-        content: `import numpy as np\nfrom PIL import Image, ImageFilter\n\nimg = Image.open("pilih_gambar.jpg").convert("L")\nimage = np.array(img, dtype=np.float32)\n\nblur_img = img.filter(ImageFilter.GaussianBlur(radius=2))\nblur = np.array(blur_img, dtype=np.float32)\n\nk = 2\nhighboost = image + k * (image - blur)\n\nh_highboost = np.clip(highboost, 0, 255).astype(np.uint8)\nresult = Image.fromarray(h_highboost)\nresult.save("highboost_result.png")\nresult`, 
+        content: `import numpy as np\nfrom PIL import Image, ImageFilter\n\nimg = Image.open("pilih_gambar.jpg").convert("L")\nimage = np.array(img, dtype=np.float32)\n\n# Menerapkan Gaussian Blur pada citra\nblur_img = img.filter(ImageFilter.GaussianBlur(radius=2))\nblur = np.array(blur_img, dtype=np.float32)\n\n# Menentukan faktor penguatan (k) untuk Highboost\nk = 2\n# Menghitung highboost filtering\nhighboost = image + k * (image - blur)\n\n# Membatasi nilai piksel agar tetap dalam rentang 0-255\nh_highboost = np.clip(highboost, 0, 255).astype(np.uint8)\nresult = Image.fromarray(h_highboost)\nresult.save("highboost_result.png")\nresult`, 
         output: null, log: null, fileName: "highboost_result.png" 
     }
 ];
@@ -671,8 +684,15 @@ async function initPyodide() {
         await micropip.install(["pillow"]);
         await pyodideInstance.runPythonAsync(`
 import io, base64
-from PIL import Image
+from PIL import Image, ImageOps
 import __main__
+
+_old_open = Image.open
+def _patched_open(*args, **kwargs):
+    img = _old_open(*args, **kwargs)
+    return ImageOps.exif_transpose(img)
+Image.open = _patched_open
+
 def get_image_as_base64(var_name):
     try:
         obj = getattr(__main__, var_name, None)
@@ -736,6 +756,11 @@ async function runCell(id) {
 
     outArea.style.display = "block";
     logLabel.innerText = "Memproses...";
+    
+    imgElement.style.display = "none";
+    imgElement.src = "";
+    dlBtn.style.display = "none";
+
     try {
         await pyodideInstance.runPythonAsync(code);
         const lines = code.trim().split('\n');
@@ -753,12 +778,14 @@ async function runCell(id) {
         logLabel.innerText = cellObj.log; logLabel.style.color = "#22c55e";
     } catch (err) {
         logLabel.innerText = "Error: " + err; logLabel.style.color = "#ef4444";
+        imgElement.style.display = "none";
+        dlBtn.style.display = "none";
     }
 }
 
 function addNewCellAt(index) {
     const newId = 's' + Date.now();
-    notebookCells.splice(index, 0, { id: newId, content: "", output: null, log: null });
+    notebookCells.splice(index, 0, { id: newId, content: "from PIL import Image, ImageFilter\n\n", output: null, log: null });
     renderNotebook();
 }
 
@@ -779,9 +806,15 @@ document.getElementById("image-upload").addEventListener("change", (e) => {
             pyodideInstance.FS.writeFile(file.name, data);
             const url = URL.createObjectURL(new Blob([data], {type: file.type}));
             fileStore[file.name] = url;
+            
             const item = document.createElement("div");
             item.className = "file-item";
-            item.innerHTML = `<span>${file.name}</span><i class="bi bi-check2 text-success"></i>`;
+            // UPDATE: Ditambahkan tombol trash untuk menghapus gambar satu per satu
+            item.innerHTML = `
+                <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px;">${file.name}</span>
+                <i class="bi bi-trash text-danger delete-file-btn" title="Hapus gambar ini"></i>
+            `;
+            
             item.onclick = () => {
                 document.querySelectorAll(".file-item").forEach(el => el.classList.remove("active"));
                 item.classList.add("active");
@@ -790,8 +823,75 @@ document.getElementById("image-upload").addEventListener("change", (e) => {
                     let current = editors[cell.id].getValue();
                     const updated = current.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
                     editors[cell.id].setValue(updated);
+                    
+                    cell.output = null;
+                    cell.log = null;
+                    const outArea = document.getElementById(`out-${cell.id}`);
+                    const imgElement = document.getElementById(`img-${cell.id}`);
+                    const logLabel = document.getElementById(`log-${cell.id}`);
+                    const dlBtn = document.getElementById(`dl-${cell.id}`);
+                    if (outArea) outArea.style.display = "none";
+                    if (imgElement) {
+                        imgElement.src = "";
+                        imgElement.style.display = "none";
+                    }
+                    if (logLabel) logLabel.innerText = "";
+                    if (dlBtn) dlBtn.style.display = "none";
                 });
             };
+            
+            // Logika fungsi hapus satu per satu pada item list
+            const deleteBtn = item.querySelector('.delete-file-btn');
+            deleteBtn.onclick = (event) => {
+                event.stopPropagation(); // Mencegah bentrok click event aktif
+                
+                try {
+                    pyodideInstance.FS.unlink(file.name);
+                } catch(err) { console.log(err); }
+                
+                delete fileStore[file.name];
+                
+                // Cek apakah item yang sedang dihapus adalah item yang aktif
+                const isActive = item.classList.contains('active');
+                
+                // Hapus item dari tampilan list
+                item.remove();
+                
+                // Jika item yang dihapus adalah item aktif, pilih gambar lain secara otomatis
+                if (isActive) {
+                    const remainingItems = document.querySelectorAll('.file-item');
+                    
+                    if (remainingItems.length > 0) {
+                        // Jika masih ada gambar lain, klik otomatis gambar paling atas
+                        remainingItems[0].click();
+                    } else {
+                        // Jika tidak ada gambar tersisa, kembalikan ke default
+                        document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+                        
+                        // Kembalikan nama file di editor ke default
+                        notebookCells.forEach(cell => {
+                            let current = editors[cell.id].getValue();
+                            const updated = current.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("pilih_gambar.jpg")`);
+                            editors[cell.id].setValue(updated);
+                            
+                            cell.output = null;
+                            cell.log = null;
+                            const outArea = document.getElementById(`out-${cell.id}`);
+                            const imgElement = document.getElementById(`img-${cell.id}`);
+                            const logLabel = document.getElementById(`log-${cell.id}`);
+                            const dlBtn = document.getElementById(`dl-${cell.id}`);
+                            if (outArea) outArea.style.display = "none";
+                            if (imgElement) {
+                                imgElement.src = "";
+                                imgElement.style.display = "none";
+                            }
+                            if (logLabel) logLabel.innerText = "";
+                            if (dlBtn) dlBtn.style.display = "none";
+                        });
+                    }
+                }
+            };
+            
             list.appendChild(item);
             item.click();
         };
@@ -803,6 +903,17 @@ function clearFiles() {
     fileStore = {};
     document.getElementById("file-list-names").innerHTML = "";
     document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+    notebookCells.forEach(cell => {
+        cell.output = null;
+        cell.log = null;
+        const outArea = document.getElementById(`out-${cell.id}`);
+        const imgElement = document.getElementById(`img-${cell.id}`);
+        if (outArea) outArea.style.display = "none";
+        if (imgElement) {
+            imgElement.src = "";
+            imgElement.style.display = "none";
+        }
+    });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -815,6 +926,74 @@ document.addEventListener("DOMContentLoaded", function() {
         unlockSidebarNext();
     }
     initPyodide();
+
+    const editorSection = document.getElementById('editor-section');
+    const quizSection = document.getElementById('quiz-card');
+    
+    if(editorSection) editorSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    if(quizSection) quizSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    
+    let editorBlurredToastShown = false;
+    let quizBlurredToastShown = false;
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        if (!editorSection || !quizSection) return;
+        
+        const quizRect = quizSection.getBoundingClientRect();
+        const editorRect = editorSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        if (quizRect.top < windowHeight * 0.7 && quizRect.bottom > windowHeight * 0.2) {
+            editorSection.style.opacity = "0.05"; 
+            editorSection.style.filter = "blur(8px)";
+            editorSection.style.pointerEvents = "none";
+            
+            quizSection.style.opacity = "1";
+            quizSection.style.filter = "none";
+            quizSection.style.pointerEvents = "auto";
+
+            if (!editorBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Fokus',
+                    text: 'Editor disembunyikan agar kamu fokus mengerjakan Aktivitas.'
+                });
+                editorBlurredToastShown = true;
+                quizBlurredToastShown = false;
+            }
+        } 
+        else if (editorRect.top < windowHeight * 0.7 && editorRect.bottom > windowHeight * 0.2) {
+            quizSection.style.opacity = "0.05"; 
+            quizSection.style.filter = "blur(8px)";
+            quizSection.style.pointerEvents = "none";
+            
+            editorSection.style.opacity = "1";
+            editorSection.style.filter = "none";
+            editorSection.style.pointerEvents = "auto";
+
+            if (!quizBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Eksplorasi',
+                    text: 'Aktivitas disembunyikan agar kamu fokus mencoba koding di Editor.'
+                });
+                quizBlurredToastShown = true;
+                editorBlurredToastShown = false;
+            }
+        }
+    });
 });
 </script>
 

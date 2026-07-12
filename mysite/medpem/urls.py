@@ -30,20 +30,21 @@ urlpatterns = [
     path('materi/ringkasan-citra/', views.ringkasan_citra, name='ringkasan_citra'),
     path('materi/kuis-1/', views.kuis_1, name='kuis_1'),
     path('api/cek-kuis-1/', views.cek_nilai_kuis_1, name='cek_nilai_kuis_1'),
-
-    path('materi/pengertian-spatial/', views.pengertian_spatial, name='pengertian_spatial'),
-    path('materi/spatial-frequency/', views.spatial_frequency, name='spatial_frequency'),
+    
+    path('materi/k-konvolusi/', views.k_konvolusi, name='k_konvolusi'),
+    path('materi/t-padding/', views.t_padding, name='t_padding'),
+    path('materi/normalisasi-citra/', views.normalisasi_citra, name='normalisasi_citra'),
     path('materi/ringkasan2/', views.ringkasan2, name='ringkasan2'),
     path('materi/kuis-2/', views.kuis_2, name='kuis_2'),
     path('api/cek-kuis-2/', views.cek_nilai_kuis_2, name='cek_nilai_kuis_2'),
 
-    path('materi/k-konvolusi/', views.k_konvolusi, name='k_konvolusi'),
-    path('materi/t-padding/', views.t_padding, name='t_padding'),
-    path('materi/normalisasi-citra/', views.normalisasi_citra, name='normalisasi_citra'),
+    path('materi/pengertian-spatial/', views.pengertian_spatial, name='pengertian_spatial'),
+    path('materi/spatial-frequency/', views.spatial_frequency, name='spatial_frequency'),
     path('materi/ringkasan3/', views.ringkasan3, name='ringkasan3'),
     path('materi/kuis-3/', views.kuis_3, name='kuis_3'),
     path('api/cek-kuis-3/', views.cek_nilai_kuis_3, name='cek_nilai_kuis_3'),
 
+    
     path('materi/sl-filters/', views.sl_filters, name='sl_filters'),
     path('materi/sn-filters/', views.sn_filters, name='sn_filters'),
     path('materi/ringkasan4/', views.ringkasan4, name='ringkasan4'),

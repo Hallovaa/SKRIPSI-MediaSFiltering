@@ -1,7 +1,7 @@
 {% extends "mhs/base.html" %}
 {% load static %}
 
-{% block title %}Subbab 2 - Ringkasan Konvolusi{% endblock %}
+{% block title %}Subbab 3 - Ringkasan{% endblock %}
 
 {% block content %}
 {{ selesai_slugs|json_script:"selesai-slugs-data" }}
@@ -25,6 +25,7 @@
     background: #edf4fe;
     border-bottom: 2px solid #bcccdc;
   }
+
   .card-section-header i {
     font-size:20px;
     color:var(--primary-500);
@@ -36,12 +37,14 @@
     border-radius:8px;
     background: rgba(59,123,227,0.12);
   }
+
   .card-section-body {
     padding: 35px;
     font-size: 19px;
     color: #222f3a;
     background: #fff;
   }
+
   .summary-box {
     background: #fbfdff;
     border: 1px solid #bcccdc;
@@ -50,64 +53,60 @@
     box-shadow: 0 6px 18px rgba(16,32,58,0.02);
     margin-bottom: 18px;
   }
+
   .summary-box h4 { margin-top: 0; margin-bottom: 8px; }
-  .summary-box p { line-height: 1.6; }
+  .summary-box p, .summary-box ul { margin: 0 0 8px 0; line-height: 1.6; }
+  .muted { color: #6b7684; font-size: 0.95rem; }
+
   .material-nav { display:flex; gap:12px; justify-content:flex-end; margin-top:18px; }
   .material-nav .btn { min-width:120px; }
 
-  @media (max-width: 768px) {
-    .card-section-body { padding: 20px; }
-    .summary-box { padding: 20px; }
-  }
+  .def-list dt { font-weight:700; margin-top:10px; }
+  .def-list dd { margin: 0 0 8px 0; }
 </style>
 
 <div class="mb-3">
   <h1 class="title-main" style="margin:0;">
-      SUBBAB 2 - <span style="color:var(--primary-500)">RINGKASAN</span>
+    SUBBAB 3 - <span style="color:var(--primary-500)">RINGKASAN</span>
   </h1>
 </div>
 
 <section class="card-section" aria-labelledby="ringkasan-heading">
   <div class="card-section-header">
     <i class="bi bi-journal-text"></i>
-    <div id="ringkasan-heading">Ringkasan Materi</div>
+    <div id="ringkasan-heading">Ringkasan</div>
   </div>
 
   <div class="card-section-body">
+
     <div class="summary-box">
-      <h4><b>1. Konsep Konvolusi</b></h4>
-      <p style="text-align: justify; text-indent: 30px; margin-top: 10px; margin-left: 20px; margin-bottom: 30px;">
-        Konvolusi adalah teknik pada spatial domain yang menghasilkan nilai piksel baru menggunakan kernel dan piksel tetangganya untuk menghaluskan, 
-        menajamkan, atau mendeteksi tepi citra.
-      </p>
+      <h4><b>1. Pengertian <em>Spatial Filtering</em></b></h4>
+      <p style="text-align: justify; text-indent: 30px; margin-top: 20px; margin-left: 30px; margin-bottom: 50px;">
+        Spatial filtering adalah teknik pemrosesan citra yang bekerja langsung pada nilai piksel untuk 
+        meningkatkan kualitas citra, seperti mengurangi <em>noise</em> (<em>smoothing</em>) atau menajamkan detail citra (<em>sharpening</em>).
+      </p>    
 
-      <h4><b>2. Teknik Padding</b></h4>
-      <p style="text-align: justify; text-indent: 30px; margin-top: 10px; margin-left: 20px;">
-        Padding digunakan untuk menambahkan piksel di tepi citra agar proses konvolusi di bagian tepi tetap dapat dilakukan:
-      </p>
-      <ul style="margin-left: 40px; margin-bottom: 30px;">
-        <li><em>Zero padding</em>: Menambahkan nilai 0 (tepian hitam).</li>
-        <li><em>Constant padding</em>: Menambahkan nilai konstanta tertentu (rentang 1–255).</li>
-        <li><em>Reflect padding</em>: Mencerminkan nilai piksel dalam ke luar secara simetris.</li>
-        <li><em>Replicate padding</em>: Menggandakan nilai piksel pada baris atau kolom terluar.</li>
-        <li><em>Wrap padding</em>: Menyalin piksel dari sisi berlawanan secara periodik.</li>
-      </ul>
+      <h4><b>2. <em>Spatial Domain vs Frequency Domain</em></b></h4>
 
-      <h4><b>3. Normalisasi Citra</b></h4>
-      <p style="text-align: justify; text-indent: 30px; margin-top: 10px; margin-left: 20px;">
-       Normalisasi citra adalah proses menyesuaikan nilai piksel hasil pengolahan agar berada pada rentang 0–255 sehingga citra dapat ditampilkan dengan baik.
-      </p>
+      <dt style="margin-left: 30px; margin-top: 20px;">a. <em>Spatial Domain</em></dt>
+        <dd style="text-align: justify; text-indent: 30px; margin-top: 5px; margin-left: 50px;">
+          Pemrosesan citra yang dilakukan secara langsung pada nilai intensitas piksel. Teknik ini digunakan untuk penghalusan, penajaman, dan deteksi tepi citra.
+        </dd>
+
+      <dt style="margin-left: 30px;">b. <em>Frequency Domain</em></dt>
+        <dd style="text-align: justify; text-indent: 30px; margin-top: 5px; margin-left: 50px;">
+          Pemrosesan citra dilakukan dengan mengubah citra ke domain frekuensi menggunakan transformasi tertentu. Kemudian hasilnya dikembalikan ke <em>spatial domain</em> untuk memperoleh citra akhir.
+        </dd>
     </div>
 
     <div class="material-nav">
-      <a href="{% url 'normalisasi_citra' %}" class="btn btn-outline-secondary">
-        <i class="bi bi-chevron-left"></i> Sebelumnya
-      </a>
+      <a href="{% url 'spatial_frequency' %}" class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i> Sebelumnya</a>
       
       <a id="nav-next" href="{% url 'kuis_3' %}" class="btn btn-primary">
         Selanjutnya <i class="bi bi-chevron-right"></i>
       </a>
     </div>
+
   </div>
 </section>
 
@@ -115,6 +114,7 @@
 (function() {
   const currentSlug = 'ringkasan3';
   const btnNavNext = document.getElementById('nav-next');
+
   const dataElement = document.getElementById('selesai-slugs-data');
   const selesaiSlugs = dataElement ? JSON.parse(dataElement.textContent) : [];
 
@@ -137,9 +137,6 @@
         e.preventDefault();
         const targetUrl = this.href;
 
-        this.classList.add('disabled');
-        this.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...`;
-
         fetch("{% url 'update_progres' %}", {
           method: "POST",
           headers: {
@@ -150,7 +147,10 @@
           body: JSON.stringify({ slug: currentSlug })
         })
         .then(async response => {
-          if (!response.ok) throw new Error('Sesi berakhir');
+          const contentType = response.headers.get("content-type");
+          if (!response.ok || !contentType || !contentType.includes("application/json")) {
+            throw new Error('Sesi berakhir');
+          }
           return response.json();
         })
         .then(() => {

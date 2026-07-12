@@ -292,11 +292,11 @@
         </a>
       </div>
 
-      <button class="collapse-trigger {% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan3 kuis_3' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#konvolusiCollapse" aria-expanded="{% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan3 kuis_3' %}true{% else %}false{% endif %}" type="button">
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan2 kuis_2' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#konvolusiCollapse" aria-expanded="{% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan2 kuis_2' %}true{% else %}false{% endif %}" type="button">
         <span>Konvolusi</span>
         <i class="bi bi-chevron-down"></i>
       </button>
-      <div class="submenu collapse {% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan3 kuis_3' %}show{% endif %}" id="konvolusiCollapse" data-bs-parent="#sidebarMenu">
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'k_konvolusi t_padding normalisasi_citra ringkasan2 kuis_2' %}show{% endif %}" id="konvolusiCollapse" data-bs-parent="#sidebarMenu">
         <a href="{% url 'k_konvolusi' %}" class="nav-link {% if request.resolver_match.url_name == 'k_konvolusi' %}active{% endif %} {% if not lulus_kuis.kuis_1 %}locked{% endif %}" data-slug="k-konvolusi">
           <span class="label">Konsep Konvolusi</span>
           {% if not lulus_kuis.kuis_1 %}<i class="bi bi-lock-fill"></i>{% endif %}
@@ -309,36 +309,36 @@
           <span class="label">Normalisasi Citra</span>
           {% if 't-padding' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
-        <a href="{% url 'ringkasan3' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan3' %}active{% endif %} {% if 'normalisasi-citra' not in selesai_slugs %}locked{% endif %}" data-slug="ringkasan3">
+        <a href="{% url 'ringkasan2' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan2' %}active{% endif %} {% if 'normalisasi-citra' not in selesai_slugs %}locked{% endif %}" data-slug="ringkasan2">
           <span class="label">Ringkasan</span>
           {% if 'normalisasi-citra' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
-        <a href="{% url 'kuis_3' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_3' %}active{% endif %} {% if 'ringkasan3' not in selesai_slugs %}locked{% endif %}" data-slug="kuis-3">
+        <a href="{% url 'kuis_2' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_2' %}active{% endif %} {% if 'ringkasan2' not in selesai_slugs %}locked{% endif %}" data-slug="kuis-2">
           <span class="label">Kuis</span>
-          {% if 'ringkasan3' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+          {% if 'ringkasan2' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
       </div>
 
-      <button class="collapse-trigger {% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan2 kuis_2' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#spatialCollapse" aria-expanded="{% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan2 kuis_2' %}true{% else %}false{% endif %}" type="button">
+      <button class="collapse-trigger {% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan3 kuis_3' %}active{% else %}collapsed{% endif %}" data-bs-toggle="collapse" data-bs-target="#spatialCollapse" aria-expanded="{% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan3 kuis_3' %}true{% else %}false{% endif %}" type="button">
         <span>Pengenalan Spatial Filtering</span>
         <i class="bi bi-chevron-down"></i>
       </button>
-      <div class="submenu collapse {% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan2 kuis_2' %}show{% endif %}" id="spatialCollapse" data-bs-parent="#sidebarMenu">
-        <a href="{% url 'pengertian_spatial' %}" class="nav-link {% if request.resolver_match.url_name == 'pengertian_spatial' %}active{% endif %} {% if not lulus_kuis.kuis_3 %}locked{% endif %}" data-slug="pengertian-spatial">
+      <div class="submenu collapse {% if request.resolver_match.url_name in 'pengertian_spatial spatial_frequency ringkasan3 kuis_3' %}show{% endif %}" id="spatialCollapse" data-bs-parent="#sidebarMenu">
+        <a href="{% url 'pengertian_spatial' %}" class="nav-link {% if request.resolver_match.url_name == 'pengertian_spatial' %}active{% endif %} {% if not lulus_kuis.kuis_2 %}locked{% endif %}" data-slug="pengertian-spatial">
           <span class="label">Pengertian Spatial Filtering</span>
-          {% if not lulus_kuis.kuis_3 %}<i class="bi bi-lock-fill"></i>{% endif %}
+          {% if not lulus_kuis.kuis_2 %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
         <a href="{% url 'spatial_frequency' %}" class="nav-link {% if request.resolver_match.url_name == 'spatial_frequency' %}active{% endif %} {% if 'pengertian-spatial' not in selesai_slugs %}locked{% endif %}" data-slug="spatial-frequency">
           <span class="label">Spatial Domain vs Frequency Domain</span>
           {% if 'pengertian-spatial' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
-        <a href="{% url 'ringkasan2' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan2' %}active{% endif %} {% if 'spatial-frequency' not in selesai_slugs %}locked{% endif %}" data-slug="ringkasan2">
+        <a href="{% url 'ringkasan3' %}" class="nav-link {% if request.resolver_match.url_name == 'ringkasan3' %}active{% endif %} {% if 'spatial-frequency' not in selesai_slugs %}locked{% endif %}" data-slug="ringkasan3">
           <span class="label">Ringkasan</span>
           {% if 'spatial-frequency' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
-        <a href="{% url 'kuis_2' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_2' %}active{% endif %} {% if 'ringkasan2' not in selesai_slugs %}locked{% endif %}" data-slug="kuis-2">
+        <a href="{% url 'kuis_3' %}" class="nav-link {% if request.resolver_match.url_name == 'kuis_3' %}active{% endif %} {% if 'ringkasan3' not in selesai_slugs %}locked{% endif %}" data-slug="kuis-3">
           <span class="label">Kuis</span>
-          {% if 'ringkasan2' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
+          {% if 'ringkasan3' not in selesai_slugs %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
       </div>
 
@@ -347,9 +347,9 @@
         <i class="bi bi-chevron-down"></i>
       </button>
       <div class="submenu collapse {% if request.resolver_match.url_name in 'sl_filters sn_filters ringkasan4 kuis_4' %}show{% endif %}" id="smoothingCollapse" data-bs-parent="#sidebarMenu">
-        <a href="{% url 'sl_filters' %}" class="nav-link {% if request.resolver_match.url_name == 'sl_filters' %}active{% endif %} {% if not lulus_kuis.kuis_2 %}locked{% endif %}" data-slug="sl-filters">
+        <a href="{% url 'sl_filters' %}" class="nav-link {% if request.resolver_match.url_name == 'sl_filters' %}active{% endif %} {% if not lulus_kuis.kuis_3 %}locked{% endif %}" data-slug="sl-filters">
           <span class="label">Smoothing Linear Filters</span>
-          {% if not lulus_kuis.kuis_2 %}<i class="bi bi-lock-fill"></i>{% endif %}
+          {% if not lulus_kuis.kuis_3 %}<i class="bi bi-lock-fill"></i>{% endif %}
         </a>
         <a href="{% url 'sn_filters' %}" class="nav-link {% if request.resolver_match.url_name == 'sn_filters' %}active{% endif %} {% if 'sl-filters' not in selesai_slugs %}locked{% endif %}" data-slug="sn-filters">
           <span class="label">Smoothing Nonlinear filters</span>

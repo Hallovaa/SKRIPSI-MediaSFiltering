@@ -3,14 +3,14 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>Subbab 2 - Kuis</title>
+<title>Subbab 3 - Kuis</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="{% static 'assets/css/bootstrap-5.0.0-beta1.min.css' %}">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="{% static 'assets/img/icon/favvvv.png' %}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
-     body {
+    body {
         font-family: 'Inter', sans-serif;
         background: #f8fafc;
         margin: 0;
@@ -112,13 +112,6 @@
         font-size: 14px;
         color: #475569;
         flex-shrink: 0;
-    }
-
-    /* Pendukung visual jika ada gambar di dalam pilihan opsi */
-    .img-option {
-        max-height: 80px;
-        border-radius: 4px;
-        border: 1px solid #ddd;
     }
 
     .nav-btn {
@@ -255,11 +248,6 @@
                     <div class="timer">⏱ <span id="timer">{{ aktivitas.durasi_menit }}:00</span></div>
                 </div>
                 <h5 class="mb-4" id="teksSoal">Loading...</h5>
-                
-                <div id="gambarSoal" class="mb-4 hidden text-center">
-                    <img id="imgSoal" class="img-fluid rounded border shadow-sm" style="max-height: 250px;">
-                </div>
-
                 <div id="optionsContainer">
                     <div class="option" data-index="0" data-label="a"><span class="teksOpsi"></span></div>
                     <div class="option" data-index="1" data-label="b"><span class="teksOpsi"></span></div>
@@ -295,7 +283,7 @@
                 <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM ({{ aktivitas.kkm }}).</p>
                 <p class="text-success fw-bold">Kamu dapat melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
-                    <a id="btnNextBab" href="{% url 'pengertian_spatial' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
+                    <a id="btnNextBab" href="{% url 'sl_filters' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
                 </div>
             </div>
             <div id="tidakLulusBox" class="hidden mt-4">
@@ -303,26 +291,24 @@
                 <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi kuis untuk melanjutkan ke bab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-warning px-4 fw-bold" onclick="ulangKuis()">Ulangi Kuis</button>
-                    <a href="{% url 'k_konvolusi' %}" class="btn btn-nav-prev px-4 py-2 fw-bold">Pelajari Kembali</a>
+                    <a href="{% url 'pengertian_spatial' %}" class="btn btn-nav-prev px-4 py-2 fw-bold">Pelajari Kembali</a>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const STATIC_URL = "{% static '' %}";
-
         const soal = [
-            {q:"Pada operasi konvolusi diperlukan piksel tetangga karena ….", o:["satu piksel saja belum cukup untuk menggambarkan kondisi suatu area citra","satu piksel saja sudah cukup untuk menentukan objek","piksel tetangga hanya digunakan untuk mempercepat proses komputasi","konvolusi hanya menggunakan piksel pusat ","setiap piksel tidak memiliki nilai intensitas"]},
-            {q:"Piksel yang nilainya diperbarui pada proses konvolusi disebut ….", o:["piksel tepi","piksel latar","piksel pusat","piksel hasil","piksel padding"]},
-            {q:"Kernel Gaussian pada proses konvolusi umumnya digunakan untuk ….", o:["menonjolkan garis tepi","menghaluskan citra dan mengurangi noise","mendeteksi sudut","memperbesar resolusi citra","mengubah citra menjadi biner"]},
-            {q:"Ukuran kernel pada proses konvolusi harus bernilai ganjil karena ….", o:["mempermudah komputasi","agar kernel dapat digeser lebih cepat","mengikuti standar pemrosesan citra","harus memiliki satu piksel pusat yang jelas","mengurangi jumlah piksel tetangga"]},
-            {q:"Kernel berukuran 3×3 melibatkan jumlah piksel tetangga sebanyak ….", o:["delapan piksel","enam piksel","empat piksel","sembilan piksel","dua belas piksel"]},
-            {q:"Teknik padding digunakan dalam konvolusi dengan tujuan utama untuk ….", o:["mempercepat proses filtering","memperkecil ukuran citra","menghilangkan noise secara langsung","menormalkan nilai piksel","memungkinkan piksel tepi ikut diproses"]},
-            {q:"Jenis padding yang mengisi tepi citra dengan menyalin nilai piksel terdekat disebut ….", o:["zero padding","constant padding","replicate padding","wrap padding","reflect padding"]},
-            {q:"Tujuan utama dari normalisasi citra setelah konvolusi adalah ….", o:["meningkatkan resolusi citra","menyesuaikan nilai piksel ke rentang 0–255","menambahkan padding baru","menghilangkan kernel","memperbesar ukuran citra"]},
-            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk -12, -25, dan -8 adalah ….", o:["14, 0, dan 18","14, 0, dan 19","14, 0, dan 20","15, 0, dan 19","15, 0, dan 20"], img: STATIC_URL + "assets/img/kuis/k3-9.png"},
-            {q:"Perhatikan matriks piksel citra grayscale 4×4 di bawah ini! Hasil normalisasi nilai piksel untuk 270 dan 256 adalah ….", o:["255 dan 255","255 dan 230","255 dan 231","255 dan 240","255 dan 241"], img: STATIC_URL + "assets/img/kuis/k3-10.png"}
+            {q:"Dalam spatial domain, proses pengolahan citra dilakukan secara langsung terhadap informasi yang terdapat pada setiap piksel. Bentuk pemrosesan yang dilakukan pada domain ini adalah ….",o:["memodifikasi nilai intensitas piksel secara langsung","mengubah citra ke dalam representasi spektrum frekuensi","menyaring citra menggunakan Fast Fourier Transform (FFT)","menghilangkan representasi domain spasial pada citra","menghitung amplitudo komponen frekuensi citra"]},
+            {q:"Salah satu jenis noise yang sering muncul pada citra digital adalah salt and pepper noise. Karakteristik utama noise tersebut ditunjukkan oleh ….",o:["perubahan warna piksel secara acak pada seluruh citra","munculnya bintik-bintik hitam dan putih secara acak pada citra","munculnya garis-garis horizontal pada citra","perubahan resolusi citra secara tiba-tiba","hilangnya seluruh detail objek pada citra"]},
+            {q:"Sebelum citra diproses pada frequency domain, citra perlu ditransformasikan dari domain spasial ke domain frekuensi. Transformasi yang paling umum digunakan untuk tujuan tersebut adalah ….",o:["median transform","laplacian transform","Fast Fourier Transform (FFT)","thresholding","smoothing"]},
+            {q:"Spatial domain dan frequency domain merupakan dua pendekatan yang berbeda dalam pemrosesan citra digital. Perbedaan utama kedua domain tersebut terletak pada ….",o:["ukuran file citra yang dihasilkan","cara citra diproses","format penyimpanan citra","jumlah piksel penyusun citra","jenis warna yang digunakan pada citra"]},
+            {q:"Setelah proses filtering dilakukan pada frequency domain, diperlukan proses inverse transformation. Tujuan utama dari proses tersebut adalah ….",o:["mengubah citra ke dalam representasi spektrum frekuensi","menyaring komponen frekuensi rendah pada citra","menampilkan histogram citra hasil pemrosesan","mendeteksi keberadaan noise pada citra","mengembalikan citra ke dalam spatial domain"]},
+            {q:"Pada pemrosesan citra menggunakan frequency domain, terdapat tahapan yang harus dilakukan secara berurutan. Urutan proses yang benar adalah ….",o:["filtering → inverse transform → transform","inverse transform → filtering → transform","filtering → transform → inverse transform","transform → filtering → inverse transform","transform → thresholding → filtering"]},
+            {q:"Pada operasi neighbourhood operation, nilai suatu piksel hasil ditentukan berdasarkan informasi yang berasal dari ….",o:["piksel pusat beserta piksel-piksel tetangganya","piksel pusat saja tanpa melibatkan piksel lain","komponen frekuensi tinggi pada citra","distribusi histogram citra","hasil proses transformasi balik"]},
+            {q:"Hasil filtering pada frequency domain tidak dapat langsung ditampilkan sebagai citra karena ….",o:["noise pada citra belum sepenuhnya dihilangkan","intensitas warna citra berubah secara acak","kontras citra menjadi terlalu rendah","seluruh tepi objek pada citra menghilang","hasil filtering masih berada dalam bentuk komponen frekuensi"]},
+            {q:"Perbedaan mendasar antara spatial domain dan frequency domain dalam pemrosesan citra digital adalah bahwa ….",o:["spatial domain memproses informasi warna, sedangkan frequency domain memproses ukuran piksel","spatial domain dan frequency domain menggunakan objek pemrosesan yang sama, tetapi algoritmanya berbeda","spatial domain memproses nilai intensitas piksel secara langsung, sedangkan frequency domain memproses komponen frekuensi citra","spatial domain tidak memerlukan transformasi citra, sedangkan frequency domain memerlukan transformasi dan transformasi balik dalam proses pemrosesan","spatial domain hanya digunakan untuk citra grayscale, sedangkan frequency domain hanya digunakan untuk citra berwarna"]},
+            {q:"Suatu metode pemrosesan citra melakukan manipulasi nilai piksel tanpa terlebih dahulu mentransformasikan citra ke domain frekuensi. Metode tersebut termasuk ke dalam ….",o:["color domain","vector domain","transform domain","spatial domain","frequency domain"]}
         ];
 
         let idx = 0;
@@ -368,18 +354,6 @@
         function renderSoal(){
             document.getElementById('noSoal').innerText = idx + 1;
             document.getElementById('teksSoal').innerText = soal[idx].q;
-            
-            const containerGambar = document.getElementById('gambarSoal');
-            const imgElement = document.getElementById('imgSoal');
-
-            if(soal[idx].img) {
-                imgElement.src = soal[idx].img;
-                containerGambar.classList.remove('hidden');
-            } else {
-                imgElement.src = "";
-                containerGambar.classList.add('hidden');
-            }
-
             const opts = document.querySelectorAll('.option');
             opts.forEach((opt, i) => {
                 opt.classList.remove('selected', 'ragu-selected');
@@ -524,9 +498,8 @@
                         document.getElementById('statusText').innerText = 'LULUS';
                         document.getElementById('statusText').className = 'text-success fw-bold';
                         document.getElementById('lulusBox').classList.remove('hidden');
-                        
                         if (typeof unlockNextContent === "function") {
-                            unlockNextContent("pengertian-spatial");
+                            unlockNextContent("sl-filters");
                         }
                     } else {
                         document.getElementById('statusText').innerText = 'TIDAK LULUS';

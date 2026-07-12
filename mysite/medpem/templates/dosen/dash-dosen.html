@@ -1,7 +1,7 @@
 {% extends "dosen/base.html" %}
 {% load static %}
 
-{% block title %}Dashboard Pemantauan Belajar{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
 
@@ -305,6 +305,14 @@ document.querySelectorAll('#trackingTable th.sortable').forEach((headerCell, ind
 
     sortedRows.forEach(row => tbody.appendChild(row));
   });
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const dateHeader = document.querySelectorAll('#trackingTable th.sortable')[3];
+  if (dateHeader) {
+    dateHeader.classList.add('asc');
+    dateHeader.click();
+  }
 });
 </script>
 

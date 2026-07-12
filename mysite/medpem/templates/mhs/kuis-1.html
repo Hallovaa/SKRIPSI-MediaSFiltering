@@ -281,14 +281,14 @@
             <div id="loadingHasil" class="mt-3">Menghitung nilai secara aman...</div>
             <div id="lulusBox" class="hidden mt-4">
                 <p class="text-success fw-bold">Selamat! Nilai kamu telah memenuhi KKM ({{ aktivitas.kkm }}).</p>
-                <p class="text-success fw-bold">Kamu dapat melanjutkan ke bab berikutnya.</p>
+                <p class="text-success fw-bold">Kamu dapat melanjutkan ke subbab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <a id="btnNextBab" href="{% url 'k_konvolusi' %}" class="btn btn-primary px-4">Materi Selanjutnya</a>
                 </div>
             </div>
             <div id="tidakLulusBox" class="hidden mt-4">
                 <p class="text-danger fw-bold">Nilai kamu belum memenuhi KKM ({{ aktivitas.kkm }}).</p>
-                <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi kuis untuk melanjutkan ke bab berikutnya.</p>
+                <p class="text-info fw-bold">Silakan pelajari kembali materi, kemudian ulangi kuis untuk melanjutkan ke subbab berikutnya.</p>
                 <div class="d-flex justify-content-center gap-2">
                     <button class="btn btn-warning px-4 fw-bold" onclick="ulangKuis()">Ulangi Kuis</button>
                     <a href="{% url 'pengertian_citra' %}" class="btn btn-nav-prev px-4 py-2 fw-bold">Pelajari Kembali</a>
@@ -299,16 +299,16 @@
 
     <script>
         const soal = [
-            {q:"Jika citra memiliki resolusi 128×128, maka jumlah total piksel yang membentuk citra tersebut adalah ….", o:["256","12.800","16.384","32.768","128.128"]},
-            {q:"Dalam citra digital semakin besar nilai piksel berarti ….", o:["warna semakin gelap","warna semakin terang","warna semakin jenuh","citra semakin hitam","piksel semakin kecil"]},
-            {q:"Citra dengan resolusi rendah seperti 32×32 biasanya tampak ….", o:["lebih kabur atau blur","lebih tajam","lebih berwarna","lebih gelap","lebih cerah"]},
-            {q:"Semakin tinggi jumlah piksel pada citra, maka ….", o:["citra akan terlihat buram","ukuran file menjadi lebih kecil","warna menjadi hitam-putih","komputer sulit membacanya","detail citra semakin tajam dan jelas"]},
-            {q:"Citra RGB disebut citra 24-bit karena ….", o:["terdiri dari 24 warna utama","total pikselnya 24 buah","dihitung dengan rumus 8×3 piksel","setiap channel menyimpan 8 bit data","memiliki 24 tingkat kecerahan"]},
-            {q:"Jika R=100, G=150, B=200, maka nilai grayscale rata-rata adalah ….", o:["125","150","175","200","225"]},
-            {q:"Dengan rumus luminansi, jika R=100, G=150, B=200, maka nilai grayscale mendekati ….", o:["120","121","140","141","142"]},
-            {q:"Nilai ambang (threshold) digunakan untuk ….", o:["menentukan batas terang-gelap pada citra grayscale","mengubah ukuran piksel","mengatur kontras gambar","mengatur warna RGB","menghapus latar belakang"]},
+            {q:"Jika citra memiliki resolusi 128×128, maka jumlah total piksel yang membentuk citra tersebut adalah ….",o:["256","12.800","16.384","32.768","128.128"]},
+            {q:"Dalam representasi citra digital, setiap piksel memiliki nilai intensitas yang menunjukkan tingkat kecerahan. Semakin besar nilai intensitas suatu piksel, maka piksel tersebut akan memiliki karakteristik ….",o:["tingkat kecerahan semakin rendah sehingga tampak lebih gelap","tingkat kecerahan semakin tinggi sehingga tampak lebih terang","tingkat kejenuhan warna semakin meningkat","keseluruhan citra berubah menjadi hitam","ukuran fisik piksel menjadi semakin kecil"]},
+            {q:"Sebuah citra digital yang memiliki resolusi rendah, misalnya 32×32 piksel, umumnya tidak mampu merepresentasikan objek secara rinci sehingga tampilan citra akan terlihat ….",o:["lebih kabur atau blur karena detail citra berkurang","lebih tajam karena jumlah piksel lebih sedikit","memiliki variasi warna yang lebih banyak","memiliki tingkat kegelapan yang lebih tinggi","memiliki tingkat kecerahan yang lebih tinggi"]},
+            {q:"Pada citra digital, peningkatan jumlah piksel pada ukuran tampilan yang sama akan memengaruhi kualitas visual citra. Dampak yang paling tepat dari kondisi tersebut adalah ….",o:["citra akan terlihat lebih buram","ukuran file citra menjadi lebih kecil","citra berubah menjadi hitam-putih","komputer menjadi lebih sulit membaca citra","detail objek pada citra menjadi semakin tajam dan jelas"]},
+            {q:"Istilah citra RGB 24-bit digunakan untuk menggambarkan kapasitas penyimpanan informasi warna pada setiap piksel. Penyebutan 24-bit tersebut didasarkan pada fakta bahwa ….",o:["citra tersusun atas 24 warna utama","setiap citra memiliki 24 piksel penyusun","nilai 24 diperoleh dari perhitungan 8 × 3 piksel","setiap channel warna menyimpan data sebesar 8 bit","citra memiliki 24 tingkat kecerahan warna"]},
+            {q:"Suatu citra RGB memiliki nilai komponen warna R = 100, G = 150, dan B = 200. Jika nilai grayscale dihitung menggunakan metode rata-rata, maka nilai grayscale yang dihasilkan adalah ….",o:["125","150","175","200","225"]},
+            {q:"Suatu citra RGB memiliki nilai komponen warna R = 100, G = 150, dan B = 200. Jika konversi ke grayscale menggunakan metode luminansi, maka nilai grayscale yang diperoleh mendekati ….",o:["120","121","140","141","142"]},
+            {q:"Dalam proses konversi citra grayscale menjadi citra biner digunakan suatu nilai ambang (threshold) untuk menentukan klasifikasi setiap piksel. Fungsi utama penggunaan nilai ambang (threshold) tersebut adalah ….",o:["menentukan batas antara piksel terang dan piksel gelap pada citra grayscale","mengubah ukuran setiap piksel pada citra","mengatur tingkat kontras keseluruhan citra","mengubah komposisi warna RGB pada citra","menghilangkan bagian latar belakang citra"]},
             {q:"Seorang mahasiswa ingin menghemat ruang penyimpanan citra untuk aplikasi deteksi bentuk sederhana. Jenis citra apa yang paling efisien digunakan adalah ….", o:["RGB, karena warnanya lengkap","grayscale, karena tidak perlu tiga channel","biner, karena hanya membutuhkan 1 bit per piksel","RGB, karena resolusinya tinggi","grayscale, karena warnanya paling jelas"]},
-            {q:"Seorang peneliti ingin mengurangi ukuran file citra namun tetap mempertahankan informasi bentuk dan intensitas cahaya objek. Strategi yang paling efisien adalah ….", o:["mengubah citra RGB menjadi grayscale","mengubah citra RGB menjadi biner","menurunkan resolusi","menghapus sebagian piksel","mengompresi tanpa kehilangan data"]}
+            {q:"Sebuah foto berwarna akan digunakan pada dokumen yang tidak memerlukan informasi warna, tetapi bentuk objek dan tingkat kecerahan tetap harus dipertahankan. Cara yang paling tepat adalah ….",o:["menurunkan resolusi","menghapus sebagian piksel","mengompresi tanpa kehilangan data","mengubah citra RGB menjadi biner","mengubah citra RGB menjadi grayscale"]}
         ];
 
         let idx = 0;

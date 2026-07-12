@@ -1,7 +1,7 @@
 {% extends "mhs/base.html" %}
 {% load static %}
 
-{% block title %}Subbab 6 - Grayscale & Biner{% endblock %}
+{% block title %}Subbab 6 - Praktikum Grayscale & Biner{% endblock %}
 
 {% block content %}
 {{ selesai_slugs|json_script:"selesai-slugs-data" }}
@@ -272,6 +272,7 @@
     cursor: pointer;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .file-item.active {
@@ -279,6 +280,28 @@
     background: #eff6ff;
     color: #1d4ed8;
     font-weight: 600;
+}
+
+.file-item .file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.file-item .btn-hapus-item {
+    color: #ef4444;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.file-item .btn-hapus-item:hover {
+    background: #fee2e2;
 }
 
 .input-preview {
@@ -520,7 +543,7 @@
     <div class="card-section-body">
       <p class="muted">Setelah menyelesaikan pembelajaran pada bab ini, mahasiswa diharapkan mampu:</p>
       <ol>
-        <li>Menjelaskan penggunaan <em>library</em> Python dan SciPy  dalam pemrosesan citra digital.</li>
+        <li>Menjelaskan penggunaan <em>library</em> Python dan SciPy dalam pemrosesan citra digital.</li>
         <li>Menerapkan operasi konversi citra (<em>grayscale</em> dan citra biner) menggunakan kode Python.</li>
         <li>Menerapkan operasi konvolusi dengan <em>padding</em> dan normalisasi pada citra digital menggunakan kode Python dan <em>library</em> SciPy.</li>
         <li>Menerapkan teknik <em>smoothing</em> dan <em>sharpening</em> pada citra digital menggunakan kode Python.</li>
@@ -544,7 +567,6 @@
             <span class="keyword">from</span> <span class="module">PIL</span> <span class="keyword">import</span> <span class="module">Image</span><br>
             <span class="keyword">from</span> <span class="module">PIL</span> <span class="keyword">import</span> <span class="module">ImageFilter</span>
         </div>         
-        
 
         <p style="text-align:justify;text-indent:30px;">
             Dua modul utama yang digunakan dalam pustaka Pillow adalah <strong><em>Image</em></strong> dan <strong><em>ImageFilter</em></strong>. 
@@ -600,7 +622,8 @@
     </div>
 </section>
 
-<section class="card-section">
+<!-- Editor Bagian SFiltering CitraLab -->
+<section class="card-section" id="editor-section">
     <div class="card-section-header">
         <i class="bi bi-journal-code"></i> SFiltering CitraLab
     </div>
@@ -615,7 +638,7 @@
                 <li>Klik ikon <strong>Jalankan</strong> <i class="bi bi-play-fill text-success ms-1"></i> di sebelah kanan sel untuk memproses gambar.</li>
                 <li>Arahkan kursor ke bagian bawah sel, lalu klik ikon <i class="bi bi-plus-circle text-primary ms-1"></i> untuk menambahkan sel baru.</li>
                 <li>Klik ikon <i class="bi bi-trash text-danger ms-1"></i> pada sel yang tidak diperlukan.</li>
-                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel</i>.</li>
+                <li>Setelah kode berhasil dijalankan, hasil pemrosesan akan ditampilkan di bawah sel.</li>
                 <li>Klik tombol <strong>Unduh Gambar</strong> <i class="bi bi-download ms-1"></i> untuk menyimpan hasil pemrosesan.</li>
             </ul>
         </div>
@@ -626,6 +649,9 @@
                 <div class="widget-box">
                     <div class="widget-title"><i class="bi bi-image"></i> Pratinjau Gambar</div>
                     <img id="input-display" class="input-preview" src="https://via.placeholder.com/300x200?text=Pilih+Gambar">
+                    <div id="tiff-warning" style="display: none; font-size: 11px; color: #d97706; margin-top: 10px; text-align: center; background: #fef3c7; padding: 6px; border-radius: 6px; border: 1px solid #fcd34d;">
+                        <i class="bi bi-info-circle-fill me-1"></i> Format <strong>.tiff</strong> tidak dapat dipratinjau oleh browser, namun <b>berhasil diunggah dan siap diproses</b> di dalam editor.
+                    </div>
                 </div>
                 <div class="widget-box">
                     <div class="widget-title"><i class="bi bi-files"></i> Galeri Citra SFiltering</div>
@@ -634,7 +660,7 @@
                     </label>
                     <input type="file" id="image-upload" style="display: none;" accept="image/*" multiple>
                     <div id="file-list-names" class="file-list"></div>
-                    <button class="btn btn-sm btn-link text-danger p-0" onclick="clearFiles()">Hapus Semua</button>
+                    <button class="btn btn-sm btn-link text-danger p-0 mt-2" onclick="clearFiles()"><i class="bi bi-trash3"></i> Hapus Semua</button>
                 </div>
                 <div id="engine-status">Memuat Editor...</div>
             </div>
@@ -642,6 +668,7 @@
     </div>
 </section>
 
+<!-- Kuis / Aktivitas -->
 <section class="card-section" id="quiz-card">
     <div class="card-section-header">
         <i class="bi bi-pencil-square"></i> Aktivitas 1
@@ -653,15 +680,20 @@
                 <span id="quiz-instruction" class="text-muted small">Selesaikan semua soal untuk melanjutkan materi</span>
             </div>
 
+            <!-- PENAMBAHAN SKENARIO UNTUK KONTEKS NAMA FILE -->
             <div id="q1" class="quiz-question active">
-                <p>1. Perhatikan potongan kode Python berikut:</p>
+                <p>1. Della memiliki dua file gambar di dalam foldernya, yaitu <strong>iwak-haruan.png</strong> dan <strong>iwak-sapat.png</strong>. Ia ingin membuka gambar <strong>iwak-haruan.png</strong> menggunakan pustaka Pillow lalu mengonversinya menjadi <em>grayscale</em>.</p>
+                <p class="small">Lengkapilah bagian kode yang kosong di bawah ini agar program Della dapat berjalan sesuai dengan instruksi pada komentar.</p>
                 <div class="code-snippet">
-                    img = Image.open(<span class="string">"gambar.jpg"</span>)<br>
-                    gray = img.<input type="text" id="ans1" class="quiz-input" style="width: 100px;" placeholder="..." oninput="resetStyle(this)">("L")
+                    <span class="text-muted" style="font-size: 14px; font-style: italic; font-weight: normal;"># Memasukkan library import pustaka Pillow</span><br>
+                    <span class="keyword">from</span> <input type="text" id="ans1a" class="quiz-input" style="width: 60px;" placeholder="..." oninput="resetStyle(this)"> <span class="keyword">import</span> <input type="text" id="ans1b" class="quiz-input" style="width: 80px;" placeholder="..." oninput="resetStyle(this)"><br><br>
+                    
+                    <span class="text-muted" style="font-size: 14px; font-style: italic; font-weight: normal;"># Membuka file gambar</span><br>
+                    img = <input type="text" id="ans1c" class="quiz-input" style="width: 80px;" placeholder="..." oninput="resetStyle(this)">.open(<span class="string">"<input type="text" id="ans1d" class="quiz-input" style="width: 185px;" placeholder="..." oninput="resetStyle(this)">"</span>)<br><br>
+                    
+                    <span class="text-muted" style="font-size: 14px; font-style: italic; font-weight: normal;"># Mengonversi gambar menjadi grayscale</span><br>
+                    grayscale = img.<input type="text" id="ans1e" class="quiz-input" style="width: 95px;" placeholder="..." oninput="resetStyle(this)">(<span class="string">"L"</span>)
                 </div>
-                <p style="text-align:justify;">
-                    Lengkapilah bagian kode yang kosong agar citra RGB dapat dikonversi menjadi citra grayscale menggunakan library PIL (Pillow)!
-                </p>
                 <div id="feedback1" class="feedback-msg"></div>
                 <div class="mt-3">
                     <button id="btn-check1" class="btn-cek" onclick="checkStep1()">Cek Jawaban</button>
@@ -672,7 +704,7 @@
             <div id="q2" class="quiz-question">
                 <p>2. Perhatikan potongan kode Python berikut:</p>
                 <div class="code-snippet">
-                    img = Image.open(<span class="string">"gambar.jpg"</span>).convert(<span class="string">"L"</span>)<br>
+                    img = Image.open(<span class="string">"iwak-haruan.png"</span>).convert(<span class="string">"L"</span>)<br>
                     binary_img = img.<input type="text" id="ans2c" class="quiz-input" style="width: 80px;" placeholder="..." oninput="resetStyle(this)">(<span class="keyword">lambda</span> x: <input type="text" id="ans2a" class="quiz-input" style="width: 60px;" placeholder="..." oninput="resetStyle(this)"> <span class="keyword">if</span> x > threshold <span class="keyword">else</span> <input type="text" id="ans2b" class="quiz-input" style="width: 60px;" placeholder="..." oninput="resetStyle(this)">)
                 </div>
                 <p class="small">Lengkapilah bagian kode yang kosong agar citra grayscale dapat dikonversi menjadi citra biner menggunakan metode thresholding!</p>
@@ -755,20 +787,44 @@ function updateProgressDatabase() {
 }
 
 function checkStep1() {
-    const input = document.getElementById('ans1');
-    const val = input.value.trim().toLowerCase();
+    const inputA = document.getElementById('ans1a');
+    const inputB = document.getElementById('ans1b');
+    const inputC = document.getElementById('ans1c');
+    const inputD = document.getElementById('ans1d');
+    const inputE = document.getElementById('ans1e');
+    
+    // .toLowerCase() dihapus agar case-sensitive!
+    const valA = inputA.value.trim();
+    const valB = inputB.value.trim();
+    const valC = inputC.value.trim();
+    const valD = inputD.value.trim();
+    const valE = inputE.value.trim();
+    
     const feedback = document.getElementById('feedback1');
-    if (val === 'convert') {
-        input.classList.add('input-correct');
-        feedback.innerText = "Benar - Citra RGB diubah menjadi citra grayscale menggunakan img.convert(\"L\")";
+    let isCorrect = true;
+    
+    // Pengecekan Case-Sensitive secara ketat dan validasi disesuaikan skenario
+    if (valA === 'PIL') { inputA.classList.add('input-correct'); } else { inputA.classList.add('input-error'); isCorrect = false; }
+    if (valB === 'Image') { inputB.classList.add('input-correct'); } else { inputB.classList.add('input-error'); isCorrect = false; }
+    if (valC === 'Image') { inputC.classList.add('input-correct'); } else { inputC.classList.add('input-error'); isCorrect = false; }
+    
+    // Validasi diubah menjadi file 'iwak-haruan.png'
+    if (valD === 'iwak-haruan.png') { inputD.classList.add('input-correct'); } else { inputD.classList.add('input-error'); isCorrect = false; }
+    
+    if (valE === 'convert') { inputE.classList.add('input-correct'); } else { inputE.classList.add('input-error'); isCorrect = false; }
+    
+    if (isCorrect) {
+        feedback.innerText = "Benar! Semua kode kamu sudah sesuai dengan aturan Python dan skenario yang diberikan.";
         feedback.className = "feedback-msg feedback-success";
         feedback.style.display = "block";
+        
         document.getElementById('btn-check1').style.display = "none";
         document.getElementById('btn-next-q').style.display = "inline-block";
-        input.disabled = true;
+        
+        // Kunci form input setelah benar
+        inputA.disabled = true; inputB.disabled = true; inputC.disabled = true; inputD.disabled = true; inputE.disabled = true;
     } else {
-        input.classList.add('input-error');
-        feedback.innerText = "Jawaban belum tepat. Silakan periksa kembali dan coba lagi";
+        feedback.innerText = "Masih ada isian yang salah. Ingat: perhatikan nama file sesuai skenario, serta huruf besar/kecil pada fungsi (Python bersifat Case-Sensitive).";
         feedback.className = "feedback-msg feedback-error";
         feedback.style.display = "block";
     }
@@ -783,9 +839,11 @@ function checkStep2() {
     const valC = inputC.value.trim().toLowerCase();
     const feedback = document.getElementById('feedback2');
     let isCorrect = true;
+    
     if (valA === '255') { inputA.classList.add('input-correct'); } else { inputA.classList.add('input-error'); isCorrect = false; }
     if (valB === '0') { inputB.classList.add('input-correct'); } else { inputB.classList.add('input-error'); isCorrect = false; }
     if (valC === 'point') { inputC.classList.add('input-correct'); } else { inputC.classList.add('input-error'); isCorrect = false; }
+    
     if (isCorrect) {
         feedback.innerText = "Benar - Metode point() digunakan untuk mengubah piksel berdasarkan nilai threshold.";
         feedback.className = "feedback-msg feedback-success";
@@ -806,10 +864,24 @@ function checkStep2() {
 
 let pyodideInstance;
 let fileStore = {};
+
 let notebookCells = [
-    { id: 'c1', content: 'from PIL import Image\n\nimg = Image.open("pilih_gambar.jpg")\ngray = img.convert("L")\ngray.save("Hasil_grayscale.png")\ngray', output: null, log: null, fileName: "" },
-    { id: 'c2', content: "binary = gray.point(lambda x: 255 if x > 128 else 0, '1')\nbinary.save(\"hasil_biner.png\")\nbinary", output: null, log: null, fileName: "" }
+    { 
+        id: 'c1', 
+        content: '# Mengimpor modul Image dari PIL\nfrom PIL import Image\n\n# Membuka gambar yang dipilih\nimg = Image.open("pilih_gambar.jpg")\n\n# Mengonversi gambar menjadi grayscale (hitam putih)\ngray = img.convert("L")\n\n# Menyimpan dan menampilkan hasil\ngray.save("hasil_grayscale.png")\ngray', 
+        output: null, 
+        log: null, 
+        fileName: "" 
+    },
+    { 
+        id: 'c2', 
+        content: '# Mengimpor modul Image dari PIL\nfrom PIL import Image\n\n# Membuka gambar dan langsung mengonversinya ke grayscale\nimg2 = Image.open("pilih_gambar.jpg").convert("L")\n\n# Menghitung nilai threshold (rata-rata dari seluruh nilai piksel)\nthreshold = int(sum(img2.getdata()) / len(img2.getdata()))\n\n# Mengubah gambar grayscale menjadi biner (0 untuk hitam, 255 untuk putih)\nbinary = img2.point(lambda x: 255 if x > threshold else 0, \'1\')\n\n# Menyimpan dan menampilkan hasil\nbinary.save("hasil_biner.png")\nbinary', 
+        output: null, 
+        log: null, 
+        fileName: "" 
+    }
 ];
+
 let editors = {};
 
 async function initPyodide() {
@@ -818,14 +890,18 @@ async function initPyodide() {
         await pyodideInstance.loadPackage(["micropip"]);
         const micropip = pyodideInstance.pyimport("micropip");
         await micropip.install(["pillow", "numpy"]);
+        
         await pyodideInstance.runPythonAsync(`
 import io, base64
-from PIL import Image
+from PIL import Image, ImageOps
 import __main__
+
 def get_image_as_base64(var_name):
     try:
         obj = getattr(__main__, var_name, None)
         if obj and isinstance(obj, Image.Image):
+            obj = ImageOps.exif_transpose(obj)
+            
             buf = io.BytesIO()
             obj.save(buf, format='PNG')
             return base64.b64encode(buf.getvalue()).decode('utf-8')
@@ -897,8 +973,17 @@ async function runCell(id) {
     const imgElement = document.getElementById(`img-${id}`);
     const dlBtn = document.getElementById(`dl-${id}`);
     const outArea = document.getElementById(`out-${id}`);
+    
     outArea.style.display = "block";
     logLabel.innerText = "Memproses...";
+    logLabel.style.color = "#ef4444";
+    
+    // Membersihkan gambar lama sesaat setelah tombol Run diklik
+    imgElement.style.display = "none";
+    imgElement.src = "";
+    dlBtn.style.display = "none";
+    cellObj.output = null;
+
     try {
         await pyodideInstance.runPythonAsync(code);
         const lines = code.trim().split('\n');
@@ -906,7 +991,9 @@ async function runCell(id) {
         let targetFileName = "hasil_praktikum.png";
         const saveMatch = code.match(/\.save\(\s*["']([^"']+)["']\s*\)/);
         if (saveMatch) targetFileName = saveMatch[1];
+        
         const base64Data = await pyodideInstance.runPythonAsync(`get_image_as_base64("${lastLine}")`);
+        
         if (base64Data) {
             const url = `data:image/png;base64,${base64Data}`;
             cellObj.output = url;
@@ -919,18 +1006,24 @@ async function runCell(id) {
             dlBtn.style.display = "inline-flex";
         } else {
             cellObj.log = "Selesai dijalankan.";
-            imgElement.style.display = "none";
         }
         logLabel.innerText = cellObj.log;
         logLabel.style.color = "#22c55e";
     } catch (err) {
         logLabel.innerText = "Error:\n" + err;
         logLabel.style.color = "#ef4444";
+        cellObj.output = null;
     }
 }
 
+document.getElementById("image-upload").addEventListener("click", function() {
+    this.value = null;
+});
+
 document.getElementById("image-upload").addEventListener("change", (e) => {
     const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
     const list = document.getElementById("file-list-names");
     for (const file of files) {
         const reader = new FileReader();
@@ -939,19 +1032,79 @@ document.getElementById("image-upload").addEventListener("change", (e) => {
             pyodideInstance.FS.writeFile(file.name, data);
             const url = URL.createObjectURL(new Blob([data], {type: file.type}));
             fileStore[file.name] = url;
+            
             const item = document.createElement("div");
             item.className = "file-item";
-            item.innerHTML = `<span>${file.name}</span><i class="bi bi-check2 text-success"></i>`;
+            
+            item.innerHTML = `
+                <span class="file-name">${file.name}</span>
+                <button class="btn-hapus-item" title="Hapus gambar"><i class="bi bi-trash"></i></button>
+            `;
+            
             item.onclick = () => {
                 document.querySelectorAll(".file-item").forEach(el => el.classList.remove("active"));
                 item.classList.add("active");
-                document.getElementById("input-display").src = url;
-                if (notebookCells.length > 0) {
-                    let first = editors[notebookCells[0].id].getValue();
-                    const updated = first.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
-                    editors[notebookCells[0].id].setValue(updated);
+                
+                const ext = file.name.split('.').pop().toLowerCase();
+                const tiffWarning = document.getElementById("tiff-warning");
+                
+                if (ext === 'tiff' || ext === 'tif') {
+                    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Format+TIFF+(Siap+Diproses)";
+                    if (tiffWarning) tiffWarning.style.display = "block";
+                } else {
+                    document.getElementById("input-display").src = url;
+                    if (tiffWarning) tiffWarning.style.display = "none";
                 }
+                
+                notebookCells.forEach(cell => {
+                    if (editors[cell.id]) {
+                        let code = editors[cell.id].getValue();
+                        const updated = code.replace(/Image\.open\s*\(\s*["']([^"']*)["']\s*\)/g, `Image.open("${file.name}")`);
+                        editors[cell.id].setValue(updated);
+                        cell.content = updated;
+                    }
+                    
+                    // Menghilangkan gambar/output lama saat ganti file dari galeri
+                    const outArea = document.getElementById(`out-${cell.id}`);
+                    if (outArea) outArea.style.display = "none";
+                    
+                    const imgElement = document.getElementById(`img-${cell.id}`);
+                    if (imgElement) {
+                        imgElement.style.display = "none";
+                        imgElement.src = "";
+                    }
+                    
+                    const dlBtn = document.getElementById(`dl-${cell.id}`);
+                    if (dlBtn) dlBtn.style.display = "none";
+                    
+                    cell.output = null;
+                    cell.log = null;
+                });
             };
+
+            const btnHapus = item.querySelector('.btn-hapus-item');
+            btnHapus.addEventListener('click', (event) => {
+                event.stopPropagation(); 
+                
+                try { pyodideInstance.FS.unlink(file.name); } catch(err) {}
+                
+                URL.revokeObjectURL(fileStore[file.name]);
+                delete fileStore[file.name];
+                
+                const isActive = item.classList.contains('active');
+                item.remove(); 
+                
+                const remainingItems = document.querySelectorAll(".file-item");
+                if (remainingItems.length === 0) {
+                    document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+                    const tiffWarning = document.getElementById("tiff-warning");
+                    if (tiffWarning) tiffWarning.style.display = "none";
+                    document.getElementById("image-upload").value = "";
+                } else if (isActive) {
+                    remainingItems[0].click();
+                }
+            });
+
             list.appendChild(item);
             item.click();
         };
@@ -967,6 +1120,10 @@ function clearFiles() {
     fileStore = {};
     document.getElementById("file-list-names").innerHTML = "";
     document.getElementById("input-display").src = "https://via.placeholder.com/300x200?text=Pilih+Gambar";
+    
+    const tiffWarning = document.getElementById("tiff-warning");
+    if (tiffWarning) tiffWarning.style.display = "none";
+    document.getElementById("image-upload").value = "";
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -989,6 +1146,89 @@ document.addEventListener("DOMContentLoaded", function() {
         unlockSidebarNext();
     }
     initPyodide();
+
+    // ==========================================
+    // --- FITUR ANTI-CONTEK START ---
+    // ==========================================
+    const editorSection = document.getElementById('editor-section');
+    const quizSection = document.getElementById('quiz-card');
+    
+    if(editorSection) editorSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    if(quizSection) quizSection.style.transition = "opacity 0.4s ease, filter 0.4s ease";
+    
+    let editorBlurredToastShown = false;
+    let quizBlurredToastShown = false;
+
+    // Konfigurasi SweetAlert2 Toast
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        if (!editorSection || !quizSection) return;
+        
+        const quizRect = quizSection.getBoundingClientRect();
+        const editorRect = editorSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight;
+        
+        // Cek apakah mahasiswa sudah menyelesaikan kuis
+        // Jika sudah selesai, kamu bisa saja menonaktifkan fitur blur (opsional). 
+        // Namun saat ini blur akan terus aktif.
+
+        // Jika Kuis sedang terlihat jelas di layar
+        if (quizRect.top < windowHeight * 0.7 && quizRect.bottom > windowHeight * 0.2) {
+            // Samarkan Editor
+            editorSection.style.opacity = "0.05"; 
+            editorSection.style.filter = "blur(8px)";
+            editorSection.style.pointerEvents = "none";
+            
+            // Perjelas Kuis
+            quizSection.style.opacity = "1";
+            quizSection.style.filter = "none";
+            quizSection.style.pointerEvents = "auto";
+
+            if (!editorBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Fokus',
+                    text: 'Editor disembunyikan agar kamu fokus mengerjakan Aktivitas.'
+                });
+                editorBlurredToastShown = true;
+                quizBlurredToastShown = false; // Reset trigger sebaliknya
+            }
+        } 
+        // Jika Editor sedang terlihat jelas di layar
+        else if (editorRect.top < windowHeight * 0.7 && editorRect.bottom > windowHeight * 0.2) {
+            // Samarkan Kuis
+            quizSection.style.opacity = "0.05"; 
+            quizSection.style.filter = "blur(8px)";
+            quizSection.style.pointerEvents = "none";
+            
+            // Perjelas Editor
+            editorSection.style.opacity = "1";
+            editorSection.style.filter = "none";
+            editorSection.style.pointerEvents = "auto";
+
+            if (!quizBlurredToastShown) {
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Mode Eksplorasi',
+                    text: 'Aktivitas disembunyikan agar kamu fokus mencoba koding di Editor.'
+                });
+                quizBlurredToastShown = true;
+                editorBlurredToastShown = false; // Reset trigger sebaliknya
+            }
+        }
+    });
+    // --- FITUR ANTI-CONTEK END ---
 });
 </script>
 
