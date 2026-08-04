@@ -130,7 +130,7 @@
           <option value="" disabled {% if not kelas_terpilih %}selected{% endif %}>-- Pilih Kelas Terlebih Dahulu --</option>
           {% for kelas in daftar_kelas %}
             <option value="{{ kelas.id }}" {% if kelas_terpilih and kelas_terpilih.id == kelas.id %}selected{% endif %}>
-              {{ kelas.nama_kelas }} (Angkatan {{ kelas.angkatan }})
+              Kelas {{ kelas.nama_kelas }} ({{ kelas.angkatan }})
             </option>
           {% endfor %}
         {% endif %}

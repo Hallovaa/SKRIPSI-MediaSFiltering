@@ -13,6 +13,7 @@ urlpatterns = [
 
     path('dash-dosen/', views.dash_dosen, name='dash_dosen'),
     path('dash-dosen/data-kelas/', views.data_kelas, name='data_kelas'),
+    path('dash-dosen/edit-kelas/<int:id>/', views.edit_kelas, name='edit_kelas'),
     path('dash-dosen/hapus-kelas/<int:id>/', views.hapus_kelas, name='hapus_kelas'),
     path('dash-dosen/data-mhs/', views.data_mhs, name='data_mhs'),
     path('dosen/mahasiswa/edit/<int:mhs_id>/', views.edit_mhs, name='edit_mhs'),

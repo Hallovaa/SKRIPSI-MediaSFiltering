@@ -366,7 +366,7 @@
                         <option value="">Semua Kelas</option>
                         {% for k in daftar_kelas %}
                         <option value="{{ k.id }}" {% if request.GET.kelas == k.id|stringformat:"s" %}selected{% endif %}>
-                            {{ k.nama_kelas }}
+                            {{ k.nama_kelas }} - {{ k.angkatan }}
                         </option>
                         {% endfor %}
                     </select>

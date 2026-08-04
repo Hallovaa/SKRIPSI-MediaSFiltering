@@ -41,7 +41,7 @@ class Dosen(models.Model):
 class Kelas(models.Model):
     dosen = models.ForeignKey(Dosen, on_delete=models.CASCADE, related_name='daftar_kelas')
     nama_kelas = models.CharField(max_length=100)
-    angkatan = models.CharField(max_length=10)
+    angkatan = models.CharField(max_length=50)
     token = models.CharField(max_length=6, unique=True, blank=True)
 
     def save(self, *args, **kwargs):

@@ -16,6 +16,8 @@
     margin-bottom: 22px;
     box-shadow: 0 6px 18px rgba(16,32,58,0.03);
   }
+
+  {% comment %} Judul Header dan warna header{% endcomment %}
   .card-section-header {
     padding: 14px 18px;
     font-size: 20px;
@@ -37,15 +39,31 @@
     border-radius:8px;
     background: rgba(59,123,227,0.12);
   }
+
+  {% comment %} Isi Teks Utama {% endcomment %}
   .card-section-body {
     padding: 35px;
     font-size: 19px;
     color: #222f3a;
     background: #fff;
   }
-  .card-section-body p { margin-bottom:12px; line-height:1.6; }
-  .card-section-body ol { margin-top:8px; padding-left:35px; }
-  .card-section-body li { margin-bottom:12px; font-size:19px; }
+
+  .card-section-body p { 
+    margin-bottom:12px; 
+    line-height:1.6; 
+  }
+
+  .card-section-body ol { 
+    margin-top:8px; 
+    padding-left:35px; 
+  }
+
+  {% comment %} Teks Daftar (List) {% endcomment %}
+  .card-section-body li { 
+    margin-bottom:12px; 
+    font-size:19px; 
+  }
+
   .option-btn {
     display: block;
     width: 100%;
@@ -289,7 +307,7 @@
           child.style.borderColor = 'rgba(16,32,58,0.1)';
         });
 
-        if (opt === item.ans) {
+        if (opt === item.ans) { 
           btn.style.background = '#e9f2ff';
           btn.style.borderColor = '#3b7be3';
           feedback.innerHTML = `<div style="color:green;font-weight:700;margin-top:10px;">Benar - ${item.explain}</div>`;

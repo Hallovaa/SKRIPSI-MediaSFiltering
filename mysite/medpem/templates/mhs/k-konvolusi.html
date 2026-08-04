@@ -91,11 +91,34 @@
     transition:background-color .2s;
   }
 
-  .input-cell, .output-cell { background:#fff9ee; }
-  .kernel-cell { background:#d9eafd; }
-  .output-target { background:#4472c4; color:#fff; font-weight:800; }
-  .highlight { background:#d9eafd !important; color:#000; font-weight:800; }
-  .output-highlight { background:#003049 !important; color:#fff; font-weight:800; }
+  {% comment %} warna simulasi input dan output {% endcomment %}
+  .input-cell, .output-cell { 
+    background:#fff9ee; 
+  }
+
+  {% comment %} kernel {% endcomment %}
+  .kernel-cell { 
+    background:#d9eafd; 
+  }
+
+  {% comment %} kotak 4 hasil {% endcomment %}
+  .output-target { 
+    background:#4472c4; 
+    color:#fff; 
+    font-weight:800; 
+  }
+
+  {% comment %} perpindahan kernel {% endcomment %}
+  .highlight { 
+    background:#d9eafd !important; 
+    color:#000; 
+    font-weight:800; 
+  }
+  .output-highlight { 
+    background:#003049 !important; 
+    color:#fff; 
+    font-weight:800; 
+  }
   
   .conv-controls {
     display:flex;
@@ -129,7 +152,13 @@
     max-width: 800px; 
     margin-top: 10px; 
   }
-  .calc-title { font-weight: 800; color: #003049; margin-bottom: 5px; text-align: center; font-size: 15px; }
+  .calc-title { 
+    font-weight: 800; 
+    color: #003049; 
+    margin-bottom: 5px; 
+    text-align: center; 
+    font-size: 15px; 
+  }
   .calculation {
     background-color: #faf9f7;
     border-radius: 10px;
@@ -751,8 +780,8 @@
         <h5 style="font-weight: 700;">Hasil Konvolusi</h5>
         <table id="quizOutput" class="conv-table">
           <tr><td class="quiz-cell-disabled">79</td><td class="quiz-cell-disabled">77</td><td class="quiz-cell-disabled">102</td><td class="quiz-cell-disabled">208</td></tr>
-          <tr><td class="quiz-cell-disabled">84</td><td class="quiz-cell-input"><input class="quiz-input" data-pos="0"></td><td class="quiz-cell-input"><input class="quiz-input" data-pos="1"></td><td class="quiz-cell-disabled">118</td></tr>
-          <tr><td class="quiz-cell-disabled">89</td><td class="quiz-cell-input"><input class="quiz-input" data-pos="2"></td><td class="quiz-cell-input"><input class="quiz-input" data-pos="3"></td><td class="quiz-cell-disabled">114</td></tr>
+          <tr><td class="quiz-cell-disabled">84</td><td class="quiz-cell-input"><input class="quiz-input" data-pos="0" maxlength="3"></td><td class="quiz-cell-input"><input class="quiz-input" data-pos="1" maxlength="3"></td><td class="quiz-cell-disabled">118</td></tr>
+          <tr><td class="quiz-cell-disabled">89</td><td class="quiz-cell-input"><input class="quiz-input" data-pos="2" maxlength="3"></td><td class="quiz-cell-input"><input class="quiz-input" data-pos="3" maxlength="3"></td><td class="quiz-cell-disabled">114</td></tr>
           <tr><td class="quiz-cell-disabled">83</td><td class="quiz-cell-disabled">99</td><td class="quiz-cell-disabled">90</td><td class="quiz-cell-disabled">109</td></tr>
         </table>
         <small class="text-muted d-block mt-2" style="max-width: 190px; line-height: 1.2;">

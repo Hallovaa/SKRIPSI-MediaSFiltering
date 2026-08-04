@@ -59,12 +59,15 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-.btn-delete-kelas {
+.action-buttons {
   position: absolute;
   top: 15px;
   right: 15px;
-  color: #ef4444;
-  background: #fef2f2;
+  display: flex;
+  gap: 8px;
+}
+
+.btn-action {
   border: none;
   padding: 5px 10px;
   border-radius: 8px;
@@ -72,6 +75,19 @@
   cursor: pointer;
 }
 
+.btn-edit-kelas {
+  color: #0284c7;
+  background: #e0f2fe;
+}
+.btn-edit-kelas:hover {
+  background: #0284c7;
+  color: #fff;
+}
+
+.btn-delete-kelas {
+  color: #ef4444;
+  background: #fef2f2;
+}
 .btn-delete-kelas:hover {
   background: #ef4444;
   color: #fff;
@@ -80,7 +96,7 @@
 .kelas-card h5{
   font-weight:800;
   margin-bottom:4px;
-  padding-right: 30px;
+  padding-right: 70px;
 }
 
 .kelas-meta{
@@ -140,13 +156,19 @@
     {% for k in daftar_kelas %}
     <div class="col-md-4">
       <div class="kelas-card">
-        <a href="javascript:void(0)" onclick="confirmDelete('{{ k.id }}', '{{ k.nama_kelas }}')" class="btn-delete-kelas">
-          <i class="bi bi-trash"></i>
-        </a>
+        
+        <div class="action-buttons">
+          <button onclick="bukaModalEdit('{{ k.id }}', '{{ k.nama_kelas|escapejs }}', '{{ k.angkatan|escapejs }}')" class="btn-action btn-edit-kelas">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button onclick="confirmDelete('{{ k.id }}', '{{ k.nama_kelas|escapejs }}')" class="btn-action btn-delete-kelas">
+            <i class="bi bi-trash"></i>
+          </button>
+        </div>
 
-        <h5>{{ k.nama_kelas }}</h5>
+        <h5>Kelas {{ k.nama_kelas }}</h5> 
         <div class="kelas-meta">
-          Angkatan {{ k.angkatan }} • {{ k.mahasiswa_list.count }} Mahasiswa
+           {{ k.mahasiswa_list.count }} Mahasiswa <br> {{ k.angkatan }}
         </div>
 
         <div class="token-box">
@@ -178,12 +200,12 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">Nama Kelas</label>
-            <input type="text" name="nama_kelas" class="form-control" placeholder="Contoh: PCD 2026" required>
+            <input type="text" name="nama_kelas" class="form-control" placeholder="Contoh: A1" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Angkatan</label>
-            <input type="text" name="angkatan" class="form-control" placeholder="Contoh: 2025" required>
+            <label class="form-label">Tahun Pembelajaran</label>
+            <input type="text" name="angkatan" class="form-control" placeholder="Contoh: Semester Ganjil 2025/2026" required>
           </div>
 
           <div class="alert alert-info mb-0">
@@ -194,6 +216,37 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
           <button type="submit" class="btn btn-primary">Simpan Kelas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditKelas" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" id="formEditKelas">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Edit Kelas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Nama Kelas</label>
+            <input type="text" name="nama_kelas" id="editNamaKelas" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Tahun Pembelajaran</label>
+            <input type="text" name="angkatan" id="editAngkatan" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
         </div>
       </form>
     </div>
@@ -243,6 +296,15 @@ function confirmDelete(id, nama) {
       window.location.href = `/dash-dosen/hapus-kelas/${id}/`;
     }
   })
+}
+
+function bukaModalEdit(id, nama, angkatan) {
+  document.getElementById('editNamaKelas').value = nama;
+  document.getElementById('editAngkatan').value = angkatan;
+  document.getElementById('formEditKelas').action = `/dash-dosen/edit-kelas/${id}/`;
+  
+  const modal = new bootstrap.Modal(document.getElementById('modalEditKelas'));
+  modal.show();
 }
 </script>
 

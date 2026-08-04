@@ -22,6 +22,10 @@ def dapatkan_kkm_dan_durasi_kelas(mahasiswa, aktivitas):
         config = PengaturanKuisKelas.objects.filter(kelas=mahasiswa.kelas, aktivitas=aktivitas).first()
         if config:
             return config.kkm, config.durasi_menit
+        
+    if aktivitas and 'evaluasi' in aktivitas.slug:
+        return 75, 40 
+    
     return 75, 30
 
 def generate_token(length=6):
@@ -232,7 +236,6 @@ def pengaturan_sistem(request):
     dosen = request.user.dosen_profile
     daftar_kelas = Kelas.objects.filter(dosen=dosen)
     
-    # Ambil ID kelas dari parameter GET URL
     kelas_id = request.GET.get('kelas_id')
     if not kelas_id and daftar_kelas.exists():
         kelas_id = daftar_kelas.first().id
@@ -270,10 +273,12 @@ def pengaturan_sistem(request):
             akt.display_name = akt.nama_aktivitas
 
         if kelas_terpilih:
+            default_durasi = 40 if 'evaluasi' in akt.slug else 30
+            
             pengaturan, created = PengaturanKuisKelas.objects.get_or_create(
                 kelas=kelas_terpilih,
                 aktivitas=akt,
-                defaults={'kkm': 75, 'durasi_menit': 30}
+                defaults={'kkm': 75, 'durasi_menit': default_durasi}
             )
             akt.kkm_kelas = pengaturan.kkm
             akt.durasi_kelas = pengaturan.durasi_menit
@@ -304,6 +309,16 @@ def data_kelas(request):
     
     daftar_kelas = Kelas.objects.filter(dosen=dosen)
     return render(request, 'dosen/data-kelas.html', {'daftar_kelas': daftar_kelas})
+
+@login_required
+def edit_kelas(request, id):
+    if request.method == "POST":
+        kelas = get_object_or_404(Kelas, id=id)
+        kelas.nama_kelas = request.POST.get('nama_kelas')
+        kelas.angkatan = request.POST.get('angkatan')
+        kelas.save()
+        messages.success(request, 'Data kelas berhasil diperbarui!')
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 def hapus_kelas(request, id):
@@ -507,7 +522,9 @@ def nilai_mhs(request):
     paginator = Paginator(mhs_queryset, per_page)
     page_obj = paginator.get_page(request.GET.get('page', 1))
     all_akt = Aktivitas.objects.filter(Q(nama_aktivitas__icontains='kuis') | Q(nama_aktivitas__icontains='evaluasi'))
-
+    
+    kkm_remap = {}
+    
     for mhs in page_obj:
         kkm_remap = {}
         for a in all_akt:
@@ -656,30 +673,48 @@ def export_nilai_excel(request):
         return HttpResponse("Unauthorized", status=401)
     dosen = request.user.dosen_profile
     kelas_id = request.GET.get('kelas')
+    
     wb = Workbook()
     ws = wb.active
     ws.title = "Nilai Mahasiswa"
+    
     headers = ['No', 'Nama Mahasiswa', 'NIM', 'Kelas', 'Kuis 1', 'Kuis 2', 'Kuis 3', 'Kuis 4', 'Kuis 5', 'Evaluasi']
     ws.append(headers)
+    
     mahasiswa_list = Mahasiswa.objects.filter(kelas__dosen=dosen).select_related('kelas')
     if kelas_id:
         mahasiswa_list = mahasiswa_list.filter(kelas_id=kelas_id)
     mahasiswa_list = mahasiswa_list.order_by('nama_lengkap')
+    
     for idx, mhs in enumerate(mahasiswa_list, 1):
-        rekap = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 7: 0}
+        rekap = {1: None, 2: None, 3: None, 4: None, 5: None, 7: None}
+        
         nilai_tertinggi = HasilKuis.objects.filter(mahasiswa=mhs).values('nomor_kuis').annotate(skor_max=Max('skor'))
         for n in nilai_tertinggi:
             if n['nomor_kuis'] in rekap:
                 rekap[n['nomor_kuis']] = n['skor_max']
+        
+        def format_nilai(val):
+            return val if val is not None else "-"
+            
         row = [
-            idx, mhs.nama_lengkap, mhs.nim, mhs.kelas.nama_kelas if mhs.kelas else "-", 
-            rekap[1], rekap[2], rekap[3], rekap[4], rekap[5], rekap[7]
+            idx, 
+            mhs.nama_lengkap, 
+            mhs.nim, 
+            mhs.kelas.nama_kelas if mhs.kelas else "-", 
+            format_nilai(rekap[1]), 
+            format_nilai(rekap[2]), 
+            format_nilai(rekap[3]), 
+            format_nilai(rekap[4]), 
+            format_nilai(rekap[5]), 
+            format_nilai(rekap[7])
         ]
         ws.append(row)
+        
     nama_file_tambahan = ""
     if kelas_id and mahasiswa_list.exists():
-        nama_kelas = mahasiswa_list.first().kelas.nama_kelas
-        nama_file_tambahan = f"_{nama_kelas}"
+        kelas_obj = mahasiswa_list.first().kelas
+        
     filename = f"Nilai_Mahasiswa{nama_file_tambahan}_{timezone.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = f'attachment; filename={filename}'
