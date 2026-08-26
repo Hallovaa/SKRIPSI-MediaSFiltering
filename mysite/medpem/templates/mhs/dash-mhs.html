@@ -281,41 +281,6 @@
           <td class="ps-3">
             <div class="fw-bold">Kuis 2: Konvolusi</div>
             <div class="quiz-meta-info">
-              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_3 }}</span>
-              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_3 }} Menit</span>
-            </div>
-            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 %}
-              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.3 }}</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 %}
-              <span class="text-remidi-center">Remidi</span>
-            {% else %}
-              <span class="text-muted small">-</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            <span class="fw-bold">{{ nilai_kuis.kuis_3|default:"-" }}</span>
-            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 and nilai_kuis.kuis_3 == kkm_kuis.kuis_3 %}
-              <br><span class="badge-remidi">Maksimal KKM</span>
-            {% endif %}
-          </td>
-          <td class="text-center">
-            {% if lulus_kuis.kuis_3 %}
-              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
-            {% elif nilai_kuis.kuis_3 %}
-              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
-            {% else %}
-              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
-            {% endif %}
-          </td>
-        </tr>
-
-        <tr>
-          <td class="ps-3">
-            <div class="fw-bold">Kuis 3: Pengenalan <em>Spatial Filtering</em></div>
-            <div class="quiz-meta-info">
               <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_2 }}</span>
               <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_2 }} Menit</span>
             </div>
@@ -340,6 +305,41 @@
             {% if lulus_kuis.kuis_2 %}
               <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
             {% elif nilai_kuis.kuis_2 %}
+              <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
+            {% else %}
+              <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
+            {% endif %}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="ps-3">
+            <div class="fw-bold">Kuis 3: Pengenalan <em>Spatial Filtering</em></div>
+            <div class="quiz-meta-info">
+              <span class="me-3"><i class="bi bi-flag me-1"></i>KKM: {{ kkm_kuis.kuis_3 }}</span>
+              <span><i class="bi bi-clock me-1"></i>Waktu: {{ waktu_kuis.kuis_3 }} Menit</span>
+            </div>
+            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 %}
+              <span class="attempt-info">Pengerjaan ke-{{ dict_pengerjaan_mhs.3 }}</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 %}
+              <span class="text-remidi-center">Remidi</span>
+            {% else %}
+              <span class="text-muted small">-</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            <span class="fw-bold">{{ nilai_kuis.kuis_3|default:"-" }}</span>
+            {% if dict_pengerjaan_mhs.3 > 1 and nilai_awal.3 < kkm_kuis.kuis_3 and nilai_kuis.kuis_3 == kkm_kuis.kuis_3 %}
+              <br><span class="badge-remidi">Maksimal KKM</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if lulus_kuis.kuis_3 %}
+              <span class="badge bg-success-subtle text-success rounded-pill px-3">Lulus</span>
+            {% elif nilai_kuis.kuis_3 %}
               <span class="badge bg-danger-subtle text-danger rounded-pill px-3">Tidak Lulus</span>
             {% else %}
               <span class="badge bg-light text-muted rounded-pill px-3">Belum dikerjakan</span>
